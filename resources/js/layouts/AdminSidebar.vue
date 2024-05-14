@@ -1,6 +1,4 @@
 <script setup>
-import logoImage from '@assets/logo.svg';
-import logoSmaller from '@assets/icons/logoSmaller.svg';
 import { isActiveLink } from '@utils/isActiveLink';
 import { hasPermission } from '@utils/hasPermission';
 import {
@@ -78,7 +76,7 @@ const props = defineProps({
         </q-item-section>
         <q-item-section class="text-white"> Profiles </q-item-section>
       </q-item>
-      
+
       <q-item
         v-if="hasPermission([ACCESS_HISTORY_PERMISSION.LIST])"
         v-ripple
@@ -98,13 +96,6 @@ const props = defineProps({
       </q-item>
     </q-list>
   </q-scroll-area>
-
-  <div v-if="!props.miniState" style="top: 15px; left: 35px; position: absolute">
-    <img :src="logoImage" width="124px" />
-  </div>
-  <div v-else style="top: 15px; left: 5px; position: absolute">
-    <img :src="logoSmaller" width="50px" />
-  </div>
 </template>
 
 <style scoped>

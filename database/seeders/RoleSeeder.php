@@ -8,68 +8,39 @@ use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
-    {
-        $admin = Role::updateOrCreate(
-            ['slug' => 'administrador'],
-            [
-                'name' => 'Administrador',
-                'guard_name' => 'web',
-                'slug' => 'administrador',
-                'description' => 'Administra o sistema e tem acesso total a todas as funcionalidades.',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        );
+  /**
+   * Run the database seeds.
+   */
+  public function run(): void
+  {
+    $admin = Role::updateOrCreate(
+      ['slug' => 'administrator'],
+      [
+        'name' => 'Administrator',
+        'guard_name' => 'web',
+        'slug' => 'administrator',
+        'description' => 'Manages the system and has full access to all functionalities.',
+        'created_at' => now(),
+        'updated_at' => now(),
+      ]
+    );
 
-        $permissions = Permission::all()->pluck('id')->toArray();
+    $permissions = Permission::all()->pluck('id')->toArray();
+    $admin->syncPermissions($permissions);
 
-        $admin->syncPermissions($permissions);
+    $visitor = Role::updateOrCreate(
+      ['slug' => 'visitor'],
+      [
+        'name' => 'Visitor',
+        'guard_name' => 'web',
+        'slug' => 'visitor',
+        'description' => 'Visitor with limited access to the system, can only view and list users.',
+        'created_at' => now(),
+        'updated_at' => now(),
+      ]
+    );
 
-        $servidor_uefs = Role::updateOrCreate(
-            ['slug' => 'servidor_uefs'],
-            [
-                'name' => 'Servidor UEFS',
-                'guard_name' => 'web',
-                'slug' => 'servidor_uefs',
-                'description' => 'Servidor da Universidade Estadual de Feira de Santana com permissões específicas para gerenciamento de recursos da instituição.',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        );
-
-        $servidor_uefs->syncPermissions([]);
-
-        $aluno = Role::updateOrCreate(
-            ['slug' => 'aluno'],
-            [
-                'name' => 'Aluno',
-                'guard_name' => 'web',
-                'slug' => 'aluno',
-                'description' => 'Aluno matriculado na Universidade Estadual de Feira de Santana com permissões limitadas de acesso ao sistema.',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-
-        );
-
-        $aluno->syncPermissions([]);
-
-        $parecerista = Role::updateOrCreate(
-            ['slug' => 'parecerista'],
-            [
-                'name' => 'Parecerista',
-                'guard_name' => 'web',
-                'slug' => 'parecerista',
-                'description' => 'Aluno matriculado na Universidade Estadual de Feira de Santana com permissões limitadas de acesso ao sistema.',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        );
-
-        $parecerista->syncPermissions([]);
-    }
+    $visitorPermissions = Permission::whereIn('name', ['users.list', 'users.view'])->pluck('id')->toArray();
+    $visitor->syncPermissions($visitorPermissions);
+  }
 }

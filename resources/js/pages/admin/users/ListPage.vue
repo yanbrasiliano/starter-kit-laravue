@@ -26,7 +26,7 @@ const columns = ref([
   {
     name: 'name',
     required: true,
-    label: 'Nome',
+    label: 'Name',
     align: 'left',
     field: 'name',
     format: (val) => `${val}`,
@@ -34,14 +34,14 @@ const columns = ref([
   },
   {
     name: 'email',
-    label: 'E-mail',
+    label: 'Email',
     field: 'email',
     align: 'left',
     sortable: true,
   },
   {
     name: 'role',
-    label: 'Perfil',
+    label: 'Role',
     align: 'left',
     field: 'role',
     sortable: true,
@@ -49,14 +49,14 @@ const columns = ref([
   {
     name: 'setSituation',
     required: true,
-    label: 'Situação',
+    label: 'Status',
     align: 'left',
     field: (row) => row.active,
-    format: (val) => `${val}`,
+    format: (val) => (val ? 'Active' : 'Inactive'),
   },
   {
     name: 'action',
-    label: 'Opções',
+    label: 'Actions',
     align: 'center',
     field: (row) => row.id,
     format: (val) => `${val}`,
@@ -74,7 +74,8 @@ const listPage = async (params = {}) => {
       methods: {
         onConsult: false,
         onEdit: hasPermission([USER_PERMISSION.EDIT]),
-        onDelete: row.id !== authStore.user?.id && hasPermission([USER_PERMISSION.DELETE]),
+        onDelete:
+          row.id !== authStore.user?.id && hasPermission([USER_PERMISSION.DELETE]),
       },
     }));
 
@@ -94,7 +95,7 @@ const updatePagination = async (event) => {
     limit: event.pagination?.rowsPerPage,
     page: event.pagination?.page,
     order:
-      event.pagination?.descending || event?.pagination?.descending == undefined
+      event.pagination?.descending || event?.pagination?.descending === undefined
         ? 'desc'
         : 'asc',
     column: event.pagination?.sortBy,
@@ -131,7 +132,7 @@ const handleStatus = async (isNotify) => {
     Notify.create({
       position: 'top-right',
       color: 'positive',
-      message: 'Status atualizado com sucesso!',
+      message: 'Status successfully updated!',
     });
 
     dataHandleStatus.value = null;
@@ -140,7 +141,7 @@ const handleStatus = async (isNotify) => {
       limit: pagination.value?.rowsPerPage,
       page: pagination.value?.page,
       order:
-        pagination.value?.descending || pagination.value?.descending == undefined
+        pagination.value?.descending || pagination.value?.descending === undefined
           ? 'desc'
           : 'asc',
       column: pagination.value?.sortBy,
@@ -175,7 +176,7 @@ const onDelete = async (payload) => {
     Notify.create({
       position: 'top-right',
       color: 'positive',
-      message: 'Usuário removido com sucesso!',
+      message: 'User successfully removed!',
     });
   } finally {
     $q.loading.hide();
@@ -189,12 +190,13 @@ const onDelete = async (payload) => {
   }
 };
 </script>
+
 <template>
   <div>
     <div class="row">
       <div class="col-md-4" :style="{ marginBottom: '20px' }">
         <span :style="{ fontSize: '20px', fontWeight: 'bold', color: '#3B3B3B' }">
-          Gerencie a sua lista de usuários
+          Manage your user list
         </span>
       </div>
     </div>
@@ -202,7 +204,7 @@ const onDelete = async (payload) => {
       <q-card-section>
         <div class="row justify-between">
           <div class="col-md-4">
-            <q-input v-model="filter" filled label="Pesquisar por...">
+            <q-input v-model="filter" filled label="Search for...">
               <template #append>
                 <q-icon name="search" class="cursor-pointer" @click="handleSearch" />
               </template>
@@ -213,7 +215,7 @@ const onDelete = async (payload) => {
               <q-btn
                 v-if="hasPermission([USER_PERMISSION.CREATE])"
                 icon="add"
-                label="Criar"
+                label="Create"
                 color="secondary"
                 @click="router.push({ name: 'createUsers' })">
               </q-btn>
@@ -232,13 +234,12 @@ const onDelete = async (payload) => {
           @on-edit="onEdit"
           @on-delete="onDelete" />
       </q-card-section>
-      <q-card> </q-card>
     </q-card>
     <q-dialog v-model="confirmHandleStatus" persistent>
       <q-card>
         <q-card-section class="row items-center">
           <span class="q-ml-sm"
-            >Deseja enviar e-mail para esse usuário notificando a ativação?</span
+            >Do you want to send an email to this user notifying them of activation?</span
           >
         </q-card-section>
 
@@ -246,12 +247,12 @@ const onDelete = async (payload) => {
           <q-btn
             v-close-popup
             outline
-            label="Sim"
+            label="Yes"
             color="secondary"
             @click="handleStatus(true)" />
           <q-btn
             v-close-popup
-            label="Não"
+            label="No"
             color="secondary"
             @click="handleStatus(false)" />
         </q-card-actions>

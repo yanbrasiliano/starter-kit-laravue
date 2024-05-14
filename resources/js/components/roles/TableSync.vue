@@ -1,13 +1,13 @@
 <script setup>
 import { ref } from 'vue';
-import useRole from "@/composables/Roles/useRole";
+import useRole from '@/composables/Roles/useRole';
 
-const {blockEditRoleAdmin, blockDeleteRoleUserAuth} = useRole();
+const { blockEditRoleAdmin, blockDeleteRoleUserAuth } = useRole();
 const emit = defineEmits(['updatePagination', 'onConsult', 'onEdit', 'onDelete']);
-const loading = ref();
+const loading = ref(false);
 const pagination = ref({});
-const columns = ref();
-const rows = ref();
+const columns = ref([]);
+const rows = ref([]);
 const itemDelete = ref({});
 const confirmRowDelete = ref(false);
 
@@ -15,6 +15,7 @@ const deleteRow = (row) => {
   confirmRowDelete.value = true;
   itemDelete.value = row;
 };
+
 const confirmDeleteRow = (isStatus) => {
   confirmRowDelete.value = false;
   if (isStatus) {
@@ -30,10 +31,10 @@ const confirmDeleteRow = (isStatus) => {
     :rows="rows"
     :columns="columns"
     row-key="name"
-    no-data-label="Nenhum registro encontrado"
+    no-data-label="No records found"
     :rows-per-page-options="[10, 25, 50, 100]"
     :loading="loading"
-    loading-label="Carregando..."
+    loading-label="Loading..."
     :pagination="pagination"
     :computed-rows-number="20"
     @update:pagination="emit('updatePagination', $event)"
@@ -43,20 +44,19 @@ const confirmDeleteRow = (isStatus) => {
         <q-card>
           <q-card-section class="row items-center">
             <span class="q-ml-sm"
-              >Tem certeza que deseja excluir por definitivo este perfil?</span
+              >Are you sure you want to permanently delete this role?</span
             >
           </q-card-section>
-
           <q-card-actions align="center">
             <q-btn
               v-close-popup
               outline
-              label="Sim"
+              label="Yes"
               color="secondary"
               @click="confirmDeleteRow(true)" />
             <q-btn
               v-close-popup
-              label="Não"
+              label="No"
               color="secondary"
               @click="confirmDeleteRow(false)" />
           </q-card-actions>
@@ -71,7 +71,7 @@ const confirmDeleteRow = (isStatus) => {
     <template #body="props">
       <q-tr :props="props">
         <q-td v-for="col in props.cols" :key="col.name" :props="props">
-          <span v-if="col.name == 'action'">
+          <span v-if="col.name === 'action'">
             <q-btn
               v-if="col.methods.onConsult"
               color="primary"
@@ -80,7 +80,7 @@ const confirmDeleteRow = (isStatus) => {
               icon="visibility"
               :to="{ name: 'showRole', params: { id: props.row.id } }"
               @click="emit('onConsult', props.row)">
-              <q-tooltip>Visualizar</q-tooltip>
+              <q-tooltip>View</q-tooltip>
             </q-btn>
             <q-btn
               v-if="blockEditRoleAdmin(props.row.id) && col.methods.onEdit"
@@ -89,16 +89,20 @@ const confirmDeleteRow = (isStatus) => {
               dense
               icon="edit"
               @click="emit('onEdit', props.row)">
-              <q-tooltip>Editar</q-tooltip>
+              <q-tooltip>Edit</q-tooltip>
             </q-btn>
             <q-btn
-              v-if="!(props.row.id  === 1) && blockDeleteRoleUserAuth(props.row.id) && col.methods.onDelete"
+              v-if="
+                props.row.id !== 1 &&
+                blockDeleteRoleUserAuth(props.row.id) &&
+                col.methods.onDelete
+              "
               color="primary"
               flat
               dense
               icon="delete"
               @click="deleteRow(props.row)">
-              <q-tooltip>Deletar</q-tooltip>
+              <q-tooltip>Delete</q-tooltip>
             </q-btn>
           </span>
           <span v-else>
@@ -108,7 +112,7 @@ const confirmDeleteRow = (isStatus) => {
       </q-tr>
     </template>
     <template #pagination="scope">
-      <span>Página {{ scope.pagination.page }} de {{ scope.pagesNumber }} </span>
+      <span>Page {{ scope.pagination.page }} of {{ scope.pagesNumber }} </span>
       <q-btn
         v-if="scope.pagesNumber > 2"
         icon="first_page"
@@ -147,4 +151,4 @@ const confirmDeleteRow = (isStatus) => {
   </q-table>
 </template>
 
-<style lang="sass"></style>
+<style scoped></style>

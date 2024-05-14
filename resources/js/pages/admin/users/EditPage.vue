@@ -33,10 +33,10 @@ const loadRoles = async () => {
     await roleStore.listAll();
     profilesAvailable.value = roleStore.getAllRoles.length > 0;
     if (!profilesAvailable.value) {
-      notify('Não foi possível carregar os perfis de usuário!', 'negative');
+      notify('Unable to load user profiles!', 'negative');
     }
   } catch (error) {
-    notify('Erro ao carregar perfis!', 'negative');
+    notify('Error loading profiles!', 'negative');
     console.error('Failed to fetch roles:', error);
   } finally {
     $q.loading.hide();
@@ -48,10 +48,10 @@ const loadUserData = async () => {
     await userStore.consult(route.params.id);
     user.value = userStore.getUser;
     if (!user.value) {
-      notify('Usuário não encontrado!', 'negative');
+      notify('User not found!', 'negative');
     }
   } catch (error) {
-    notify('Erro ao carregar dados do usuário!', 'negative');
+    notify('Error loading user data!', 'negative');
     console.error('Failed to load user data:', error);
   }
 };
@@ -63,7 +63,7 @@ onMounted(async () => {
 
 const formattedDate = computed(() => {
   return user.value?.created_at
-    ? format(user.value.created_at, 'dd/MM/yyyy HH:mm:ss')
+    ? format(new Date(user.value.created_at), 'MM/dd/yyyy HH:mm:ss')
     : '';
 });
 
@@ -71,13 +71,13 @@ const send = async (payload) => {
   try {
     loading.value = true;
     const updatedUser = await userStore.update(route.params.id, payload);
-    if (authStore.user?.id == updatedUser?.id) {
+    if (authStore.user?.id === updatedUser?.id) {
       authStore.setCredentials({ user: updatedUser });
     }
-    notify('Usuário atualizado com sucesso!', 'positive');
+    notify('User successfully updated!', 'positive');
     router.push({ name: 'listUsers' });
   } catch (error) {
-    notify('Erro ao atualizar usuário!', 'negative');
+    notify('Error updating user!', 'negative');
     console.error('Failed to update user:', error);
   } finally {
     loading.value = false;
@@ -89,14 +89,12 @@ const send = async (payload) => {
   <div class="q-pa-md items-start q-gutter-md">
     <q-card class="q-pa-md">
       <q-card-section>
-        <div class="row text-h5 q-mt-sm q-mb-xs text-weight-bold">
-          Edite os seus usuários
-        </div>
+        <div class="row text-h5 q-mt-sm q-mb-xs text-weight-bold">Edit your users</div>
       </q-card-section>
       <q-separator inset />
       <q-card-section>
         <div class="row justify-end">
-          <span class="text-weight-bold"> Criado em: {{ formattedDate }} </span>
+          <span class="text-weight-bold"> Created on: {{ formattedDate }} </span>
         </div>
         <Form
           v-if="profilesAvailable && user"
@@ -104,7 +102,7 @@ const send = async (payload) => {
           :profiles="roleStore.getAllRoles"
           :user="user"
           @send="send" />
-        <div v-else class="text-subtitle1 text-center q-my-md">Carregando...</div>
+        <div v-else class="text-subtitle1 text-center q-my-md">Loading...</div>
       </q-card-section>
     </q-card>
   </div>

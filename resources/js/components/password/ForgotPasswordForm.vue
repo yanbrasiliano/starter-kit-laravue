@@ -9,6 +9,7 @@ const loading = ref(false);
 const formData = ref({
   email: '',
 });
+
 const { requestPasswordRecovery } = usePassword();
 const router = useRouter();
 
@@ -19,7 +20,7 @@ const sendResetPassword = async () => {
     Notify.create({
       position: 'top-right',
       color: 'positive',
-      message: 'Solicitação de recuperação de senha enviada! Verifique o seu e-mail.',
+      message: 'Password recovery request sent! Please check your email.',
       timeout: 1000,
     });
     router.push('/');
@@ -28,20 +29,21 @@ const sendResetPassword = async () => {
   }
 };
 </script>
+
 <template>
   <q-form @submit.prevent="sendResetPassword">
     <q-input
       v-model="formData.email"
       filled
-      label="E-mail"
+      label="Email"
       type="email"
-      :rules="[(val) => (val && val.length > 0) || 'Por favor insira o e-mail']">
+      :rules="[(val) => (val && val.length > 0) || 'Please enter the email']">
     </q-input>
 
     <div class="q-mt-md">
       <q-btn
         :loading="loading"
-        label="Enviar"
+        label="Send"
         type="submit"
         color="secondary"
         class="full-width" />
@@ -50,10 +52,6 @@ const sendResetPassword = async () => {
 </template>
 
 <style scoped>
-.q-card {
-  max-width: none;
-  width: 100%;
-}
 .q-btn {
   width: 100%;
   margin-top: 20px;
