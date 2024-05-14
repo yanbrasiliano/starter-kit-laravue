@@ -418,3 +418,9 @@
 2024-05-14 13:10:48,005 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 2024-05-14 13:35:37,229 INFO reaped unknown pid 59 (terminated by SIGINT)
 2024-05-14 14:54:30,435 INFO reaped unknown pid 100 (terminated by SIGINT)
+2024-05-14 18:48:46,986 INFO reaped unknown pid 146 (terminated by SIGINT)
+2024-05-14 18:48:53,007 WARN received SIGQUIT indicating exit request
+2024-05-14 18:48:53,011 INFO waiting for laravel-queue, nginx, php-fpm to die
+2024-05-14 18:48:53,021 INFO stopped: php-fpm (exit status 0)
+2024-05-14 18:48:53,037 INFO stopped: nginx (exit status 0)
+2024-05-14 18:48:54,047 WARN stopped: laravel-queue (terminated by SIGTERM)

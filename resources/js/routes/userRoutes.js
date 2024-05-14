@@ -14,7 +14,7 @@ const userRoutes = {
       },
     },
     {
-      path: 'visualizar/:id',
+      path: 'show/:id',
       name: 'showUsers',
       component: async () => import('@pages/admin/users/ShowPage.vue'),
       meta: {
@@ -25,7 +25,7 @@ const userRoutes = {
       },
     },
     {
-      path: 'editar/:id',
+      path: 'edit/:id',
       name: 'editUsers',
       component: async () => import('@pages/admin/users/EditPage.vue'),
       meta: {
@@ -36,7 +36,7 @@ const userRoutes = {
       },
     },
     {
-      path: 'criar',
+      path: 'create',
       name: 'createUsers',
       component: async () => import('@pages/admin/users/CreatePage.vue'),
       meta: {

@@ -1,6 +1,6 @@
 <script setup>
 import error404Image from '@/assets/error-404-image.png';
-import {useRouter} from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
 </script>
@@ -11,15 +11,10 @@ const router = useRouter();
       <q-card-section class="error-card-content">
         <h2 class="error-heading">Oops...Página não encontrada!</h2>
         <p class="error-message">
-          Desculpe, mas não localizamos a página volte para o início
+          Sorry, but the page you are looking for does not exist.
         </p>
-        <q-btn 
-          style="margin-top: 15px"  
-          flat 
-          color="primary" 
-          @click="router.go(-1)"
-          >
-          Voltar
+        <q-btn style="margin-top: 15px" flat color="primary" @click="router.go(-1)">
+          Return
         </q-btn>
       </q-card-section>
       <q-img

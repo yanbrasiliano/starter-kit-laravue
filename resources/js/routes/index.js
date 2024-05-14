@@ -27,7 +27,7 @@ const handleRouteProtection = (to, from, next) => {
 
   const routeActions = {
     true_false_false: () => next({ name: 'login' }),
-    false_true: () => next({ name: 'naoEncontrado' }),
+    false_true: () => next({ name: 'notFound' }),
     true_true_false: () => next({ name: 'accessDenied' }),
     default: () => next(),
   };

@@ -19,11 +19,11 @@ const routes = [
     children: [
       adminHomeRoutes,
       {
-        path: 'usuarios',
+        path: 'users',
         children: userRoutes.children,
       },
       {
-        path: 'perfis',
+        path: 'profiles',
         children: roleRoutes.children,
       },
       {
@@ -31,7 +31,7 @@ const routes = [
         children: [
           {
             path: 'error404',
-            name: 'naoEncontrado',
+            name: 'notFound',
             component: NotFoundPage,
             meta: {
               requiresAuth: true,

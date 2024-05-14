@@ -16,10 +16,10 @@ const formData = ref({
 });
 
 onMounted(() => {
-  formData.value.name = props.user?.name;
-  formData.value.cpf = props.user?.cpf;
-  formData.value.email = props.user?.email;
-  formData.value.role = props.user?.roles[props.user.roles.length - 1];
+  formData.value.name = props.user?.name || '';
+  formData.value.cpf = props.user?.cpf || '';
+  formData.value.email = props.user?.email || '';
+  formData.value.role = props.user?.roles?.[props.user.roles.length - 1] || null;
   formData.value.active = props.user?.active ? 1 : 0;
 });
 
@@ -41,49 +41,49 @@ watch([formData, () => formData.value.send_random_password], () => {
 </script>
 
 <template>
-  <q-form class="q-gutter-md" @submit="onSubmit">
+  <q-form class="q-gutter-md" @submit.prevent="onSubmit">
     <div>
-      <label for="name" class="text-weight-bold">Nome</label>
+      <label for="name" class="text-weight-bold">Name</label>
       <q-input
         v-model="formData.name"
         filled
-        placeholder="Digite o nome"
+        placeholder="Enter the name"
         lazy-rules
         autofocus
-        :rules="[(val) => (val && val.length > 0) || 'Por favor insira o nome']" />
+        :rules="[(val) => (val && val.length > 0) || 'Please enter the name']" />
     </div>
     <div>
-      <label for="email" class="text-weight-bold">E-mail</label>
+      <label for="email" class="text-weight-bold">Email</label>
       <q-input
         v-model="formData.email"
         filled
         type="email"
-        placeholder="Digite o seu e-mail"
+        placeholder="Enter your email"
         lazy-rules
         autofocus
-        :rules="[(val) => (val && val.length > 0) || 'Por favor insira o seu e-mail']" />
+        :rules="[(val) => (val && val.length > 0) || 'Please enter your email']" />
     </div>
     <div>
-      <label for="password" class="text-weight-bold">Senha</label>
+      <label for="password" class="text-weight-bold">Password</label>
       <q-input
         v-model="formData.password"
         filled
-        label="Senha"
+        label="Password"
         type="password"
-        placeholder="Digite sua senha"
+        placeholder="Enter your password"
         lazy-rules
         autofocus
         :rules="[]"
-        :readonly="formData?.send_random_password" />
+        :readonly="formData.send_random_password" />
     </div>
-    <div v-if="route.name != 'editUsers'">
+    <div v-if="route.name !== 'editUsers'">
       <q-checkbox
         v-model="formData.send_random_password"
-        label="Enviar senha aleatória por e-mail" />
+        label="Send random password by email" />
     </div>
     <div class="row">
       <div class="col-md-6">
-        <label for="role_id" class="text-weight-bold">Perfil</label>
+        <label for="role_id" class="text-weight-bold">Role</label>
         <q-select
           v-model="formData.role"
           :style="{ width: '100%', minWidth: '200px' }"
@@ -91,16 +91,15 @@ watch([formData, () => formData.value.send_random_password], () => {
           option-label="name"
           option-value="id"
           filled
-          label="Selecione um perfil"
+          label="Select a role"
           autofocus
           :rules="[
-            (val) =>
-              (val && (val.id || val.id == undefined)) || 'Por favor selecione um perfil',
+            (val) => (val && (val.id || val.id === undefined)) || 'Please select a role',
           ]">
           <template #no-option>
             <q-item>
               <q-item-section class="text-italic text-grey">
-                Nenhuma opção disponivel
+                No options available
               </q-item-section>
             </q-item>
           </template>
@@ -114,32 +113,25 @@ watch([formData, () => formData.value.send_random_password], () => {
           :false-value="0"
           class="text-weight-bold"
           name="active"
-          label="Ativo"
+          label="Active"
           autofocus
-          :rules="[
-            (val) =>
-              (val && val.length > 0) || 'Por favor selecione a situação do usuário',
-          ]" />
+          :rules="[(val) => val !== undefined || 'Please select the user status']" />
       </div>
     </div>
-
     <div class="q-mt-lg q-gutter-sm">
       <q-btn
         :loading="props.loading"
         class="text-weight-bold"
-        label="Salvar"
+        label="Save"
         type="submit"
         color="secondary" />
       <q-btn
         flat
         class="text-weight-bold"
-        label="Voltar"
-        type="submit"
+        label="Return"
+        type="button"
         color="primary"
-        :loading="loading"
-        :to="{name: 'listUsers'}"
-      />
+        :to="{ name: 'listUsers' }" />
     </div>
-    
   </q-form>
 </template>
