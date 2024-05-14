@@ -1,0 +1,17 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+ 
+parameters:
+    treatPhpDocTypesAsCertain: false
+    paths:
+        - app/
+    level: 4
+    ignoreErrors:
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Model::syncRoles\(\)#'
+        - '#Access to an undefined property Illuminate\\Database\\Eloquent\\Model::\$roles#'
+        - message: '#Method App\\Repositories\\EloquentRepository\\RoleRepository::create\(\) should return Illuminate\\Database\\Eloquent\\Model but returns Spatie\\Permission\\Contracts\\Role#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Model::hasVerifiedEmail\(\)#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Model::markEmailAsVerified\(\)#'
+    excludePaths:
+        - ./*/*/FileToBeExcluded.php
+    checkMissingIterableValueType: false

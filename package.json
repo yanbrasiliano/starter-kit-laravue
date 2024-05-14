@@ -1,0 +1,55 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host --port 3000",
+    "build-production": "vite build",
+    "build-development": "vite build --mode development",
+    "build-staging": "vite build --mode staging",
+    "serve": "vite preview",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix resources/js",
+    "commit": "git-cz",
+    "prepare": "husky install",
+    "format": "prettier ./resources/js  --write"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.6.1",
+    "@commitlint/config-conventional": "^18.6.2",
+    "@quasar/vite-plugin": "^1.6.0",
+    "axios": "^1.6.4",
+    "eslint": "^8.56.0",
+    "eslint-plugin-vue": "^9.21.1",
+    "husky": "^9.0.11",
+    "laravel-vite-plugin": "^1.0.1",
+    "lint-staged": "^15.2.2",
+    "sass": "^1.71.1",
+    "vite": "^5.0.0",
+    "vite-plugin-eslint": "^1.8.1"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.16.9",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "commitizen": "^4.3.0",
+    "date-fns": "^3.6.0",
+    "eslint-config-prettier": "^9.1.0",
+    "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.1",
+    "prettier": "^3.2.5",
+    "quasar": "^2.14.4",
+    "vue": "^3.4.19",
+    "vue-loader": "^17.2.2",
+    "vue-router": "^4.2.5"
+  },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "exec < /dev/tty && npx cz --hook || true",
+      "pre-commit": "echo \"[Husky] pre-commit\"",
+      "pre-push": "echo \"[Husky] pre-push\""
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}

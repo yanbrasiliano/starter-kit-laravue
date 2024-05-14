@@ -1,0 +1,4 @@
+{
+  "preset": "laravel",
+  "exclude": ["node_modules", "vendor", "bootstrap", "database"]
+}

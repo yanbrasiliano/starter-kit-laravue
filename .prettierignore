@@ -1,0 +1,8 @@
+**/.git
+**/.husky
+**/node_modules
+**/vendor
+**/app
+**/composer.json
+**/composer.lock
+**/package.json

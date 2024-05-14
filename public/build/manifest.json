@@ -1,0 +1,234 @@
+{
+  "_FormUser-B393s-Ll.js": {
+    "file": "assets/FormUser-B393s-Ll.js",
+    "name": "FormUser",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_useUserStore-DiIchrsT.js": {
+    "file": "assets/useUserStore-DiIchrsT.js",
+    "name": "useUserStore",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "node_modules/@quasar/extras/material-icons/web-font/flUhRq6tzZclQEJ-Vdg-IuiaDsNa.woff": {
+    "file": "assets/flUhRq6tzZclQEJ-Vdg-IuiaDsNa-Dr0goTwe.woff",
+    "src": "node_modules/@quasar/extras/material-icons/web-font/flUhRq6tzZclQEJ-Vdg-IuiaDsNa.woff"
+  },
+  "node_modules/@quasar/extras/material-icons/web-font/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2": {
+    "file": "assets/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ-D-x-0Q06.woff2",
+    "src": "node_modules/@quasar/extras/material-icons/web-font/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2"
+  },
+  "resources/css/app.scss": {
+    "file": "assets/app-oPt0xxsU.css",
+    "src": "resources/css/app.scss",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-BgjHESA5.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/layouts/ChildrenLayout.vue",
+      "resources/js/pages/admin/users/ListPage.vue",
+      "resources/js/pages/admin/users/ShowPage.vue",
+      "resources/js/pages/admin/users/EditPage.vue",
+      "resources/js/pages/admin/users/CreatePage.vue",
+      "resources/js/pages/admin/AdminHomePage.vue",
+      "resources/js/pages/HomePage.vue"
+    ],
+    "css": [
+      "assets/app-C65_4oGb.css"
+    ],
+    "assets": [
+      "assets/logo-z7280MTK.svg",
+      "assets/contract-D5niPqVz.svg",
+      "assets/panel-B2fDqlRn.svg",
+      "assets/program-LXW1eNHv.svg",
+      "assets/yearly_report-tgzWvZne.svg",
+      "assets/filter-D_eIwmxt.svg",
+      "assets/frecuency-B31W-Co0.svg",
+      "assets/thematic_area-hE5GffcU.svg",
+      "assets/unit-CDgeoWfB.svg",
+      "assets/user-B_-igEUI.svg",
+      "assets/role-CpcqFh3S.svg",
+      "assets/log-11LnK935.svg",
+      "assets/config-A7CAN3xh.svg",
+      "assets/logoSmaller-DepXFVL3.svg",
+      "assets/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ-D-x-0Q06.woff2",
+      "assets/flUhRq6tzZclQEJ-Vdg-IuiaDsNa-Dr0goTwe.woff"
+    ]
+  },
+  "resources/js/assets/base-image.png": {
+    "file": "assets/base-image-BtUMP5uu.png",
+    "src": "resources/js/assets/base-image.png"
+  },
+  "resources/js/assets/icons/config.svg": {
+    "file": "assets/config-A7CAN3xh.svg",
+    "src": "resources/js/assets/icons/config.svg"
+  },
+  "resources/js/assets/icons/consult.svg": {
+    "file": "assets/consult-G7ojonsV.svg",
+    "src": "resources/js/assets/icons/consult.svg"
+  },
+  "resources/js/assets/icons/contract.svg": {
+    "file": "assets/contract-D5niPqVz.svg",
+    "src": "resources/js/assets/icons/contract.svg"
+  },
+  "resources/js/assets/icons/edit.svg": {
+    "file": "assets/edit-BcPl-2Lm.svg",
+    "src": "resources/js/assets/icons/edit.svg"
+  },
+  "resources/js/assets/icons/filter.svg": {
+    "file": "assets/filter-D_eIwmxt.svg",
+    "src": "resources/js/assets/icons/filter.svg"
+  },
+  "resources/js/assets/icons/frecuency.svg": {
+    "file": "assets/frecuency-B31W-Co0.svg",
+    "src": "resources/js/assets/icons/frecuency.svg"
+  },
+  "resources/js/assets/icons/log.svg": {
+    "file": "assets/log-11LnK935.svg",
+    "src": "resources/js/assets/icons/log.svg"
+  },
+  "resources/js/assets/icons/logoSmaller.svg": {
+    "file": "assets/logoSmaller-DepXFVL3.svg",
+    "src": "resources/js/assets/icons/logoSmaller.svg"
+  },
+  "resources/js/assets/icons/panel.svg": {
+    "file": "assets/panel-B2fDqlRn.svg",
+    "src": "resources/js/assets/icons/panel.svg"
+  },
+  "resources/js/assets/icons/plus.svg": {
+    "file": "assets/plus-Be-q-5Sm.svg",
+    "src": "resources/js/assets/icons/plus.svg"
+  },
+  "resources/js/assets/icons/program.svg": {
+    "file": "assets/program-LXW1eNHv.svg",
+    "src": "resources/js/assets/icons/program.svg"
+  },
+  "resources/js/assets/icons/remove.svg": {
+    "file": "assets/remove-ByCYmp3i.svg",
+    "src": "resources/js/assets/icons/remove.svg"
+  },
+  "resources/js/assets/icons/role.svg": {
+    "file": "assets/role-CpcqFh3S.svg",
+    "src": "resources/js/assets/icons/role.svg"
+  },
+  "resources/js/assets/icons/thematic_area.svg": {
+    "file": "assets/thematic_area-hE5GffcU.svg",
+    "src": "resources/js/assets/icons/thematic_area.svg"
+  },
+  "resources/js/assets/icons/unit.svg": {
+    "file": "assets/unit-CDgeoWfB.svg",
+    "src": "resources/js/assets/icons/unit.svg"
+  },
+  "resources/js/assets/icons/user.svg": {
+    "file": "assets/user-B_-igEUI.svg",
+    "src": "resources/js/assets/icons/user.svg"
+  },
+  "resources/js/assets/icons/yearly_report.svg": {
+    "file": "assets/yearly_report-tgzWvZne.svg",
+    "src": "resources/js/assets/icons/yearly_report.svg"
+  },
+  "resources/js/assets/logo-sistex.png": {
+    "file": "assets/logo-sistex-D5PAtzTu.png",
+    "src": "resources/js/assets/logo-sistex.png"
+  },
+  "resources/js/assets/logo-uefs.png": {
+    "file": "assets/logo-uefs-CAKcq5ch.png",
+    "src": "resources/js/assets/logo-uefs.png"
+  },
+  "resources/js/assets/logo.svg": {
+    "file": "assets/logo-z7280MTK.svg",
+    "src": "resources/js/assets/logo.svg"
+  },
+  "resources/js/layouts/ChildrenLayout.vue": {
+    "file": "assets/ChildrenLayout-DfJRBtJ1.js",
+    "name": "ChildrenLayout",
+    "src": "resources/js/layouts/ChildrenLayout.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/pages/HomePage.vue": {
+    "file": "assets/HomePage-5EsoxNUl.js",
+    "name": "HomePage",
+    "src": "resources/js/pages/HomePage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ],
+    "css": [
+      "assets/HomePage-CfvQliR5.css"
+    ],
+    "assets": [
+      "assets/base-image-BtUMP5uu.png",
+      "assets/logo-sistex-D5PAtzTu.png",
+      "assets/logo-uefs-CAKcq5ch.png"
+    ]
+  },
+  "resources/js/pages/admin/AdminHomePage.vue": {
+    "file": "assets/AdminHomePage-sytVxoxI.js",
+    "name": "AdminHomePage",
+    "src": "resources/js/pages/admin/AdminHomePage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/pages/admin/users/CreatePage.vue": {
+    "file": "assets/CreatePage-EapYdMvB.js",
+    "name": "CreatePage",
+    "src": "resources/js/pages/admin/users/CreatePage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_FormUser-B393s-Ll.js",
+      "_useUserStore-DiIchrsT.js"
+    ]
+  },
+  "resources/js/pages/admin/users/EditPage.vue": {
+    "file": "assets/EditPage-ZlQz92yX.js",
+    "name": "EditPage",
+    "src": "resources/js/pages/admin/users/EditPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_useUserStore-DiIchrsT.js",
+      "_FormUser-B393s-Ll.js"
+    ]
+  },
+  "resources/js/pages/admin/users/ListPage.vue": {
+    "file": "assets/ListPage-CsIsQYRh.js",
+    "name": "ListPage",
+    "src": "resources/js/pages/admin/users/ListPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_useUserStore-DiIchrsT.js"
+    ],
+    "css": [
+      "assets/ListPage-DO8ReJep.css"
+    ],
+    "assets": [
+      "assets/plus-Be-q-5Sm.svg",
+      "assets/edit-BcPl-2Lm.svg",
+      "assets/remove-ByCYmp3i.svg",
+      "assets/consult-G7ojonsV.svg"
+    ]
+  },
+  "resources/js/pages/admin/users/ShowPage.vue": {
+    "file": "assets/ShowPage-D4lVHrdZ.js",
+    "name": "ShowPage",
+    "src": "resources/js/pages/admin/users/ShowPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  }
+}
