@@ -26,9 +26,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=starterkit
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
+      - DB_DATABASE=starterkit
+      - DB_USERNAME=admin
+      - DB_PASSWORD=admin
     volumes:
       - pg_data:/var/lib/postgresql/data
       - ./docker/PGSQL:/docker-entrypoint-initdb.d

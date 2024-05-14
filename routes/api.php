@@ -33,15 +33,12 @@ Route::prefix('v1')->group(function () {
         Route::controller(App\Http\Controllers\API\AuthenticateController::class)->group(function () {
             Route::get('auth/my-profile', 'myProfile')->name('auth.myProfile');
         });
-
         Route::prefix('permissions')->controller(App\Http\Controllers\API\PermissionController::class)->group(function () {
             Route::get('/', 'index')->name('permissions.list');
         });
-
         Route::prefix('roles')->controller(App\Http\Controllers\API\RoleController::class)->group(function () {
             Route::get('/list-all', 'listAll')->name('roles.listAll');
         });
-
         // Routes that require access permissions
         Route::middleware('permission')->group(function () {
             Route::prefix('users')->controller(App\Http\Controllers\API\UserController::class)->group(function () {
@@ -51,33 +48,12 @@ Route::prefix('v1')->group(function () {
                 Route::put('/{id}', 'update')->name('users.edit');
                 Route::delete('/{id}', 'destroy')->name('users.delete');
             });
-
             Route::prefix('roles')->controller(App\Http\Controllers\API\RoleController::class)->group(function () {
                 Route::get('/', 'index')->name('roles.list');
                 Route::post('/', 'store')->name('roles.create');
                 Route::get('/{id}', 'show')->name('roles.view');
                 Route::match(['put', 'patch'], '/{id}', 'update')->name('roles.edit');
                 Route::delete('/{id}', 'destroy')->name('roles.delete');
-            });
-
-            Route::prefix('units')->group(function () {
-                Route::controller(App\Http\Controllers\API\UnitController::class)->group(function () {
-                    Route::get('/', 'index')->name('units.list');
-                    Route::post('/', 'store')->name('units.create');
-                    Route::get('/{id}', 'show')->name('units.view');
-                    Route::put('/{id}', 'update')->name('units.edit');
-                    Route::delete('/{id}', 'destroy')->name('units.delete');
-                });
-            });
-
-            Route::prefix('thematic_areas')->group(function () {
-                Route::controller(App\Http\Controllers\API\ThematicAreaController::class)->group(function () {
-                    Route::get('/', 'index')->name('thematic_areas.list');
-                    Route::post('/', 'store')->name('thematic_areas.create');
-                    Route::get('/{id}', 'show')->name('thematic_areas.view');
-                    Route::put('/{id}', 'update')->name('thematic_areas.edit');
-                    Route::delete('/{id}', 'destroy')->name('thematic_areas.delete');
-                });
             });
         });
     });
