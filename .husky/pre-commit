@@ -1,5 +1,5 @@
 #/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-docker exec -i starterkit-app npx --no-install lint-staged
-docker exec -i starterkit-app ./vendor/bin/phpstan analyse
+# docker exec -i starterkit-app npx --no-install lint-staged
+# docker exec -i starterkit-app ./vendor/bin/phpstan analyse

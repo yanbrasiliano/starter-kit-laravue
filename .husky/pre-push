@@ -2,5 +2,5 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 echo "\nRunning unit test for php \n"
-docker exec -i starterkit-app php artisan optimize:clear
+# docker exec -i starterkit-app php artisan optimize:clear
 # docker exec -i starterkit-app php artisan test --env=testing --coverage
