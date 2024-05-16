@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\DTO\Authenticate\LoginDTO;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
@@ -27,5 +28,10 @@ class LoginRequest extends FormRequest
             'password.required' => 'O campo senha é obrigatório.',
             'password.string' => 'O campo senha deve ser uma string.',
         ];
+    }
+
+    public function validated($key = null, $default = null): array | LoginDTO
+    {
+        return new LoginDTO(...parent::validated($key, $default));
     }
 }

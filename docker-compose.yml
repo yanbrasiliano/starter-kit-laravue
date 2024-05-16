@@ -26,9 +26,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - DB_DATABASE=starterkit
-      - DB_USERNAME=admin
-      - DB_PASSWORD=admin
+      - POSTGRES_DB=starterkit
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
     volumes:
       - pg_data:/var/lib/postgresql/data

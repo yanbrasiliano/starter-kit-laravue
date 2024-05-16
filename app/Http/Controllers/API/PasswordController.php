@@ -54,9 +54,7 @@ class PasswordController extends Controller
      */
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
-        $this->service->forgotPassword(
-            new ForgotPasswordDTO(...$request->toArray())
-        );
+        $this->service->forgotPassword($request->validated());
 
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
@@ -99,9 +97,7 @@ class PasswordController extends Controller
      */
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
-        $this->service->resetPassword(
-            new ResetPasswordDTO(...$request->toArray())
-        );
+        $this->service->resetPassword($request->validated());
 
         return response()->json([], Response::HTTP_NO_CONTENT);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Password;
 
+use App\DTO\Password\ResetPasswordDTO;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ResetPasswordRequest extends FormRequest
@@ -32,5 +33,11 @@ class ResetPasswordRequest extends FormRequest
             'token.required' => 'O token não foi fornecido.',
             'token.string' => 'O token contém o tipo inválido.',
         ];
+    }
+
+
+    public function validated($key = null, $default = null): array | ResetPasswordDTO
+    {
+        return new ResetPasswordDTO(...parent::validated($key, $default));
     }
 }

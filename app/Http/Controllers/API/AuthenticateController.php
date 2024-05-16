@@ -59,12 +59,7 @@ class AuthenticateController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $dto = new LoginDTO(
-            email: $request->email,
-            password: $request->password
-        );
-
-        return $this->service->login($dto);
+        return $this->service->login($request->validated());
     }
 
     /**

@@ -92,13 +92,13 @@ describe('Authentication', function () {
             $userAuth->assignRole([$roleAdminId]);
             $response = $this->actingAs($userAuth)
                 ->get(route('auth.myProfile'));
-
-            $response->assertStatus(Response::HTTP_OK);
-            $response->assertJsonStructure([
-                'name',
-                'email',
-                'permissions',
-            ]);
+            
+            $response->assertStatus(Response::HTTP_OK)
+                ->assertJsonStructure([
+                    'name',
+                    'email',
+                    'permissions',
+            ])->dd('ok');
         });
     })->group('auth');
 })->group('auth');
