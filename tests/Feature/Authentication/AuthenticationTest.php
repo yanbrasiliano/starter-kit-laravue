@@ -5,9 +5,13 @@ namespace Tests\Feature\Authentication;
 use App\Enums\RolesEnum;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Artisan;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
+    Artisan::call('db:seed', ['--class' => 'PermissionSeeder']);
+    Artisan::call('db:seed', ['--class' => 'RoleSeeder']);
+
     $this->inactiveUser = User::factory()->create([
         'active' => false,
         'password' => bcrypt('correctpassword'),
@@ -16,6 +20,11 @@ beforeEach(function () {
         'active' => true,
         'password' => bcrypt('correctpassword'),
     ]);
+    $this->userAuth = User::factory()->create();
+    
+    $this->roleAdmin = Role::where('slug', RolesEnum::ADMINISTRATOR->value)->first();
+    $this->userAuth->assignRole([$this->roleAdmin->id]);
+    
 });
 
 describe('Authentication', function () {
@@ -87,18 +96,16 @@ describe('Authentication', function () {
 
     describe('Gets data from the logged-in user', function () {
         it('should return a 200 status code and proper JSON structure', function () {
-            $userAuth = User::factory()->create();
-            $roleAdminId = Role::where('slug', RolesEnum::ADMINISTRATOR->value)->first()->id;
-            $userAuth->assignRole([$roleAdminId]);
-            $response = $this->actingAs($userAuth)
-                ->get(route('auth.myProfile'));
             
-            $response->assertStatus(Response::HTTP_OK)
+            
+            $this->actingAs($this->userAuth)
+                ->get(route('auth.myProfile'))
+                ->assertStatus(Response::HTTP_OK)
                 ->assertJsonStructure([
                     'name',
                     'email',
                     'permissions',
-            ])->dd('ok');
-        });
+            ]);
+        })->only();
     })->group('auth');
 })->group('auth');

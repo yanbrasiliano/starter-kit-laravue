@@ -562,3 +562,4 @@
 2024-05-16 14:49:42,627 INFO success: laravel-queue entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 2024-05-16 14:49:42,627 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 2024-05-16 14:49:42,627 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-05-16 17:24:34,130 INFO reaped unknown pid 137 (terminated by SIGINT)
