@@ -88,7 +88,7 @@ function handleErrorResponse(status, message, data) {
       break;
     }
     case 408: {
-      notifyError('Tempo de solicitação esgotado');
+      notifyError('Request Timeout');
       window.location.reload();
       break;
     }
@@ -100,26 +100,24 @@ function handleErrorResponse(status, message, data) {
       break;
     }
     case 419: {
-      notifyError('Sessão expirada. Por favor, atualize a página e tente novamente.');
+      notifyError('Session expired or invalid token.');
       router.replace('/');
       break;
     }
     case 500: {
-      notifyError(
-        'Erro interno do servidor. Por favor, contate a administração do sistema para mais informações.',
-      );
+      notifyError('Server error, please try again later or contact the support team.');
       break;
     }
     default: {
       notifyError(
         message === 'This action is unauthorized.'
-          ? 'Você não tem permissão para acessar este recurso'
+          ? 'You do not have permission to access this resource or your session has expired.'
           : message,
       );
 
       if (message === 'Unauthorized.') {
         message =
-          'Você não tem permissão para acessar este recurso ou a sua sessão expirou.';
+          'You do not have permission to access this resource or your session has expired.';
         router.replace('/admin/inicio');
       }
 

@@ -41,21 +41,21 @@ const onDelete = async (event) => {
     Notify.create({
       position: 'top-right',
       color: 'positive',
-      message: 'Perfil removido com sucesso!',
+      message: 'Role successfully removed!',
     });
   } finally {
     $q.loading.hide();
-
     await store.fetchRoles({ ...pagination.value });
   }
 };
 </script>
+
 <template>
   <div>
     <div class="row">
       <div class="col-md-4" :style="{ marginBottom: '20px' }">
         <span :style="{ fontSize: '20px', fontWeight: 'bold', color: '#3B3B3B' }">
-          Gerencie a sua listagem de perfis de acesso
+          Manage your role listings
         </span>
       </div>
     </div>
@@ -66,7 +66,7 @@ const onDelete = async (event) => {
             <div class="column items-end">
               <q-btn
                 v-if="hasPermission([ROLE_PERMISSION.CREATE])"
-                label="Criar"
+                label="Create"
                 color="secondary"
                 icon="add"
                 @click="router.push({ name: 'createRoles' })"></q-btn>
