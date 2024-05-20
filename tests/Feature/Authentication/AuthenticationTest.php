@@ -106,6 +106,6 @@ describe('Authentication', function () {
                     'email',
                     'permissions',
             ]);
-        })->only();
+        });
     })->group('auth');
 })->group('auth');

@@ -2,458 +2,322 @@
 
 namespace Tests\Feature\Users;
 
-use App\Enums\RolesEnum;
 use App\Mail\SendVerifyEmail;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\URL;
-use Spatie\Permission\Models\Role;
+use function Pest\Laravel\{actingAs, get, post};
 
 beforeEach(function () {
-    $this->baseUrl = 'api/v1/users';
-    $this->users = User::factory(20)->create();
-    $this->userAuth = User::factory()->create();
-    $roleAdminId = Role::where('slug', RolesEnum::ADMINISTRATOR->value)->first()->id;
-    $this->userAuth->assignRole([$roleAdminId]);
-    $this->token = $this->userAuth->createToken('test-token')->plainTextToken;
+    createRoles();
+    $this->users = createUsers();
+    $this->asAdmin = asAdmin();
 });
 
 describe('Users Management', function () {
     describe('Listing Users', function () {
-        it('should return a 200 status code and proper JSON structure', function () {
-            $response = $this->actingAs($this->userAuth)->get($this->baseUrl);
-            $response->assertStatus(Response::HTTP_OK);
-            $response->assertJsonStructure([
-                'current_page',
-                'data',
-                'first_page_url',
-                'from',
-                'last_page',
-                'links',
-                'next_page_url',
-                'path',
-                'last_page_url',
-                'per_page',
-                'prev_page_url',
-                'to',
-                'total',
-            ]);
-        });
+        it('should return a 200 status code and proper JSON structure', 
+            function (array $paginationStructure) {
+
+            actingAs($this->asAdmin)
+            ->get(route('users.list'))
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJsonStructure($paginationStructure);
+
+        })->with('paginationStructure');
     });
 
     describe('Querying User Data', function () {
-        it('should return a 200 status code and proper JSON structure for valid user ID', function () {
-            $response = $this->actingAs($this->userAuth)->get("{$this->baseUrl}/{$this->userAuth->id}");
-            $response->assertStatus(Response::HTTP_OK);
-            $response->assertJsonStructure([
-                'data' => [
-                    'id',
-                    'name',
-                    'email',
-                    'cpf',
-                    'active',
-                    'email_verified_at',
-                    'created_at',
-                    'updated_at',
-                    'roles',
-                ],
-            ]);
-        });
+        it(
+            'should return a 200 status code and proper JSON structure for valid user ID',
+            function (array $userJsonValidStructure) {
+                
+            actingAs($this->asAdmin)
+            ->get(route('users.list', [ $this->asAdmin->id ]))
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJsonStructure($userJsonValidStructure);
+        })->with('userJsonValidStructure');
 
         it('should return a 404 status code for invalid user ID', function () {
-            $response = $this->actingAs($this->userAuth)->get("{$this->baseUrl}/10000");
-            $response->assertStatus(Response::HTTP_NOT_FOUND);
+            actingAs($this->asAdmin)
+            ->get(route('users.list', [ 11111 ]))
+            ->assertStatus(Response::HTTP_NOT_FOUND);
         });
     });
 
     describe('Registering Users', function () {
-        it('should return a 200 status code and proper JSON structure for valid user data', function () {
-            $response = $this->actingAs($this->userAuth)->post($this->baseUrl, [
-                'cpf' => preg_replace('/\D/', '', fake('pt_BR')->cpf()),
-                'name' => fake('pt_BR')->name(),
-                'email' => fake('pt_BR')->email(),
-                'password' => fake('pt_BR')->password(10),
-                'active' => fake('pt_BR')->randomElement([0, 1]),
-                'send_random_password' => true,
-                'role_id' => fake('pt_BR')->randomElement([1]),
-            ]);
-            $response->assertStatus(Response::HTTP_OK);
-            $response->assertJsonStructure([
-                'data' => [
-                    'id',
-                    'name',
-                    'email',
-                    'cpf',
-                    'active',
-                    'email_verified_at',
-                    'created_at',
-                    'updated_at',
-                    'roles',
-                ],
-            ]);
-        });
-
-        it('should return a 422 status code when name is not provided', function () {
-            $response = $this->actingAs($this->userAuth)->post($this->baseUrl, [
-                'name' => null,
-                'email' => fake('pt_BR')->email(),
-                'password' => fake('pt_BR')->password(10),
-                'active' => fake('pt_BR')->randomElement([0, 1]),
-                'send_random_password' => true,
-                'role_id' => fake('pt_BR')->randomElement([1]),
-            ]);
-            $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-            $response->assertJson([
+        it('should return a 200 status code and proper JSON structure for valid user data',
+            function (array $validUser, array $validJsonStructure) {
+            Mail::fake();
+            actingAs($this->asAdmin)
+                ->post($this->baseUrl, $validUser)
+                ->assertStatus(Response::HTTP_OK)
+                ->assertJsonStructure($validJsonStructure);
+        })
+        ->with('validUser')
+        ->with('validJsonStructure');
+        
+        it('should return a 422 status code when name is not provided', 
+            function (array $nameNotProvided) {
+            
+            actingAs($this->asAdmin)
+            ->post(route('users.create'), $nameNotProvided)
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJson([
                 'errors' => [
                     'name' => [
                         'O campo Nome é obrigatório.',
                     ],
                 ],
             ]);
-        });
+        })->with('nameNotProvided');
 
-        it('should return a 422 status code when email is invalid', function () {
-            $response = $this->actingAs($this->userAuth)->post($this->baseUrl, [
-                'name' => fake('pt_BR')->name(),
-                'email' => fake('pt_BR')->text(),
-                'password' => fake('pt_BR')->password(10),
-                'active' => fake('pt_BR')->randomElement([0, 1]),
-                'send_random_password' => true,
-                'role_id' => fake('pt_BR')->randomElement([1]),
-            ]);
-            $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-            $response->assertJson([
+        it('should return a 422 status code when email is invalid', function (array $invalidEmail) {
+            
+            actingAs($this->asAdmin)
+            ->post(route('users.create'), $invalidEmail)
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJson([
                 'errors' => [
                     'email' => [
                         'O E-mail inserido não é válido.',
                     ],
                 ],
             ]);
-        });
+        })->with('invalidEmail');
 
-        it('should return a 422 status code when the email entered has already been registered', function () {
-            $response = $this->actingAs($this->userAuth)->post($this->baseUrl, [
-                'name' => fake('pt_BR')->name(),
-                'email' => $this->users->first()->email,
-                'password' => fake('pt_BR')->password(10),
-                'active' => 1,
-                'send_random_password' => true,
-                'role_id' => fake('pt_BR')->randomElement(['1']),
-            ]);
-            $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-            $response->assertJson([
-                'errors' => [
-                    'email' => [
-                        'O E-mail inserido já está em uso.',
+        it('should return a 422 status code when the email entered has already been registered', 
+            function (array $emailAlreadyExists) {
+            
+            actingAs($this->asAdmin)
+                ->post(route('users.create'), $emailAlreadyExists)
+                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                ->assertJson([
+                    'errors' => [
+                        'email' => [
+                            'O E-mail inserido já está em uso.',
+                        ],
                     ],
-                ],
-            ]);
-        });
+                ]);
+        })->with('emailAlreadyExists');
 
-        it('should return a 422 status code when status informed user is invalid', function () {
-            $response = $this->actingAs($this->userAuth)->post($this->baseUrl, [
-                'name' => fake('pt_BR')->name(),
-                'email' => fake('pt_BR')->email(),
-                'password' => fake('pt_BR')->password(10),
-                'active' => 10,
-                'send_random_password' => true,
-                'role_id' => fake('pt_BR')->randomElement([1]),
-            ]);
-            $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-            $response->assertJson([
-                'errors' => [
-                    'active' => [
-                        'O Status inserido não é válido.',
+        it('should return a 422 status code when status informed user is invalid', 
+            function (array $invalidStatus) {
+
+            actingAs($this->asAdmin)
+                ->post(route('users.create'), $invalidStatus)
+                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                ->assertJson([
+                    'errors' => [
+                        'active' => [
+                            'O Status inserido não é válido.',
+                        ],
                     ],
-                ],
-            ]);
-        });
+                ]);
+        })->with('invalidStatus');
 
-        it('should return a 422 status code when role informed user is invalid', function () {
-            $response = $this->actingAs($this->userAuth)->post($this->baseUrl, [
-                'name' => fake('pt_BR')->name(),
-                'email' => fake('pt_BR')->email(),
-                'password' => fake('pt_BR')->password(10),
-                'active' => 10,
-                'send_random_password' => true,
-                'role_id' => fake('pt_BR')->randomElement(['10000']),
-            ]);
-            $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-            $response->assertJson([
+        it('should return a 422 status code when role informed user is invalid', 
+            function (array $invalidRole) {
+            
+            actingAs($this->asAdmin)
+                ->post(route('users.create'), $invalidRole)
+                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                ->assertJson([
                 'errors' => [
                     'role_id' => [
                         'O Perfil é inválido.',
                     ],
                 ],
             ]);
-        });
+        })->with('invalidRole');
 
-        it('should return a 422 status code when CPF informed is invalid', function () {
-            $response = $this->actingAs($this->userAuth)->post($this->baseUrl, [
-                'cpf' => '000000000',
-                'name' => fake('pt_BR')->name(),
-                'email' => fake('pt_BR')->email(),
-                'password' => fake('pt_BR')->password(10),
-                'active' => 1,
-                'send_random_password' => true,
-                'role_id' => fake('pt_BR')->randomElement([1]),
-            ]);
-            $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-            $response->assertJson([
-                'errors' => [
-                    'cpf' => [
-                        'O CPF inserido não é um cpf válido.',
+        it('should return a 422 status code when CPF informed is invalid', 
+            function (array $invalidCPF) {
+            
+            actingAs($this->asAdmin)->post(route('users.create'), $invalidCPF)
+                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                ->assertJson([
+                    'errors' => [
+                        'cpf' => [
+                            'O CPF inserido não é um cpf válido.',
+                        ],
                     ],
-                ],
-            ]);
-        });
+                ]);
+        })->with('invalidCPF');
     });
 
     describe('Updating Users', function () {
-        it('should return a 200 status code and proper JSON structure for valid user ID and data', function () {
-            $response = $this->actingAs($this->userAuth)->put("{$this->baseUrl}/{$this->userAuth->id}", [
-                'cpf' => preg_replace('/\D/', '', fake('pt_BR')->cpf()),
-                'name' => fake('pt_BR')->name(),
-                'email' => fake('pt_BR')->email(),
-                'password' => fake('pt_BR')->password(10),
-                'active' => fake('pt_BR')->randomElement([0, 1]),
-                'role_id' => fake('pt_BR')->randomElement([1]),
-            ]);
-            $response->assertStatus(Response::HTTP_OK);
-            $response->assertJsonStructure([
-                'data' => [
-                    'id',
-                    'name',
-                    'email',
-                    'cpf',
-                    'active',
-                    'email_verified_at',
-                    'created_at',
-                    'updated_at',
-                    'roles',
-                ],
-            ]);
-        });
+        it('should return a 200 status code and proper JSON structure for valid user ID and data', 
+            function (array $updateDataUser, array $userJsonValidStructure) {
+            
+            actingAs($this->asAdmin)
+                ->put(route('users.edit', [ $this->asAdmin->id ]), $updateDataUser)
+                ->assertStatus(Response::HTTP_OK)
+                ->assertJsonStructure($userJsonValidStructure);
+        })
+        ->with('updateUserData')
+        ->with('userJsonValidStructure');
 
-        it('should return a 422 status code when name is not provided', function () {
-            $response = $this->actingAs($this->userAuth)->put("{$this->baseUrl}/{$this->userAuth->id}", [
-                'name' => null,
-                'email' => fake('pt_BR')->email(),
-                'password' => fake('pt_BR')->password(10),
-                'active' => fake('pt_BR')->randomElement([0, 1]),
-                'send_random_password' => true,
-                'role_id' => fake('pt_BR')->randomElement([1]),
-            ]);
-            $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-            $response->assertJson([
-                'errors' => [
-                    'name' => [
-                        'O campo Nome é obrigatório.',
+        it('should return a 422 status code when name is not provided', 
+            function (array $nameNotProvided) {
+            
+            actingAs($this->asAdmin)
+                ->put(route('users.edit', [ $this->asAdmin->id ]), $nameNotProvided)
+                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                ->assertJson([
+                    'errors' => [
+                        'name' => [
+                            'O campo Nome é obrigatório.',
+                        ],
                     ],
-                ],
-            ]);
-        });
+                ]);
+        })->with('nameNotProvided');
 
-        it('should return a 422 status code when email is invalid', function () {
-            $response = $this->actingAs($this->userAuth)->put("{$this->baseUrl}/{$this->userAuth->id}", [
-                'name' => fake('pt_BR')->name(),
-                'email' => fake('pt_BR')->text(),
-                'password' => fake('pt_BR')->password(10),
-                'active' => fake('pt_BR')->randomElement([0, 1]),
-                'send_random_password' => true,
-                'role_id' => fake('pt_BR')->randomElement([1]),
-            ]);
-            $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-            $response->assertJson([
-                'errors' => [
-                    'email' => [
-                        'O E-mail inserido não é válido.',
+        it('should return a 422 status code when email is invalid', 
+            function (array $invalidEmail) {
+            
+            actingAs($this->asAdmin)
+                ->put(route('users.edit', [ $this->asAdmin->id ]), $invalidEmail)
+                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                ->assertJson([
+                    'errors' => [
+                        'email' => [
+                            'O E-mail inserido não é válido.',
+                        ],
                     ],
-                ],
-            ]);
-        });
+                ]);
+        })->with('invalidEmail');
 
-        it('should return a 422 status code when the email entered has already been registered', function () {
-            $response = $this->actingAs($this->userAuth)->put("{$this->baseUrl}/{$this->userAuth->id}", [
-                'name' => fake('pt_BR')->name(),
-                'email' => $this->users->first()->email,
-                'password' => fake('pt_BR')->password(10),
-                'active' => 1,
-                'send_random_password' => true,
-                'role_id' => fake('pt_BR')->randomElement(['1']),
-            ]);
-            $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-            $response->assertJson([
+        it('should return a 422 status code when the email entered has already been registered', 
+            function (array $emailAlreadyExists) {
+            
+            actingAs($this->asAdmin)
+            ->put(route('users.edit', [ $this->asAdmin->id ]), $emailAlreadyExists)
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJson([
                 'errors' => [
                     'email' => [
                         'O E-mail inserido já está em uso.',
                     ],
                 ],
             ]);
-        });
+        })->with('emailAlreadyExists');
 
-        it('should return a 422 status code when status informed user is invalid', function () {
-            $response = $this->actingAs($this->userAuth)->put("{$this->baseUrl}/{$this->userAuth->id}", [
-                'name' => fake('pt_BR')->name(),
-                'email' => fake('pt_BR')->email(),
-                'password' => fake('pt_BR')->password(10),
-                'active' => 10,
-                'send_random_password' => true,
-                'role_id' => fake('pt_BR')->randomElement([1]),
-            ]);
-            $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-            $response->assertJson([
-                'errors' => [
-                    'active' => [
-                        'O Status inserido não é válido.',
+        it('should return a 422 status code when status informed user is invalid', 
+            function (array $invalidStatus) {
+            
+            actingAs($this->asAdmin)
+                ->put(route('users.edit', [ $this->asAdmin->id ]), $invalidStatus)
+                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                ->assertJson([
+                    'errors' => [
+                        'active' => [
+                            'O Status inserido não é válido.',
+                        ],
                     ],
-                ],
-            ]);
-        });
+                ]);
+        })->with('invalidStatus');
 
-        it('should return a 422 status code when role informed user is invalid', function () {
-            $response = $this->actingAs($this->userAuth)->put("{$this->baseUrl}/{$this->userAuth->id}", [
-                'name' => fake('pt_BR')->name(),
-                'email' => fake('pt_BR')->email(),
-                'password' => fake('pt_BR')->password(10),
-                'active' => 10,
-                'send_random_password' => true,
-                'role_id' => fake('pt_BR')->randomElement(['10000']),
-            ]);
-            $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-            $response->assertJson([
-                'errors' => [
-                    'role_id' => [
-                        'O Perfil é inválido.',
+        it('should return a 422 status code when role informed user is invalid', 
+            function (array $invalidRoleData) {
+            
+            actingAs($this->asAdmin)
+                ->put(route('users.edit', [ $this->asAdmin->id ]), $invalidRoleData)
+                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                ->assertJson([
+                    'errors' => [
+                        'role_id' => [
+                            'O Perfil é inválido.',
+                        ],
                     ],
-                ],
-            ]);
-        });
+                ]);
+        })->with('invalidRoleData');
     });
 
     describe('Deleting Users', function () {
         it('should delete a user and return a 204 status code for valid user ID', function () {
-            $user = $this->users->first();
-            $url = "{$this->baseUrl}/{$user->id}";
-            $reason = 'Test deletion reason';
-
-            $response = $this->actingAs($this->userAuth)->delete($url, ['reason' => $reason]);
-
-            $response->assertStatus(Response::HTTP_NO_CONTENT);
+            $user = createUser();
+            
+            Mail::fake();
+            actingAs($this->asAdmin)
+                ->delete(route('users.delete', [ $user->id ] ), ['reason' => 'Test deletion reason'])
+                ->assertStatus(Response::HTTP_NO_CONTENT)
+                ->assertNoContent();
+            
             expect(User::find($user->id))->toBeNull();
-            $response->assertNoContent();
+            
         });
 
         it('should return a 404 status code for invalid user ID', function () {
-            $invalidUserId = 10000;
-            $url = "{$this->baseUrl}/{$invalidUserId}";
-            $reason = 'Test deletion reason';
-
-            $response = $this->actingAs($this->userAuth)->delete($url, ['reason' => $reason]);
-
-            $response->assertStatus(Response::HTTP_NOT_FOUND);
-            $response->assertJson(['message' => 'No query results for model [App\\Models\\User] '.$invalidUserId]);
+            
+            actingAs($this->asAdmin)
+                ->delete(route('users.delete', [ 111111 ] ), ['reason' => 'Test deletion reason'])
+                ->assertStatus(Response::HTTP_NOT_FOUND)
+                ->assertJson(['message' => 'No query results for model [App\\Models\\User] '. '111111']);
         });
     });
 
     describe('Register Users', function () {
-        it('Should return status 200 of registered user', function () {
-
+        it('Should return status 200 of registered user', function (array $registerUser) {
+            Mail::fake();
+            
+            $resp= post(route('users.register'), $registerUser);
+            
+            $resp->assertStatus(Response::HTTP_OK)
+            ->assertJson(['message' => 'Um e-mail de confirmação foi encaminhado. Por favor, realize os procedimentos para ativação da sua conta.']);
+        })
+        ->with('registerUser');
+        
+        it('should return that the email cannot be used', function (array $emailNotAvailable) {
             Mail::fake();
 
-            $pass = fake('pt_BR')->password();
-            $response = $this->actingAs($this->userAuth)->post(route('users.register'), [
-                'name' => fake('pt_BR')->name(),
-                'email' => fake('pt_BR')->email(),
-                'password' => $pass,
-                'password_confirmation' => $pass,
-                'cpf' => preg_replace('/\D/', '', fake('pt_BR')->cpf()),
-                'role' => RolesEnum::REVIEWER->value,
-            ]);
-
-            $response->assertStatus(Response::HTTP_OK);
-            $response->assertJson(['message' => 'Um e-mail de confirmação foi encaminhado. Por favor, realize os procedimentos para ativação da sua conta.']);
-        });
-
-        it('should return that the email cannot be used', function () {
-
-            Mail::fake();
-
-            $pass = fake('pt_BR')->password(8);
-            $response = $this->actingAs($this->userAuth)->post(route('users.register'), [
-                'name' => fake('pt_BR')->name(),
-                'email' => 'test@uefs.com',
-                'password' => $pass,
-                'password_confirmation' => $pass,
-                'cpf' => preg_replace('/\D/', '', fake('pt_BR')->cpf()),
-                'role' => RolesEnum::REVIEWER->value,
-            ]);
+            
+            post(route('users.register'), $emailNotAvailable)
+            ->assertJson(['message' => 'O email informado não pode ser utilizado para esse perfil de usuário.']);
 
             Mail::assertNothingQueued(SendVerifyEmail::class);
-            $response->assertJson(['message' => 'O email informado não pode ser utilizado para esse perfil de usuário.']);
-        });
+            
+        })->with('emailNotAvailable');
     });
 
     describe('User email verification', function () {
         it('should return that the users email has been verified', function () {
-
-            $user = User::factory()->create([
+           
+            $user = createUser([
                 'email_verified_at' => null,
             ]);
 
-            $url = URL::temporarySignedRoute(
-                'users.verify',
-                Carbon::now()->addHours(Config::get('auth.verification.expire', 48)),
-                [
-                    'id' => $user->getKey(),
-                    'hash' => sha1($user->getEmailForVerification()),
-                ]
-            );
+            $url = createTemporaryUrlForUser($user, Carbon::now()->addHours(Config::get('auth.verification.expire', 48)));
 
-            $response = $this->get($url);
-            $response->assertStatus(Response::HTTP_OK);
-            $response->assertJson(['message' => 'O seu cadastro foi verificado com sucesso!']);
+            get($url)
+                ->assertStatus(Response::HTTP_OK)
+                ->assertJson(['message' => 'O seu cadastro foi verificado com sucesso!']);
         });
 
         it('should return that the email is already validated', function () {
-
-            $user = User::factory()->create([
+           
+            $user = createUser([
                 'email_verified_at' => now(),
             ]);
 
-            $url = URL::temporarySignedRoute(
-                'users.verify',
-                Carbon::now()->addHours(Config::get('auth.verification.expire', 48)),
-                [
-                    'id' => $user->getKey(),
-                    'hash' => sha1($user->getEmailForVerification()),
-                ]
-            );
-
-            $response = $this->get($url);
-            $response->assertJson(['message' => 'Seu cadastro já foi validado! Por favor, aguarde até que um administrador realize a liberação do seu acesso.']);
-        });
+            $url = createTemporaryUrlForUser($user, Carbon::now()->subHours(1));
+            
+            get($url)
+                ->assertJson(['message' => 'Seu cadastro já foi validado! Por favor, aguarde até que um administrador realize a liberação do seu acesso.']);
+        })->only();
 
         it('should return that the token is invalid', function () {
 
-            $user = User::factory()->create([
+            $user = createUser([
                 'email_verified_at' => now(),
             ]);
 
-            $url = URL::temporarySignedRoute(
-                'users.verify',
-                Carbon::now()->subHours(1),
-                [
-                    'id' => $user->getKey(),
-                    'hash' => sha1($user->getEmailForVerification()),
-                ]
-            );
-
-            $response = $this->get($url);
-            $response->assertJson(['message' => 'Invalid signature.']);
+            $url = createTemporaryUrlForUser($user, Carbon::now()->subHours(1));
+            
+            get($url)
+                ->assertJson(['message' => 'Invalid signature.']);
         });
     });
 });

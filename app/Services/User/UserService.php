@@ -113,9 +113,9 @@ class UserService
         ) {
             throw new Exception('O email informado não pode ser utilizado para esse perfil de usuário.');
         }
-
+        
         $role = $this->roleService->getBySlug($registerExternalUserDTO->role);
-
+        
         $user = $this->repository->create(
             array_merge(
                 ['role_id' => [$role->id]],

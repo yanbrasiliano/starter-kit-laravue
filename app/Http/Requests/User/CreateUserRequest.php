@@ -8,9 +8,11 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use App\Traits\FailedValidation;
 
 class CreateUserRequest extends FormRequest
 {
+    use FailedValidation;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -69,15 +71,5 @@ class CreateUserRequest extends FormRequest
         ];
     }
 
-    protected function failedValidation(Validator $validator): HttpResponseException
-    {
-        throw new HttpResponseException(
-            response()->json(
-                [
-                    'errors' => $validator->errors(),
-                ],
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            )
-        );
-    }
+
 }
