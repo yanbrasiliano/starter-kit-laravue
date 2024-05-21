@@ -502,7 +502,6 @@ class UserController extends Controller
      */
     public function verify(Request $request)
     {
-        dd($request->all());
         $this->service->verify(
             $request->id
         );

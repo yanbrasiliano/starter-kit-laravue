@@ -32,31 +32,33 @@ describe('Users Management', function () {
     describe('Querying User Data', function () {
         it(
             'should return a 200 status code and proper JSON structure for valid user ID',
-            function (array $userJsonValidStructure) {
+            function (array $paginationStructure) {
                 
             actingAs($this->asAdmin)
             ->get(route('users.list', [ $this->asAdmin->id ]))
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure($userJsonValidStructure);
-        })->with('userJsonValidStructure');
+            ->assertJsonStructure($paginationStructure);
+        })->with('paginationStructure');
 
         it('should return a 404 status code for invalid user ID', function () {
             actingAs($this->asAdmin)
-            ->get(route('users.list', [ 11111 ]))
+            ->get(route('users.view', [ 111111 ]))
             ->assertStatus(Response::HTTP_NOT_FOUND);
         });
     });
 
     describe('Registering Users', function () {
         it('should return a 200 status code and proper JSON structure for valid user data',
-            function (array $validUser, array $validJsonStructure) {
+            function (array $registerUser, array $validJsonStructure) {
+            
             Mail::fake();
+                
             actingAs($this->asAdmin)
-                ->post($this->baseUrl, $validUser)
+                ->post(route('users.register'), $registerUser)
                 ->assertStatus(Response::HTTP_OK)
-                ->assertJsonStructure($validJsonStructure);
+                ->assertExactJson(["message"=> "Um e-mail de confirmação foi encaminhado. Por favor, realize os procedimentos para ativação da sua conta."]);
         })
-        ->with('validUser')
+        ->with('registerUser')
         ->with('validJsonStructure');
         
         it('should return a 422 status code when name is not provided', 
@@ -305,6 +307,7 @@ describe('Users Management', function () {
             $url = createTemporaryUrlForUser($user, Carbon::now()->subHours(1));
             
             get($url)
+                ->dd()
                 ->assertJson(['message' => 'Seu cadastro já foi validado! Por favor, aguarde até que um administrador realize a liberação do seu acesso.']);
         })->only();
 

@@ -577,3 +577,11 @@
 2024-05-20 16:52:22,766 INFO success: laravel-queue entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 2024-05-20 16:52:22,767 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 2024-05-20 16:52:22,767 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-05-21 18:59:43,755 INFO Set uid to user 0 succeeded
+2024-05-21 18:59:43,775 INFO supervisord started with pid 1
+2024-05-21 18:59:44,780 INFO spawned: 'laravel-queue' with pid 7
+2024-05-21 18:59:44,786 INFO spawned: 'nginx' with pid 8
+2024-05-21 18:59:44,792 INFO spawned: 'php-fpm' with pid 9
+2024-05-21 18:59:46,273 INFO success: laravel-queue entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-05-21 18:59:46,274 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-05-21 18:59:46,275 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
