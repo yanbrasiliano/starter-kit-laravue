@@ -26,27 +26,24 @@ const auth = async () => {
 <template>
   <q-form @submit.prevent="auth">
     <q-input v-model="credentials.email" filled label="E-mail"> </q-input>
-    <q-input v-model="credentials.password" filled label="Senha" type="password">
+    <q-input v-model="credentials.password" filled label="Password" type="password">
     </q-input>
     <div class="row justify-between">
-      <div class="col-md-4">
-        <q-checkbox v-model="credentials.remember" label="Lembre-me" />
-      </div>
       <div class="col-md-4 flex flex-center">
         <RouterLink to="/esqueci-minha-senha" class="link" color="primary"
-          >Esqueceu a senha?</RouterLink
+          >Forgot password?</RouterLink
         >
       </div>
     </div>
     <div class="q-mt-md">
-      <q-btn label="Entrar" type="submit" color="secondary" class="full-width" />
+      <q-btn label="Log In" type="submit" color="primary" class="full-width" />
     </div>
     <div class="row justify-between q-mt-md">
       <div class="col-md-12 flex">
         <span :style="{ color: '#718096', marginRight: '5px', fontSize: '15px' }">
-          Ainda não tem conta?
+          Don't have an account yet?
         </span>
-        <RouterLink to="/cadastro" class="link" color="primary">Inscreva-se</RouterLink>
+        <RouterLink to="/cadastro" class="link" color="primary">Sign up</RouterLink>
       </div>
     </div>
   </q-form>

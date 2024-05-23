@@ -60,7 +60,7 @@ class AuthenticateService
             $user->tokens()->delete();
         }
 
-        return response()->json(['message' => 'Logout realizado com sucesso']);
+        return response()->json(['message' => 'Logged out successfully']);
     }
 
     public function myProfile(): MyProfileDTO

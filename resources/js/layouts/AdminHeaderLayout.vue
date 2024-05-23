@@ -29,13 +29,13 @@ const goToEditProfile = () => {
         <q-list style="min-width: 150px">
           <q-item v-close-popup clickable @click="goToEditProfile">
             <q-item-section>
-              <q-item-label>Meu Perfil</q-item-label>
+              <q-item-label>My Profile</q-item-label>
             </q-item-section>
           </q-item>
 
           <q-item v-close-popup clickable @click="logout">
             <q-item-section>
-              <q-item-label>Sair</q-item-label>
+              <q-item-label>Sign out</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
