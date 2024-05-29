@@ -38,7 +38,6 @@ describe('CreateRoleRequestTest', function () {
         ], $this->rules, $this->messages);
         expect($validator->fails())->toBeTrue();
         expect($validator->errors()->first('name'))->toBe('O name deve conter uma palavra.');
-        expect($validator->errors()->first('description'))->toBe('A description deve conter uma palavra.');
         expect($validator->errors()->first('permissions'))->toBe('O permissions deve ser uma lista');
     });
 
@@ -51,7 +50,6 @@ describe('CreateRoleRequestTest', function () {
 
         expect($validator->fails())->toBeTrue();
         expect($validator->errors()->first('name'))->toBe('O name é obrigatório.');
-        expect($validator->errors()->first('description'))->toBe('A description é obrigatória.');
         expect($validator->errors()->first('permissions'))->toBe('O permissions deve ser uma lista');
     });
 

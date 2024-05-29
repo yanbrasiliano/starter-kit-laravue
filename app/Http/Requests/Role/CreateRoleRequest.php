@@ -9,60 +9,58 @@ use Illuminate\Validation\Rule;
 
 class CreateRoleRequest extends FormRequest
 {
-    use FailedValidation;
+  use FailedValidation;
 
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
+  /**
+   * Determine if the user is authorized to make this request.
+   */
+  public function authorize(): bool
+  {
+    return true;
+  }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
-    {
-        return [
-            'name' => ['required', 'string', Rule::unique('roles', 'name')->ignore($this->id)],
-            'description' => ['required', 'string', 'max:258'],
-            'permissions' => ['array'],
-        ];
-    }
+  /**
+   * Get the validation rules that apply to the request.
+   *
+   * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+   */
+  public function rules(): array
+  {
+    return [
+      'name' => ['required', 'string', Rule::unique('roles', 'name')->ignore($this->id)],
+      'description' => ['max:258'],
+      'permissions' => ['array'],
+    ];
+  }
 
-    public function attributes(): array
-    {
-        return [
-            'name' => 'Perfil',
-            'description' => 'Descrição',
-            'permissions' => 'Permissões',
-        ];
-    }
+  public function attributes(): array
+  {
+    return [
+      'name' => 'Perfil',
+      'description' => 'Descrição',
+      'permissions' => 'Permissões',
+    ];
+  }
 
-    public function messages(): array
-    {
-        return [
-            'name.required' => 'O :attribute é obrigatório.',
-            'name.string' => 'O :attribute deve conter uma palavra.',
-            'name.unique' => 'O :attribute inserido já está em uso.',
-            'description.string' => 'A :attribute deve conter uma palavra.',
-            'description.required' => 'A :attribute é obrigatória.',
-            'description.max' => 'A :attribute inserida excede o limite de caracteres.',
-            'permissions.array' => 'O :attribute deve ser uma lista',
-        ];
-    }
+  public function messages(): array
+  {
+    return [
+      'name.required' => 'O :attribute é obrigatório.',
+      'name.string' => 'O :attribute deve conter uma palavra.',
+      'name.unique' => 'O :attribute inserido já está em uso.',
+      'description.max' => 'A :attribute inserida excede o limite de caracteres.',
+      'permissions.array' => 'O :attribute deve ser uma lista',
+    ];
+  }
 
-    public function validated($key = null, $default = null): CreateRoleDTO|array
-    {
-        $permissions = collect($this->permissions)->pluck('value')->toArray();
+  public function validated($key = null, $default = null): CreateRoleDTO|array
+  {
+    $permissions = collect($this->permissions)->pluck('value')->toArray();
 
-        $this->merge([
-            'permissions' => $permissions,
-        ]);
+    $this->merge([
+      'permissions' => $permissions,
+    ]);
 
-        return new CreateRoleDTO(...$this->toArray());
-    }
+    return new CreateRoleDTO(...$this->toArray());
+  }
 }

@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use App\DTO\Password\ForgotPasswordDTO;
-use App\DTO\Password\ResetPasswordDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Password\ForgotPasswordRequest;
 use App\Http\Requests\Password\ResetPasswordRequest;
