@@ -26,8 +26,8 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 
 ## To Do
 
-- [ ] Add more tests
-- [ ] Add MAILPIT integration
+- [x] Add more tests
+- [x] Add MAILPIT integration
 - [x] Refactor application to remove unused parts
 - [ ] Deal with mobile responsiveness issues
 - [ ] Add more documentation
