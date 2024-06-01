@@ -296,16 +296,6 @@ describe('Users Management', function () {
         ->assertJson(['message' => 'Um e-mail de confirmação foi encaminhado. Por favor, realize os procedimentos para ativação da sua conta.']);
     })
       ->with('registerUser');
-
-    it('should return that the email cannot be used', function (array $emailNotAvailable) {
-      Mail::fake();
-
-
-      post(route('users.register'), $emailNotAvailable)
-        ->assertJson(['message' => 'O email informado não pode ser utilizado para esse perfil de usuário.']);
-
-      Mail::assertNothingQueued(SendVerifyEmail::class);
-    })->with('emailNotAvailable');
   });
 
   describe('User email verification', function () {

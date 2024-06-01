@@ -17,10 +17,10 @@ const auth = async () => {
   Notify.create({
     position: 'top-right',
     color: 'positive',
-    message: 'Logado com Sucesso',
+    message: 'Log in successfully',
     timeout: 1000,
   });
-  router.push('/admin/inicio');
+  router.push('/admin/home');
 };
 </script>
 <template>

@@ -174,7 +174,7 @@ dataset('invalidRoleData', [
 dataset('emailNotAvailable', [
     fn() => [
         'name' => fake('pt_BR')->name(),
-        'email' => 'test@uefs.com',
+        'email' => 'test@test.com',
         'password' => $pass,
         'password_confirmation' => $pass,
         'cpf' => preg_replace('/\D/', '', fake('pt_BR')->cpf()),

@@ -111,18 +111,19 @@ const useRoleStore = defineStore('roles', {
         this.loading = true;
 
         const { data, status } = await roleService.update(id, params);
-        if (status === 200) {
-          this.message = data.message || 'Perfil atualizado com sucesso!';
+        if (status.startsWith('2')) {
+          this.message = data.message || 'Profile Updated Successfully.';
           this.isSuccess = true;
         }
       } catch (error) {
         this.isSuccess = false;
-        this.errors = error.response.data.errors;
+        this.errors = 'Error updating profile, contact support.';
         throw error;
       } finally {
         this.loading = false;
       }
     },
+
     async destroy(id) {
       await roleService.destroy(id);
     },

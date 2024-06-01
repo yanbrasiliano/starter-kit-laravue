@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineEmits, watch } from 'vue';
+import { ref, watch } from 'vue';
 import DeletionConfirmation from '@/components/users/modal/DeletionConfirmation.vue';
 
 const props = defineProps({

@@ -31,7 +31,7 @@ class RoleSeeder extends Seeder
     $visitor = Role::updateOrCreate(
       ['slug' => 'visitor'],
       [
-        'name' => 'Visitor',
+        'name' => 'Guest',
         'guard_name' => 'web',
         'slug' => 'visitor',
         'description' => 'Visitor with limited access to the system, can only view and list users.',
