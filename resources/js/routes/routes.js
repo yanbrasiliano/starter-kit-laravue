@@ -4,8 +4,8 @@ import userRoutes from '@/routes/userRoutes';
 import roleRoutes from '@/routes/roleRoutes';
 import adminHomeRoutes from '@/routes/adminRoutes';
 import publicRoutes from '@/routes/publicRoutes/publicRoutes';
-import NotFoundPage from '@/pages/erros/NotFoundPage.vue';
-import AccessDeniedPage from '../pages/erros/AccessDeniedPage.vue';
+import NotFoundPage from '@/pages/errors/NotFoundPage.vue';
+import AccessDeniedPage from '@/pages/errors/AccessDeniedPage.vue';
 
 const routes = [
   {

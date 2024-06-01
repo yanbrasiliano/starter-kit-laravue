@@ -80,6 +80,7 @@ const onDelete = async (event) => {
           :columns="columns"
           :rows="roles"
           :pagination="pagination"
+          :rows-number="0"
           @update-pagination="updatePagination"
           @on-edit="onEdit"
           @on-delete="onDelete" />

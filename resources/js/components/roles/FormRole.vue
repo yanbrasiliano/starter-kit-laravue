@@ -32,9 +32,9 @@ async function onSave() {
 
   if (route.params.id) {
     await update(route.params.id, params);
-  } else {
-    await store(params);
   }
+  await store(params);
+
   $q.loading.hide();
 
   const color = isSuccess.value ? 'positive' : 'negative';

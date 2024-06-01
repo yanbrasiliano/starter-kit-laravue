@@ -29,6 +29,9 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 - [x] Add more tests
 - [x] Add MAILPIT integration
 - [x] Refactor application to remove unused parts
-- [ ] Deal with mobile responsiveness issues
-- [ ] Add more documentation
 - [x] Translate application to EN-US
+
+
+## Bugs
+- [ ] Bug Order By in User and Role Management
+- [ ] Bug Edit Role - Description can be null

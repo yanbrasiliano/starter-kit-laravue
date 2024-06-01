@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import useRole from '@/composables/Roles/useRole';
 
 const { blockEditRoleAdmin, blockDeleteRoleUserAuth } = useRole();
@@ -8,6 +8,7 @@ const loading = ref(false);
 const pagination = ref({});
 const columns = ref([]);
 const rows = ref([]);
+const rowsNumber = ref(0);
 const itemDelete = ref({});
 const confirmRowDelete = ref(false);
 
@@ -23,6 +24,15 @@ const confirmDeleteRow = (isStatus) => {
   }
   itemDelete.value = null;
 };
+
+// Watcher to update rowsNumber from props
+watch(
+  pagination,
+  (newVal) => {
+    rowsNumber.value = newVal.rowsNumber || 0;
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -36,7 +46,7 @@ const confirmDeleteRow = (isStatus) => {
     :loading="loading"
     loading-label="Loading..."
     :pagination="pagination"
-    :computed-rows-number="20"
+    :rows-number="rowsNumber"
     @update:pagination="emit('updatePagination', $event)"
     @request="emit('updatePagination', $event)">
     <template #header="props">
