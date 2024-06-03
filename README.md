@@ -1,6 +1,6 @@
 # Starter Kit LaraVue
 
-Starter Kit Laravue is a powerful project template designed to jumpstart your development process. Combining Laravel and Vue 3, it provides a robust backend and a reactive frontend. This kit includes pre-configured authentication, user and permission management, an initial dashboard, and a responsive side menu. With integrated automated testing, this starter kit ensures a solid foundation for building scalable and maintainable web applications.
+Starter Kit Laravue is a powerful project template designed to jumpstart your development process. Combining Laravel and Vue 3, it provides a robust backend and a reactive front end. This kit includes pre-configured authentication, user and permission management, an initial dashboard, and a responsive side menu. With integrated automated testing, this starter kit ensures a solid foundation for building scalable and maintainable web applications.
 
 ## Features
 
@@ -33,5 +33,6 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 
 
 ## Bugs
-- [ ] Bug Order By in User and Role Management
-- [ ] Bug Edit Role - Description can be null
+- [ ] Bug Order By in User Management;
+- [ ] Bug Order By in Role Management;
+- [ ] Bug Edit Role - Description can be null.
