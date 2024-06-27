@@ -30,8 +30,7 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 - [x] Add MAILPIT integration
 - [x] Refactor application to remove unused parts
 - [x] Translate application to EN-US
-
-
+- [ ] Install Scramble and remove swagger for API documentation
 ## Bugs
 - [ ] Bug Order By in User Management;
 - [ ] Bug Order By in Role Management;

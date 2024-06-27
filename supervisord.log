@@ -690,3 +690,8 @@
 2024-06-01 03:17:33,501 INFO success: laravel-queue entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 2024-06-01 03:17:33,501 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 2024-06-01 03:17:33,501 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-01 04:22:20,106 WARN received SIGQUIT indicating exit request
+2024-06-01 04:22:20,109 INFO waiting for laravel-queue, nginx, php-fpm to die
+2024-06-01 04:22:20,133 INFO stopped: php-fpm (exit status 0)
+2024-06-01 04:22:20,137 INFO stopped: nginx (exit status 0)
+2024-06-01 04:22:21,146 WARN stopped: laravel-queue (terminated by SIGTERM)
