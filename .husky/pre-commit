@@ -1,5 +1,31 @@
-#/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+echo "Running pre-commit hook..."
 
-# docker exec -i starterkit-app npx --no-install lint-staged
-# docker exec -i starterkit-app ./vendor/bin/phpstan analyse
+staged_files=$(git diff --name-only --cached)
+
+if [ -z "$staged_files" ]; then
+  echo "No staged files found."
+  exit 0
+fi
+
+for file in $staged_files; do
+  case "$file" in
+  *.js)
+    echo "Running eslint on $file"
+    docker exec -i starterkit-app npx eslint --fix "$file"
+    ;;
+  *.vue)
+    echo "Running eslint on $file"
+    docker exec -i starterkit-app npx eslint --fix "$file"
+    ;;
+  *.php)
+    echo "Running pint on $file"
+    docker exec -i starterkit-app ./vendor/bin/pint "$file"
+    ;;
+  *.css | *.md)
+    echo "Running prettier on $file"
+    docker exec -i starterkit-app npx prettier --write "$file"
+    ;;
+  esac
+done
+
+docker exec -i starterkit-app ./vendor/bin/phpstan analyse

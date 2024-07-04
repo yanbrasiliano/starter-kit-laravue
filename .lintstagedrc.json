@@ -1,6 +1,0 @@
-{
-  "*.js": ["eslint --fix"],
-  "*.vue": ["eslint --fix"],
-  "*.php": ["./vendor/bin/pint"],
-  "*.{js,css,md}": ["npx prettier --write"]
-}

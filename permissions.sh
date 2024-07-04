@@ -1,43 +1,42 @@
 #!/usr/bin/env bash
 
-# Changing the group to www-data and setting write permissions for the group
-echo "Changing the group to www-data and setting write permissions for the group"
-chgrp -R www-data bootstrap/ storage/ storage/logs/
-if [ $? -eq 0 ]; then
-  echo "Group successfully changed."
-else
-  echo "Error changing group."
-  exit 1
-fi
+change_group_and_permissions() {
+    local dir=$1
+    local group=$2
 
-# Setting write permissions for the group
-echo "Setting write permissions for the group"
-chmod -R g+w bootstrap/ storage/ storage/logs/
-if [ $? -eq 0 ]; then
-  echo "Permissions successfully set."
-else
-  echo "Error setting permissions."
-  exit 1
-fi
+    if [ ! -d "$dir" ]; then
+        echo "Diretório $dir não encontrado. Pulando."
+        return
+    fi
 
-# Setting the setgid bit on all directories within bootstrap/, storage/, and storage/logs/
-echo "Setting the setgid bit on all directories within bootstrap/, storage/, and storage/logs/"
-find bootstrap/ storage/ storage/logs/ -type d -exec chmod g+s {} +
-if [ $? -eq 0 ]; then
-  echo "Setgid bit successfully set."
-else
-  echo "Error setting setgid bit."
-  exit 1
-fi
+    echo "Alterando o grupo para $group e definindo permissões de escrita para o grupo em $dir"
+    chgrp -R $group "$dir"
+    if [ $? -ne 0 ]; then
+        echo "Erro ao alterar grupo em $dir."
+        exit 1
+    fi
+    echo "Grupo alterado com sucesso em $dir."
 
-DIR="/var/www/html/storage/framework/cache/data/"
-if [ -d "$DIR" ]; then
-  echo "Changing group and setting permissions in $DIR"
-  chgrp -R www-data $DIR
-  chmod -R g+w $DIR
-  echo "Group and permissions successfully set in $DIR"
-else
-  echo "Directory $DIR not found. Continuing without changes."
-fi
+    echo "Definindo permissões de escrita para o grupo em $dir"
+    chmod -R g+w "$dir"
+    if [ $? -ne 0 ]; then
+        echo "Erro ao definir permissões em $dir."
+        exit 1
+    fi
+    echo "Permissões definidas com sucesso em $dir."
 
-echo "Permissions and group properties successfully updated."
+    echo "Definindo o bit setgid em todos os diretórios dentro de $dir"
+    find "$dir" -type d -exec chmod g+s {} +
+    if [ $? -ne 0 ]; then
+        echo "Erro ao definir bit setgid em $dir."
+        exit 1
+    fi
+    echo "Bit setgid definido com sucesso em $dir."
+}
+
+change_group_and_permissions "bootstrap/" "www-data"
+change_group_and_permissions "storage/" "www-data"
+change_group_and_permissions "storage/logs/" "www-data"
+change_group_and_permissions "/var/www/html/storage/framework/cache/data/" "www-data"
+
+echo "Permissões e propriedades de grupo atualizadas com sucesso."
