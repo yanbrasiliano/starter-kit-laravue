@@ -3,9 +3,7 @@
 namespace App\Services;
 
 use App\DTO\Paginate\CustomPaginateParamsDTO;
-use App\DTO\Role\CreateRoleDTO;
-use App\DTO\Role\RoleDTO;
-use App\DTO\Role\UpdateRoleDTO;
+use App\DTO\Role\{CreateRoleDTO, RoleDTO, UpdateRoleDTO};
 use App\Repositories\Contracts\RoleRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 

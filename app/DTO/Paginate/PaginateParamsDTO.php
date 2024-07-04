@@ -13,7 +13,6 @@ class PaginateParamsDTO extends AbstractDTO
         public readonly ?string $order = 'desc',
         public readonly ?string $column = 'id',
         public readonly ?string $search = null,
-
     ) {
     }
 }

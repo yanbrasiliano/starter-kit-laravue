@@ -2,15 +2,12 @@
 
 namespace App\Services\Password;
 
-use App\DTO\Password\ForgotPasswordDTO;
-use App\DTO\Password\ResetPasswordDTO;
+use App\DTO\Password\{ForgotPasswordDTO, ResetPasswordDTO};
 use App\Enums\RolesEnum;
 use App\Mail\SendForgetPasswordMail;
 use App\Services\User\UserService;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\{DB, Mail, Password};
 use Throwable;
 
 class PasswordService
@@ -23,6 +20,7 @@ class PasswordService
     public function forgotPassword(ForgotPasswordDTO $forgotPasswordDTO): void
     {
         DB::beginTransaction();
+
         try {
             $status = Password::sendResetLink(
                 $forgotPasswordDTO->toArray(),
@@ -39,6 +37,7 @@ class PasswordService
             DB::commit();
         } catch (Throwable $throwable) {
             DB::rollBack();
+
             throw $throwable;
         }
     }
@@ -46,7 +45,7 @@ class PasswordService
     protected function handleResetLinkSent(): \Closure
     {
         return function ($user, string $token) {
-            if (! $user->roles->where('slug', RolesEnum::REVIEWER->value)->count()) {
+            if (!$user->roles->where('slug', RolesEnum::REVIEWER->value)->count()) {
                 throw new \Exception(
                     'Usuário não disponível para solicitar a redefinição de senha.',
                     Response::HTTP_CONFLICT

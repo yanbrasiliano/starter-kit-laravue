@@ -2,8 +2,7 @@
 
 namespace Tests\Unit\Repositories;
 
-use App\Models\DeleteReason;
-use App\Models\User;
+use App\Models\{DeleteReason, User};
 use App\Repositories\EloquentRepository\UserRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;

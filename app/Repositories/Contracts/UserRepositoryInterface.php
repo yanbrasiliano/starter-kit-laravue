@@ -2,8 +2,7 @@
 
 namespace App\Repositories\Contracts;
 
-use App\Models\DeleteReason;
-use App\Models\User;
+use App\Models\{DeleteReason, User};
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 

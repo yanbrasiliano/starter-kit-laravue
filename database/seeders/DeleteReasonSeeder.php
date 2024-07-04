@@ -14,6 +14,6 @@ class DeleteReasonSeeder extends Seeder
      */
     public function run()
     {
-        DeleteReason::factory()->count(1)->create(); 
+        DeleteReason::factory()->count(1)->create();
     }
 }

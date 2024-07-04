@@ -4,8 +4,7 @@ namespace Tests\Unit\Requests;
 
 use App\Enums\RolesEnum;
 use App\Http\Requests\User\RegisterExternalUserRequest;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{DB, Validator};
 
 describe('RegisterExternalUserRequest', function () {
     beforeEach(function () {

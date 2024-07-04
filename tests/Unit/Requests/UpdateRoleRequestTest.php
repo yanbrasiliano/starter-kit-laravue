@@ -3,8 +3,7 @@
 namespace Tests\Unit\Requests;
 
 use App\Http\Requests\Role\UpdateRoleRequest;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{DB, Validator};
 use Spatie\Permission\Models\Permission;
 
 describe('UpdateRoleRequestTest', function () {

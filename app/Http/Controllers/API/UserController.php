@@ -3,19 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\DTO\Paginate\PaginateParamsDTO;
-use App\DTO\User\CreateUserDTO;
-use App\DTO\User\RegisterExternalUserDTO;
-use App\DTO\User\UpdateUserDTO;
+use App\DTO\User\{CreateUserDTO, RegisterExternalUserDTO, UpdateUserDTO};
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\CreateUserRequest;
-use App\Http\Requests\User\RegisterExternalUserRequest;
-use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Requests\User\{CreateUserRequest, RegisterExternalUserRequest, UpdateUserRequest};
 use App\Http\Resources\UserResource;
 use App\Services\User\UserService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Response;
+use Illuminate\Http\{JsonResponse, Request, Response};
 
 class UserController extends Controller
 {

@@ -3,12 +3,9 @@
 namespace App\Http\Requests\User;
 
 use App\Enums\StatusEnum;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\Response;
-use Illuminate\Validation\Rule;
 use App\Traits\FailedValidation;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreateUserRequest extends FormRequest
 {
@@ -37,7 +34,7 @@ class CreateUserRequest extends FormRequest
             'send_random_password' => ['required', 'boolean'],
         ];
 
-        if (! $this->send_random_password) {
+        if (!$this->send_random_password) {
             $rules = array_merge($rules, [
                 'password' => ['required', 'min:8'],
             ]);
@@ -70,6 +67,5 @@ class CreateUserRequest extends FormRequest
             'password.min' => 'O campo Senha deve conter no minimo 8 caracteres.',
         ];
     }
-
 
 }

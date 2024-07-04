@@ -4,8 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Http\{Request, Response as HttpResponse};
 use Illuminate\Support\Facades\Route;
 
 class CheckPermission
@@ -30,7 +29,7 @@ class CheckPermission
             ];
         }
 
-        if (! $user->canAny($permission)) {
+        if (!$user->canAny($permission)) {
             throw new Exception('Você não tem permissão para realizar esta ação.', HttpResponse::HTTP_FORBIDDEN);
         }
 

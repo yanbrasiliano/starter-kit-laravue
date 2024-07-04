@@ -15,8 +15,10 @@ class ForceJsonResponse
         if ($request->header('Accept') !== $this->defaultAcceptHeader) {
             $request->headers->set('Accept', $this->defaultAcceptHeader);
         }
+
         try {
             $response = $next($request);
+
             if ($response instanceof Response && $response->headers->get('Content-Type') !== $this->defaultAcceptHeader) {
                 $response->headers->set('Content-Type', $this->defaultAcceptHeader);
             }

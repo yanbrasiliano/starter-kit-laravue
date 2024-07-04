@@ -5,8 +5,7 @@ namespace Tests\Feature\Authentication;
 use App\Enums\RolesEnum;
 use App\Models\User;
 use Illuminate\Http\Response;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\{Permission, Role};
 
 beforeEach(function () {
     $this->userAuth = User::factory()->create();

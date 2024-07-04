@@ -2,8 +2,7 @@
 
 namespace App\Repositories\EloquentRepository;
 
-use App\Models\DeleteReason;
-use App\Models\User;
+use App\Models\{DeleteReason, User};
 use App\Repositories\AbstractRepository;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Exception;
@@ -42,18 +41,22 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
             switch ($column) {
                 case 'name':
                     $column = 'users.name';
+
                     break;
 
                 case 'email':
                     $column = 'users.email';
+
                     break;
 
                 case 'role':
                     $column = 'roles.name';
+
                     break;
 
                 default:
                     $column = 'users.id';
+
                     break;
             }
 
@@ -93,6 +96,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
         return DB::transaction(function () use ($id, $params) {
             $user = $this->model->findOrFail($id);
             $user->update($params);
+
             if (isset($params['role_id'])) {
                 $user->syncRoles([$params['role_id']]);
             }

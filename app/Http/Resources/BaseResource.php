@@ -7,28 +7,29 @@ use Illuminate\Support\Str;
 
 class BaseResource extends JsonResource
 {
-  protected function transformKeys(array $allowedKeys, $request = null)
-  {
-    $resource = parent::toArray($request);
+    protected function transformKeys(array $allowedKeys, $request = null)
+    {
+        $resource = parent::toArray($request);
 
-    $transformedData = [];
-    foreach ($allowedKeys as $allowedKey) {
-      $transformedData[Str::camel($allowedKey)] = $resource[$allowedKey] ?? null;
+        $transformedData = [];
+
+        foreach ($allowedKeys as $allowedKey) {
+            $transformedData[Str::camel($allowedKey)] = $resource[$allowedKey] ?? null;
+        }
+
+        return $transformedData;
     }
 
-    return $transformedData;
-  }
+    public function paginationInformation($request, $paginated, $default)
+    {
+        $meta = collect($default['meta']);
 
-  public function paginationInformation($request, $paginated, $default)
-  {
-    $meta = collect($default['meta']);
-
-    return [
-      'pagination' => [
-        'page' => $meta->get('current_page'),
-        'rowsNumber' => $meta->get('total'),
-        'rowsPerPage' => $meta->get('per_page'),
-      ],
-    ];
-  }
+        return [
+            'pagination' => [
+                'page' => $meta->get('current_page'),
+                'rowsNumber' => $meta->get('total'),
+                'rowsPerPage' => $meta->get('per_page'),
+            ],
+        ];
+    }
 }

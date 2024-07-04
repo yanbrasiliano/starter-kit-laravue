@@ -2,12 +2,8 @@
 
 namespace App\Providers;
 
-use App\Repositories\Contracts\PermissionRepositoryInterface;
-use App\Repositories\Contracts\RoleRepositoryInterface;
-use App\Repositories\Contracts\UserRepositoryInterface;
-use App\Repositories\EloquentRepository\PermissionRepository;
-use App\Repositories\EloquentRepository\RoleRepository;
-use App\Repositories\EloquentRepository\UserRepository;
+use App\Repositories\Contracts\{PermissionRepositoryInterface, RoleRepositoryInterface, UserRepositoryInterface};
+use App\Repositories\EloquentRepository\{PermissionRepository, RoleRepository, UserRepository};
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -31,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
             UserRepository::class
         );
 
-            $this->app->bind(
+        $this->app->bind(
             RoleRepositoryInterface::class,
             RoleRepository::class
         );
@@ -41,6 +37,5 @@ class AppServiceProvider extends ServiceProvider
             PermissionRepository::class
         );
 
-      
     }
 }

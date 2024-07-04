@@ -10,7 +10,8 @@ use Illuminate\Queue\SerializesModels;
 
 class SendForgetPasswordMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new message instance.
@@ -40,7 +41,7 @@ class SendForgetPasswordMail extends Mailable
     {
         return $this->markdown('emails.password', [
             'name' => $this->user->name,
-            'link' => url('/').'/resetar-senha?token= '.$this->token.'&email='.$this->user->email,
+            'link' => url('/') . '/resetar-senha?token= ' . $this->token . '&email=' . $this->user->email,
         ]);
     }
 

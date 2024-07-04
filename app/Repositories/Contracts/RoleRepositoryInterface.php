@@ -3,11 +3,9 @@
 namespace App\Repositories\Contracts;
 
 use App\DTO\Paginate\CustomPaginateParamsDTO;
-use App\DTO\Role\CreateRoleDTO;
-use App\DTO\Role\UpdateRoleDTO;
+use App\DTO\Role\{CreateRoleDTO, UpdateRoleDTO};
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\{Collection, Model};
 use Spatie\Permission\Models\Role;
 
 interface RoleRepositoryInterface

@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasPermissions;
-use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Traits\{HasPermissions, HasRoles};
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, HasPermissions, HasRoles, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use HasPermissions;
+    use HasRoles;
+    use Notifiable;
 
     protected $fillable = [
         'name',

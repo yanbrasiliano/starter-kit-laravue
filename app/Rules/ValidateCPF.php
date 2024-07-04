@@ -27,6 +27,7 @@ class ValidateCPF implements Rule
 
         // Calculating first check digit
         $sum = 0;
+
         for ($i = 0; $i < 9; $i++) {
             $sum += intval($cpf[$i]) * (10 - $i);
         }
@@ -34,7 +35,7 @@ class ValidateCPF implements Rule
         $firstCheckDigit = ($remainder < 2) ? 0 : 11 - $remainder;
 
         // Add more checks before accessing cpf[9]
-        if (! isset($cpf[9]) || $cpf[9] != $firstCheckDigit) {
+        if (!isset($cpf[9]) || $cpf[9] != $firstCheckDigit) {
             $fail($this->message());
 
             return;
@@ -42,6 +43,7 @@ class ValidateCPF implements Rule
 
         // Calculating second check digit
         $sum = 0;
+
         for ($i = 0; $i < 10; $i++) {
             $sum += intval($cpf[$i]) * (11 - $i);
         }
@@ -49,7 +51,7 @@ class ValidateCPF implements Rule
         $secondCheckDigit = ($remainder < 2) ? 0 : 11 - $remainder;
 
         // Add more checks before accessing cpf[10]
-        if (! isset($cpf[10]) || $cpf[10] != $secondCheckDigit) {
+        if (!isset($cpf[10]) || $cpf[10] != $secondCheckDigit) {
             $fail($this->message());
         }
     }

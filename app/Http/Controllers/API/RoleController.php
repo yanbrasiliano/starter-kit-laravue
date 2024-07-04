@@ -3,14 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Role\CreateRoleRequest;
-use App\Http\Requests\Role\RoleIndexRequest;
-use App\Http\Requests\Role\UpdateRoleRequest;
+use App\Http\Requests\Role\{CreateRoleRequest, RoleIndexRequest, UpdateRoleRequest};
 use App\Http\Resources\RoleResource;
 use App\Services\RoleService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Response;
+use Illuminate\Http\{JsonResponse, Response};
 
 /**
  * Summary of RoleController

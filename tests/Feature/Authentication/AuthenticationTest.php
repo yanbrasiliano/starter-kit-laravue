@@ -21,10 +21,10 @@ beforeEach(function () {
         'password' => bcrypt('correctpassword'),
     ]);
     $this->userAuth = User::factory()->create();
-    
+
     $this->roleAdmin = Role::where('slug', RolesEnum::ADMINISTRATOR->value)->first();
     $this->userAuth->assignRole([$this->roleAdmin->id]);
-    
+
 });
 
 describe('Authentication', function () {
@@ -96,8 +96,7 @@ describe('Authentication', function () {
 
     describe('Gets data from the logged-in user', function () {
         it('should return a 200 status code and proper JSON structure', function () {
-            
-            
+
             $this->actingAs($this->userAuth)
                 ->get(route('auth.myProfile'))
                 ->assertStatus(Response::HTTP_OK)
@@ -105,7 +104,7 @@ describe('Authentication', function () {
                     'name',
                     'email',
                     'permissions',
-            ]);
+                ]);
         });
     })->group('auth');
 })->group('auth');
