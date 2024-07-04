@@ -1,6 +1,6 @@
 includes:
     - vendor/larastan/larastan/extension.neon
- 
+
 parameters:
     treatPhpDocTypesAsCertain: false
     paths:
@@ -14,4 +14,3 @@ parameters:
         - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Model::markEmailAsVerified\(\)#'
     excludePaths:
         - ./*/*/FileToBeExcluded.php
-    checkMissingIterableValueType: false
