@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Auth;
+namespace App\Exceptions;
 
 use Exception;
 
@@ -8,26 +8,26 @@ use Exception;
 
 class AuthenticationException extends Exception
 {
-    protected $guards;
+  protected $guards;
 
-    protected $redirectTo;
+  protected $redirectTo;
 
-    public function __construct($message = 'Unauthenticated.', array $guards = [], $redirectTo = null)
-    {
-        parent::__construct($message);
+  public function __construct($message = 'Unauthenticated.', array $guards = [], $redirectTo = null)
+  {
+    parent::__construct($message);
 
-        $this->guards = $guards;
-        $this->redirectTo = $redirectTo;
-    }
+    $this->guards = $guards;
+    $this->redirectTo = $redirectTo;
+  }
 
-    public function guards()
-    {
-        return $this->guards;
-    }
+  public function guards()
+  {
+    return $this->guards;
+  }
 
-    public function redirectTo()
-    {
-        return $this->redirectTo;
-    }
+  public function redirectTo()
+  {
+    return $this->redirectTo;
+  }
 }
 // @codeCoverageIgnoreEnd
