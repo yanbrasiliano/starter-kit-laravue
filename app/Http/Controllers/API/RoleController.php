@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\DTO\Paginate\CustomPaginateParamsDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Role\{CreateRoleRequest, RoleIndexRequest, UpdateRoleRequest};
 use App\Http\Resources\RoleResource;
@@ -115,7 +116,16 @@ class RoleController extends Controller
      */
     public function index(RoleIndexRequest $request): JsonResource
     {
-        $paginatedRoles = $this->service->index($request->validated());
+        $params = new CustomPaginateParamsDTO(
+            rowsPerPage: $request->input('rowsPerPage', 10),
+            page: $request->input('page', 1),
+            sortBy: $request->input('sortBy', 'id'),
+            search: $request->input('search'),
+            descending: $request->input('descending', false),
+            rowsNumber: $request->input('rowsNumber')
+        );
+
+        $paginatedRoles = $this->service->index($params);
 
         return RoleResource::collection($paginatedRoles);
     }

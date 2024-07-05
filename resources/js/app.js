@@ -6,7 +6,7 @@ import { Quasar, Notify, Loading, Dialog, Dark, Platform, LocalStorage } from 'q
 import 'quasar/src/css/index.sass';
 import langPTBR from 'quasar/lang/pt-BR';
 import router from '@/routes';
-import materialIcons from 'quasar/icon-set/material-symbols-outlined.mjs';
+import materialIcons from 'quasar/icon-set/material-symbols-outlined';
 
 Quasar.lang.set(Quasar.lang.ptBR);
 Quasar.iconSet.set(materialIcons);

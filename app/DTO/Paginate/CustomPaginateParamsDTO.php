@@ -11,7 +11,8 @@ class CustomPaginateParamsDTO extends AbstractDTO
         public readonly ?int $page = 1,
         public readonly ?string $sortBy = 'id',
         public readonly ?string $search = null,
-        public readonly ?bool $descending = false
+        public readonly ?bool $descending = false,
+        public readonly ?int $rowsNumber = null
     ) {
     }
 }

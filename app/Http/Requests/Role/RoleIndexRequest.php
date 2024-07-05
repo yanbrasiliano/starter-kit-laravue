@@ -41,7 +41,7 @@ class RoleIndexRequest extends FormRequest
             'sortBy' => 'Organizar por',
             'search' => 'Termo',
             'page' => 'Página',
-            'perPage' => 'Itens por página',
+            'rowsPerPage' => 'Itens por página',
             'descending' => 'Ordem',
             'rowsNumber' => 'Número de linhas',
         ];
@@ -51,10 +51,10 @@ class RoleIndexRequest extends FormRequest
     {
         return [
             'sortBy.string' => 'A :attribute deve ser uma palavra',
-            'page.integer' => 'A :attributo deve ser um número',
-            'perPage.integer' => ':attribute deve ser um número',
+            'page.integer' => 'A :attribute deve ser um número',
+            'rowsPerPage.integer' => 'A :attribute deve ser um número',
             'search.string' => 'O :attribute deve ser uma palavra',
-            'ascending:boolean' => 'A :attribute deve ser verdadeiro ou falso',
+            'descending.boolean' => 'A :attribute deve ser verdadeiro ou falso',
             'rowsNumber.integer' => 'O :attribute deve ser um número',
         ];
     }

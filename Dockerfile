@@ -1,18 +1,18 @@
+# Stage 1: Composer
+FROM composer:2 as composer
+
+# Stage 2: Node
+FROM node:18 as node
+
+# Stage 3: Base PHP
 FROM php:8.3-fpm as base
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV ACCEPT_EULA=Y
 ENV DEBIAN_FRONTEND=noninteractive
-ARG user=www-data
-ARG uid=1000
 
 WORKDIR /var/www/html
 
-RUN usermod -u $uid $user \
-  && mkdir -p /home/$user/.composer \
-  && chown -R $user:$user /var/www/html \
-  && chown -R $user:$user /home/$user
-
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
   nginx \
   libpq-dev \
   libzip-dev \
@@ -40,9 +40,7 @@ RUN apt-get update && apt-get install -y \
   && docker-php-ext-install -j$(nproc) exif gd zip pdo pdo_pgsql ftp bcmath xml \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-  && usermod -u $uid $user \
-  && mkdir -p /home/$user/.composer /var/log/supervisor \
-  && chown -R $user:$user /var/www/html /home/$user
+  && mkdir -p /var/log/supervisor
 
 RUN { \
   echo "upload_max_filesize = 16M"; \
@@ -55,20 +53,30 @@ RUN { \
   && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
   && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-  
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-COPY --from=node:18 /usr/local/bin /usr/local/bin
-COPY --from=node:18 /usr/local/lib/node_modules /usr/local/lib/node_modules
-RUN npm install -g npm@latest npx gulp-cli cross-env node-sass sass postcss-cli autoprefixer \
-  && git config --global --add safe.directory /var/www/html
+# Copy Composer from the composer stage
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+# Copy Node and NPM from the node stage
+COPY --from=node /usr/local/bin /usr/local/bin
+COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+
+RUN npm install -g npm@latest npx gulp-cli cross-env node-sass sass postcss-cli autoprefixer 
 
 COPY ./docker/NGINX/default.conf /etc/nginx/sites-available/default
+
 RUN rm -f /etc/nginx/sites-enabled/default \
   && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
 COPY ./docker/SUPERVISOR/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# Copy application files and set permissions
 COPY --chown=www-data:www-data . .
 RUN chmod +x ./permissions.sh \
   && ./permissions.sh
+
+# Install PHP and Node.js dependencies
+RUN composer install --no-dev --no-interaction --no-progress --no-suggest --optimize-autoloader \
+  && composer clear-cache \
+  && npm install
 
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
