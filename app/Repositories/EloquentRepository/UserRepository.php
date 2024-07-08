@@ -30,8 +30,6 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
           ->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
           ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id');
 
-          
-
         $query->when(Arr::get($params, 'search'), function ($query, $search) {
             $query->where(function ($query) use ($search) {
                 $query->where('users.id', 'ilike', "%{$search}%")
