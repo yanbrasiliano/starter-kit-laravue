@@ -64,6 +64,7 @@ const useUser = () => {
   const listPage = async (params = {}) => {
     try {
       $q.loading.show();
+
       loading.value = true;
       params.search = searchText.value;
       await store.list(params);
@@ -87,16 +88,13 @@ const useUser = () => {
   };
 
   const updatePagination = async (event) => {
-    pagination.value.descending = event.pagination?.descending;
-    pagination.value.sortBy = event.pagination?.sortBy;
+    pagination.value.descending = event.descending;
+    pagination.value.sortBy = event.sortBy;
     await listPage({
-      limit: event.pagination?.rowsPerPage,
-      page: event.pagination?.page,
-      order:
-        event.pagination?.descending || event?.pagination?.descending === undefined
-          ? 'desc'
-          : 'asc',
-      column: event.pagination?.sortBy,
+      limit: event.rowsPerPage,
+      page: event.page,
+      order: event.descending ? 'desc' : 'asc',
+      column: event.sortBy,
       search: '',
     });
   };
