@@ -722,3 +722,11 @@
 2024-07-04 19:51:16,746 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 2024-07-04 19:51:16,746 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 2024-07-04 20:01:49,972 INFO reaped unknown pid 133 (terminated by SIGINT)
+2024-07-08 12:45:03,258 INFO Set uid to user 0 succeeded
+2024-07-08 12:45:03,365 INFO supervisord started with pid 1
+2024-07-08 12:45:04,372 INFO spawned: 'laravel-queue' with pid 7
+2024-07-08 12:45:04,374 INFO spawned: 'nginx' with pid 8
+2024-07-08 12:45:04,377 INFO spawned: 'php-fpm' with pid 9
+2024-07-08 12:45:05,457 INFO success: laravel-queue entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-08 12:45:05,457 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-08 12:45:05,457 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)

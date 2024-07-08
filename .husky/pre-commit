@@ -8,6 +8,11 @@ if [ -z "$staged_files" ]; then
 fi
 
 for file in $staged_files; do
+  if [ ! -f "$file" ]; then
+    echo "File $file does not exist, skipping..."
+    continue
+  fi
+
   case "$file" in
   *.js)
     echo "Running eslint on $file"

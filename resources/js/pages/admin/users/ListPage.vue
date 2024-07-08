@@ -1,194 +1,21 @@
 <script setup>
-import { ref } from 'vue';
 import TableSync from '@/components/users/TableSync.vue';
-import useUserStore from '@/store/useUserStore';
-import { useRouter } from 'vue-router';
-import useAuthStore from '@/store/useAuthStore';
-import { Notify, useQuasar } from 'quasar';
+import useUser from '@/composables/User/useUser';
 import { hasPermission } from '@utils/hasPermission';
 import { USER_PERMISSION } from '@utils/permissions';
 
-const store = useUserStore();
-const router = useRouter();
-const $q = useQuasar();
-
-const filter = ref('');
-const searchText = ref('');
-const loading = ref(false);
-const pagination = ref({});
-const confirmHandleStatus = ref(false);
-const rows = ref([]);
-const dataHandleStatus = ref(null);
-const authStore = useAuthStore();
-
-const columns = ref([
-  { name: 'id', align: 'left', label: 'ID', field: 'id', sortable: true },
-  {
-    name: 'name',
-    required: true,
-    label: 'Name',
-    align: 'left',
-    field: 'name',
-    format: (val) => `${val}`,
-    sortable: true,
-  },
-  {
-    name: 'email',
-    label: 'Email',
-    field: 'email',
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'role',
-    label: 'Role',
-    align: 'left',
-    field: 'role',
-    sortable: true,
-  },
-  {
-    name: 'setSituation',
-    required: true,
-    label: 'Status',
-    align: 'left',
-    field: (row) => row.active,
-    format: (val) => (val ? 'Active' : 'Inactive'),
-  },
-  {
-    name: 'action',
-    label: 'Actions',
-    align: 'center',
-    field: (row) => row.id,
-    format: (val) => `${val}`,
-  },
-]);
-
-const listPage = async (params = {}) => {
-  try {
-    $q.loading.show();
-    loading.value = true;
-    params.search = searchText.value;
-    await store.list(params);
-    rows.value = store.getUsers.data.map((row) => ({
-      ...row,
-      methods: {
-        onConsult: false,
-        onEdit: hasPermission([USER_PERMISSION.EDIT]),
-        onDelete:
-          row.id !== authStore.user?.id && hasPermission([USER_PERMISSION.DELETE]),
-      },
-    }));
-
-    pagination.value.rowsPerPage = store.getUsers.per_page;
-    pagination.value.page = store.getUsers.current_page;
-    pagination.value.rowsNumber = store.getUsers.total;
-  } finally {
-    loading.value = false;
-    $q.loading.hide();
-  }
-};
-
-const updatePagination = async (event) => {
-  pagination.value.descending = event.pagination?.descending;
-  pagination.value.sortBy = event.pagination?.sortBy;
-  await listPage({
-    limit: event.pagination?.rowsPerPage,
-    page: event.pagination?.page,
-    order:
-      event.pagination?.descending || event?.pagination?.descending === undefined
-        ? 'desc'
-        : 'asc',
-    column: event.pagination?.sortBy,
-    search: '',
-  });
-};
-
-const onStatus = async (event) => {
-  const { id, name, email, cpf, active, role_id } = event.data;
-  dataHandleStatus.value = {
-    id,
-    name,
-    email,
-    cpf,
-    active: active ? 1 : 0,
-    role_id,
-  };
-
-  confirmHandleStatus.value = Boolean(event.value);
-  if (!event.value) {
-    handleStatus(false);
-  }
-};
-
-const handleStatus = async (isNotify) => {
-  try {
-    const { id } = dataHandleStatus.value;
-    delete dataHandleStatus.value.id;
-    await store.update(id, {
-      ...dataHandleStatus.value,
-      notify_status: isNotify,
-    });
-
-    Notify.create({
-      position: 'top-right',
-      color: 'positive',
-      message: 'Status successfully updated!',
-    });
-
-    dataHandleStatus.value = null;
-  } finally {
-    await listPage({
-      limit: pagination.value?.rowsPerPage,
-      page: pagination.value?.page,
-      order:
-        pagination.value?.descending || pagination.value?.descending === undefined
-          ? 'desc'
-          : 'asc',
-      column: pagination.value?.sortBy,
-      search: '',
-    });
-  }
-};
-
-const handleSearch = async () => {
-  searchText.value = filter.value;
-
-  await listPage({
-    limit: pagination.value?.rowsPerPage,
-    order: pagination.value?.descending ? 'desc' : 'asc',
-    column: pagination.value?.sortBy,
-  });
-};
-
-const onEdit = (event) => {
-  router.push({
-    name: 'editUsers',
-    params: {
-      id: event.id,
-    },
-  });
-};
-
-const onDelete = async (payload) => {
-  try {
-    $q.loading.show();
-    await store.destroy(payload);
-    Notify.create({
-      position: 'top-right',
-      color: 'positive',
-      message: 'User successfully removed!',
-    });
-  } finally {
-    $q.loading.hide();
-    await listPage({
-      limit: pagination.value?.rowsPerPage,
-      page: pagination.value?.page,
-      order: pagination.value?.descending ? 'desc' : 'asc',
-      column: pagination.value?.sortBy,
-      search: '',
-    });
-  }
-};
+const {
+  columns,
+  onEdit,
+  filter,
+  loading,
+  rows,
+  pagination,
+  updatePagination,
+  onDelete,
+  handleSearch,
+  router,
+} = useUser();
 </script>
 
 <template>
@@ -230,33 +57,9 @@ const onDelete = async (payload) => {
           :rows="rows"
           :pagination="pagination"
           @update-pagination="updatePagination"
-          @on-status="onStatus"
           @on-edit="onEdit"
           @on-delete="onDelete" />
       </q-card-section>
     </q-card>
-    <q-dialog v-model="confirmHandleStatus" persistent>
-      <q-card>
-        <q-card-section class="row items-center">
-          <span class="q-ml-sm"
-            >Do you want to send an email to this user notifying them of activation?</span
-          >
-        </q-card-section>
-
-        <q-card-actions align="center">
-          <q-btn
-            v-close-popup
-            outline
-            label="Yes"
-            color="secondary"
-            @click="handleStatus(true)" />
-          <q-btn
-            v-close-popup
-            label="No"
-            color="secondary"
-            @click="handleStatus(false)" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
