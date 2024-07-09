@@ -730,3 +730,10 @@
 2024-07-08 12:45:05,457 INFO success: laravel-queue entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 2024-07-08 12:45:05,457 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 2024-07-08 12:45:05,457 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-08 19:18:06,279 INFO reaped unknown pid 57 (terminated by SIGINT)
+2024-07-08 21:03:15,244 INFO reaped unknown pid 652 (terminated by SIGINT)
+2024-07-08 21:03:21,377 WARN received SIGQUIT indicating exit request
+2024-07-08 21:03:21,384 INFO waiting for laravel-queue, nginx, php-fpm to die
+2024-07-08 21:03:21,420 INFO stopped: php-fpm (exit status 0)
+2024-07-08 21:03:21,434 INFO stopped: nginx (exit status 0)
+2024-07-08 21:03:21,443 WARN stopped: laravel-queue (terminated by SIGTERM)
