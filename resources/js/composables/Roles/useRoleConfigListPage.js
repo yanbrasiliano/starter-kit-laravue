@@ -9,7 +9,7 @@ export default function useRoleConfigListPage() {
     {
       name: 'name',
       required: true,
-      label: 'Name',
+      label: 'Nome',
       align: 'left',
       field: (row) => row.name,
       format: (val) => `${val}`,
@@ -17,14 +17,14 @@ export default function useRoleConfigListPage() {
     },
     {
       name: 'description',
-      label: 'Description',
+      label: 'Descrição',
       field: 'shortDescription',
       align: 'left',
       sortable: true,
     },
     {
       name: 'created_at',
-      label: 'Created',
+      label: 'Criado em',
       align: 'left',
       field: 'createdAt',
       format: (val) => format(new Date(val), 'dd/MM/yyyy'),
@@ -32,7 +32,7 @@ export default function useRoleConfigListPage() {
     },
     {
       name: 'action',
-      label: 'Options',
+      label: 'Opções',
       align: 'center',
       field: (row) => row.id,
       format: (val) => `${val}`,

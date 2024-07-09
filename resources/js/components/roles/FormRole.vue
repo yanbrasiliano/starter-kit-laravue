@@ -32,9 +32,9 @@ async function onSave() {
 
   if (route.params.id) {
     await update(route.params.id, params);
+  } else {
+    await store(params);
   }
-  await store(params);
-
   $q.loading.hide();
 
   const color = isSuccess.value ? 'positive' : 'negative';
@@ -57,11 +57,11 @@ function getParams() {
 <template>
   <q-form v-if="role">
     <div>
-      <label for="name" class="text-weight-bold">Role Name</label>
+      <label for="name" class="text-weight-bold">Nome do Perfil</label>
       <q-input
         v-model="role.name"
         filled
-        placeholder="Enter the role name"
+        placeholder="Digite o nome do perfil"
         bottom-slots
         lazy-rules
         :error="errors && errors?.name?.length > 0">
@@ -71,11 +71,11 @@ function getParams() {
       </q-input>
     </div>
     <div>
-      <label for="description" class="text-weight-bold">Description</label>
+      <label for="description" class="text-weight-bold">Descrição</label>
       <q-input
         v-model="role.description"
         filled
-        placeholder="Enter the description"
+        placeholder="Digite a descrição"
         bottom-slots
         :error="errors && errors?.description?.length > 0">
         <template #error>
@@ -84,27 +84,27 @@ function getParams() {
       </q-input>
     </div>
     <div v-if="!blockSelectPermission()">
-      <label for="permission" class="text-weight-bold">Permissions</label>
+      <label for="permission" class="text-weight-bold">Permissões</label>
       <q-select
         v-model="role.permissions"
         multiple
         :options="permissionStore.getPermissions"
-        label="Select permissions"
+        label="Selecione as permissões"
         filled />
     </div>
     <div class="q-mt-lg q-gutter-sm">
       <q-btn
         class="text-weight-bold"
-        label="Save"
+        label="Salvar"
         type="submit"
         color="secondary"
         :loading="loading"
-        @click.prevent="onSave" />
+        @click.prevent="onSave()" />
 
       <q-btn
         flat
         class="text-weight-bold"
-        label="Back"
+        label="Voltar"
         type="submit"
         color="primary"
         :to="{ name: 'listRoles' }" />
