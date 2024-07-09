@@ -30,4 +30,3 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 ## Bugs
 - [ ] Bug Order By in User Management;
 - [ ] Bug Order By in Role Management;
-- [ ] Bug Edit Role - Description can be null.

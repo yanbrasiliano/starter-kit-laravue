@@ -1,5 +1,4 @@
 import { ref } from 'vue';
-import { format } from 'date-fns';
 import { hasPermission } from '@utils/hasPermission';
 import { ROLE_PERMISSION } from '@utils/permissions';
 
@@ -9,7 +8,7 @@ export default function useRoleConfigListPage() {
     {
       name: 'name',
       required: true,
-      label: 'Nome',
+      label: 'Name',
       align: 'left',
       field: (row) => row.name,
       format: (val) => `${val}`,
@@ -17,22 +16,15 @@ export default function useRoleConfigListPage() {
     },
     {
       name: 'description',
-      label: 'Descrição',
+      label: 'Description',
       field: 'shortDescription',
       align: 'left',
       sortable: true,
     },
-    {
-      name: 'created_at',
-      label: 'Criado em',
-      align: 'left',
-      field: 'createdAt',
-      format: (val) => format(new Date(val), 'dd/MM/yyyy'),
-      sortable: true,
-    },
+
     {
       name: 'action',
-      label: 'Opções',
+      label: 'Options',
       align: 'center',
       field: (row) => row.id,
       format: (val) => `${val}`,
