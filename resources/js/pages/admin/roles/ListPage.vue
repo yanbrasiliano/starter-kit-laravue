@@ -3,7 +3,6 @@ import TableSync from '@/components/roles/TableSync.vue';
 import useRoleStore from '@/store/useRoleStore';
 import { useRouter } from 'vue-router';
 import { Notify, useQuasar } from 'quasar';
-import useRoleConfigListPage from '@composables/Roles/useRoleConfigListPage';
 import { storeToRefs } from 'pinia';
 import { hasPermission } from '@utils/hasPermission';
 import { ROLE_PERMISSION } from '@utils/permissions';
@@ -11,9 +10,8 @@ import { ROLE_PERMISSION } from '@utils/permissions';
 const store = useRoleStore();
 const router = useRouter();
 const $q = useQuasar();
-const { columns } = useRoleConfigListPage();
 
-const { roles, pagination, loading } = storeToRefs(useRoleStore());
+const { pagination } = storeToRefs(store);
 
 async function updatePagination(event) {
   try {
@@ -76,11 +74,6 @@ const onDelete = async (event) => {
       </q-card-section>
       <q-card-section>
         <TableSync
-          :loading="loading"
-          :columns="columns"
-          :rows="roles"
-          :pagination="pagination"
-          :rows-number="0"
           @update-pagination="updatePagination"
           @on-edit="onEdit"
           @on-delete="onDelete" />

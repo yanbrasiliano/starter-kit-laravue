@@ -72,6 +72,7 @@ const cancelDeletion = () => {
       :computed-rows-number="20"
       @update:pagination="emit('updatePagination', $event)"
       @request="emit('updatePagination', $event)">
+      
       <template #header="propsData">
         <q-tr :props="propsData">
           <q-th v-for="col in propsData.cols" :key="col.name" :props="propsData">

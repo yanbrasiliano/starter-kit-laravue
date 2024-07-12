@@ -22,6 +22,10 @@ const useRoleStore = defineStore('roles', {
       page: 1,
       rowsPerPage: 10,
       rowsNumber: 0,
+      sortBy: 'id',
+      descending: true,
+      sortOrder: 'asc',
+      search: ''
     },
     loading: false,
     errors: null,
@@ -53,6 +57,7 @@ const useRoleStore = defineStore('roles', {
         const { pagination, roles, status } = await roleService.index(params);
         if (status === 200) {
           this.roles = roles;
+          
           this.pagination = pagination;
         }
       } finally {

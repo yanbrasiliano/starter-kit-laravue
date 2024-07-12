@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -16,8 +17,9 @@ use Illuminate\Support\Str;
  *
  * @phpstan-consistent-constructor
  **/
-class RoleResource extends BaseResource
+class RoleResource extends JsonResource
 {
+    
     /**
      * Transform the resource into an array.
      *
@@ -34,6 +36,8 @@ class RoleResource extends BaseResource
             'permissions' => $this->getPermissionsForSelect(),
         ];
     }
+
+    
 
     protected function getPermissionsForSelect()
     {

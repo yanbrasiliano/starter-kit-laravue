@@ -1,15 +1,19 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import useRole from '@/composables/Roles/useRole';
+import { storeToRefs } from 'pinia';
+import useRoleStore from '@/store/useRoleStore';
+import useRoleConfigListPage from '@composables/Roles/useRoleConfigListPage';
 
 const { blockEditRoleAdmin, blockDeleteRoleUserAuth } = useRole();
 const emit = defineEmits(['updatePagination', 'onConsult', 'onEdit', 'onDelete']);
-const loading = ref();
-const pagination = ref({});
-const columns = ref();
-const rows = ref();
+const { roles, pagination, loading } = storeToRefs(useRoleStore());
+const store = useRoleStore();
+const { columns } = useRoleConfigListPage();
+
 const itemDelete = ref({});
 const confirmRowDelete = ref(false);
+const filter = ref('');
 
 const deleteRow = (row) => {
   confirmRowDelete.value = true;
@@ -22,29 +26,57 @@ const confirmDeleteRow = (isStatus) => {
   }
   itemDelete.value = null;
 };
+
+const fetchPagination = async (event) => {
+  let order = event.pagination?.sortOrder === 'asc' ? 'desc' : 'asc';
+  pagination.value.sortOrder = order;
+  pagination.value.rowsPerPage = event.pagination?.rowsPerPage;
+  pagination.value.page = event.pagination?.page;
+
+  await store.fetchRoles({...pagination.value });
+}
+
+watch(filter, async (newFilter, oldFilter) => {
+  if (newFilter !== oldFilter) {
+    await search()
+  }
+})
+
+const search = async () => {
+  await store.fetchRoles({ ...pagination.value, search: filter.value });
+}
+
 </script>
 
 <template>
   <q-table
     class="table-default-data-table"
-    :rows="rows"
+    :rows="roles"
     :columns="columns"
-    row-key="name"
+    color="secondary"
+    row-key="id"
     no-data-label="Nenhum registro encontrado"
     :rows-per-page-options="[10, 25, 50, 100]"
     :loading="loading"
     loading-label="Carregando..."
     :pagination="pagination"
     :computed-rows-number="20"
-    @update:pagination="emit('updatePagination', $event)"
-    @request="emit('updatePagination', $event)">
+    @update:pagination="fetchPagination"
+    @request="fetchPagination">
+    <template #top-left>
+      <q-input v-model="filter" debounce="300" color="grey-3" text-color="deep-purple-3" label-color="grey-5" outlined label="Filter">
+        <template #append>
+          <q-icon color="secondary" name="search"/>
+        </template>
+      </q-input>
+    </template>
     <template #header="props">
       <q-dialog v-model="confirmRowDelete" persistent>
         <q-card>
           <q-card-section class="row items-center">
-            <span class="q-ml-sm"
-              >Tem certeza que deseja excluir por definitivo este perfil?</span
-            >
+            <span class="q-ml-sm">
+              Tem certeza que deseja excluir por definitivo este perfil?
+            </span>
           </q-card-section>
 
           <q-card-actions align="center">
