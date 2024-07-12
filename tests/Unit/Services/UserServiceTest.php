@@ -41,6 +41,7 @@ describe('Create new users', function () {
     });
 
     it('return the user registered in the system with generating a random password', function () {
+        Mail::fake();
         expect(app(UserService::class)->create(
             new CreateUserDTO(
                 fake('pt_BR')->name(),
@@ -70,6 +71,7 @@ describe('Create new users', function () {
 });
 describe('Updates user data', function () {
     it('returns the updated user data without notifying the status activation', function () {
+        Mail::fake();
         expect(app(UserService::class)->update(
             $this->users->first()->id,
             new UpdateUserDTO(
@@ -85,6 +87,7 @@ describe('Updates user data', function () {
     });
 
     it('returns updated user data notifying status activation', function () {
+        Mail::fake();
         expect(app(UserService::class)->update(
             $this->users->first()->id,
             new UpdateUserDTO(

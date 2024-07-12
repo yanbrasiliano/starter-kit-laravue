@@ -19,7 +19,6 @@ use Illuminate\Support\Str;
  **/
 class RoleResource extends JsonResource
 {
-    
     /**
      * Transform the resource into an array.
      *
@@ -36,8 +35,6 @@ class RoleResource extends JsonResource
             'permissions' => $this->getPermissionsForSelect(),
         ];
     }
-
-    
 
     protected function getPermissionsForSelect()
     {

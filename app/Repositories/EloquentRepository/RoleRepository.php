@@ -22,14 +22,14 @@ class RoleRepository extends AbstractRepository implements RoleRepositoryInterfa
     public function list(CustomPaginateParamsDTO $paramsDTO): LengthAwarePaginator
     {
         $query = $this->role->query();
-        
+
         $query->when($paramsDTO->search, function () use ($paramsDTO, $query) {
             $query->where('name', 'ilike', "%{$paramsDTO->search}%")
                 ->orWhere('description', 'ilike', "%{$paramsDTO->search}%");
         })->when($paramsDTO->sortBy, function () use ($paramsDTO, $query) {
             $query->orderBy($paramsDTO->sortBy, $paramsDTO->sortOrder);
         });
-        
+
         return $query->paginate($paramsDTO->rowsPerPage);
     }
 

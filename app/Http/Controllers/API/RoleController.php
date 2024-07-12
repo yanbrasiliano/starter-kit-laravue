@@ -9,6 +9,7 @@ use App\Http\Resources\RoleResource;
 use App\Services\RoleService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\{JsonResponse, Request, Response};
+
 /**
  * Summary of RoleController
  */
@@ -126,7 +127,7 @@ class RoleController extends Controller
         );
 
         $paginatedRoles = $this->service->index($params);
-        
+
         return RoleResource::collection($paginatedRoles)
             ->additional([
                 'pagination' => [
@@ -136,7 +137,7 @@ class RoleController extends Controller
                     'sortBy' => $request->input('sortBy', 'id'),
                     'sortOrder' => $request->input('sortOrder', 'asc'),
                     'search' => $request->input('search', ''),
-                ]
+                ],
             ]);
     }
 

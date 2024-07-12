@@ -6,6 +6,7 @@ use App\Enums\RolesEnum;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 beforeEach(function () {
     $this->user = User::factory()->create();
@@ -62,7 +63,7 @@ describe('ForgotPasswordTest', function () {
         $user = User::factory()->create();
         $role = DB::table('roles')->where('slug', RolesEnum::REVIEWER)->first();
         $user->assignRole([$role->id]);
-
+        Mail::fake();
         $payload = ['email' => $user->email];
         $response = $this->postJson(route('forgot-password'), $payload);
         $response->assertStatus(Response::HTTP_NO_CONTENT);
