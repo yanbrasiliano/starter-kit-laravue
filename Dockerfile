@@ -60,8 +60,6 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 COPY --from=node /usr/local/bin /usr/local/bin
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 
-RUN npm install -g npm@latest npx gulp-cli cross-env node-sass sass postcss-cli autoprefixer 
-
 COPY ./docker/NGINX/default.conf /etc/nginx/sites-available/default
 
 RUN rm -f /etc/nginx/sites-enabled/default \
@@ -77,6 +75,7 @@ RUN chmod +x ./permissions.sh \
 # Install PHP and Node.js dependencies
 RUN composer install --no-dev --no-interaction --no-progress --no-suggest --optimize-autoloader \
   && composer clear-cache \
-  && npm install
+  && npm install \
+  && npm install -g npm@latest npx gulp-cli cross-env node-sass sass postcss-cli autoprefixer
 
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
