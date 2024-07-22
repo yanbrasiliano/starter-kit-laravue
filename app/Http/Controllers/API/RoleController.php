@@ -18,68 +18,20 @@ class RoleController extends Controller
   }
 
   /**
-   * @OA\Get(
-   *     path="/api/v1/roles",
-   *     summary="Lista os perfis",
-   *     description="Lista todos os perfis cadastrados no sistema",
-   *     tags={"Perfis"},
-   *     @OA\Parameter(
-   *         name="limit",
-   *         in="query",
-   *         required=false,
-   *         description="Quantidade de itens por página",
-   *         @OA\Schema(type="int"),
-   *     ),
-   *     @OA\Parameter(
-   *         name="page",
-   *         in="query",
-   *         required=false,
-   *         description="Número da página",
-   *         @OA\Schema(type="int"),
-   *     ),
-   *     @OA\Parameter(
-   *         name="order",
-   *         in="query",
-   *         required=false,
-   *         description="Ordem de exibição dos itens [asc, desc]",
-   *         @OA\Schema(type="string"),
-   *     ),
-   *     @OA\Parameter(
-   *         name="column",
-   *         in="query",
-   *         required=false,
-   *         description="Coluna a ser utilizada para realizar a ordenação",
-   *         @OA\Schema(type="string"),
-   *     ),
-   *     @OA\Parameter(
-   *         name="name",
-   *         in="query",
-   *         required=false,
-   *         description="Nome do perfil",
-   *         @OA\Schema(type="string"),
-   *     ),
-   *     @OA\Parameter(
-   *         name="description",
-   *         in="query",
-   *         required=false,
-   *         description="Descrição",
-   *         @OA\Schema(type="string"),
-   *     ),
-   *     @OA\Response(
-   *         response=200,
-   *         description="OK",
-   *         @OA\MediaType(mediaType="application/json"),
-   *     ),
-   *     @OA\Response(
-   *         response=401,
-   *         description="Usuário não autenticado",
-   *     ),
-   *     @OA\Response(
-   *         response=403,
-   *         description="Usuário não tem permissão de acesso",
-   *     ),
-   *     security={{ "bearerAuth": {} }},
-   * )
+   * @route GET /api/v1/roles
+   * @title Lista os perfis
+   * @description Lista todos os perfis cadastrados no sistema
+   * @tags Perfis
+   * @queryParam limit integer Quantidade de itens por página
+   * @queryParam page integer Número da página
+   * @queryParam order string Ordem de exibição dos itens [asc, desc]
+   * @queryParam column string Coluna a ser utilizada para realizar a ordenação
+   * @queryParam name string Nome do perfil
+   * @queryParam description string Descrição
+   * @response 200 OK
+   * @response 401 Usuário não autenticado
+   * @response 403 Usuário não tem permissão de acesso
+   * @security bearerAuth
    */
   public function index(Request $request): JsonResource
   {
@@ -107,51 +59,18 @@ class RoleController extends Controller
     ]);
   }
 
-
   /**
-   * @OA\Post(
-   *     path="/api/v1/roles",
-   *     summary="Cadastra perfis",
-   *     description="Cadastra novos perfis na plataforma",
-   *     tags={"Perfis"},
-   *     @OA\RequestBody(
-   *         required=true,
-   *         @OA\JsonContent(
-   *             required={"name", "description"},
-   *             @OA\Property(
-   *                 property="name",
-   *                 type="string",
-   *                 description="Nome do perfil",
-   *                 example="Administrador",
-   *             ),
-   *             @OA\Property(
-   *                 property="description",
-   *                 type="string",
-   *                 description="Descrição",
-   *             ),
-   *             @OA\Property(
-   *                 property="permissions",
-   *                 type="array",
-   *                 description="Permissões",
-   *                 @OA\Items(type="string"),
-   *             ),
-   *         ),
-   *     ),
-   *     @OA\Response(
-   *         response=200,
-   *         description="OK",
-   *         @OA\MediaType(mediaType="application/json"),
-   *     ),
-   *     @OA\Response(
-   *         response=401,
-   *         description="Usuário não autenticado",
-   *     ),
-   *     @OA\Response(
-   *         response=403,
-   *         description="Usuário não tem permissão de acesso",
-   *     ),
-   *     security={{ "bearerAuth": {} }},
-   * )
+   * @route POST /api/v1/roles
+   * @title Cadastra perfis
+   * @description Cadastra novos perfis na plataforma
+   * @tags Perfis
+   * @bodyParam name string required Nome do perfil
+   * @bodyParam description string required Descrição
+   * @bodyParam permissions array Permissões
+   * @response 200 OK
+   * @response 401 Usuário não autenticado
+   * @response 403 Usuário não tem permissão de acesso
+   * @security bearerAuth
    */
   public function store(CreateRoleRequest $request): JsonResource
   {
@@ -159,36 +78,16 @@ class RoleController extends Controller
   }
 
   /**
-   * @OA\Get(
-   *     path="/api/v1/roles/{id}",
-   *     summary="Consulta os dados do perfil cadastrado",
-   *     description="Consulta com mais detalhes os dados do perfil",
-   *     tags={"Perfis"},
-   *     @OA\Parameter(
-   *         name="id",
-   *         in="path",
-   *         description="ID do perfil cadastrado",
-   *         @OA\Schema(type="int"),
-   *     ),
-   *     @OA\Response(
-   *         response=200,
-   *         description="OK",
-   *         @OA\MediaType(mediaType="application/json"),
-   *     ),
-   *     @OA\Response(
-   *         response=401,
-   *         description="Usuário não autenticado",
-   *     ),
-   *     @OA\Response(
-   *         response=403,
-   *         description="Usuário não tem permissão de acesso",
-   *     ),
-   *     @OA\Response(
-   *         response=404,
-   *         description="Perfil não encontrado",
-   *     ),
-   *     security={{ "bearerAuth": {} }},
-   * )
+   * @route GET /api/v1/roles/{id}
+   * @title Consulta os dados do perfil cadastrado
+   * @description Consulta com mais detalhes os dados do perfil
+   * @tags Perfis
+   * @pathParam id integer required ID do perfil cadastrado
+   * @response 200 OK
+   * @response 401 Usuário não autenticado
+   * @response 403 Usuário não tem permissão de acesso
+   * @response 404 Perfil não encontrado
+   * @security bearerAuth
    */
   public function show(int $id): JsonResource
   {
@@ -196,59 +95,18 @@ class RoleController extends Controller
   }
 
   /**
-   * @OA\Put(
-   *     path="/api/v1/roles/{id}",
-   *     summary="Atualiza os dados do perfil",
-   *     description="",
-   *     tags={"Perfis"},
-   *     @OA\Parameter(
-   *         name="id",
-   *         in="path",
-   *         description="ID do perfil cadastrado",
-   *         @OA\Schema(type="int"),
-   *     ),
-   *     @OA\RequestBody(
-   *         required=true,
-   *         @OA\JsonContent(
-   *             required={"name", "description"},
-   *             @OA\Property(
-   *                 property="name",
-   *                 type="string",
-   *                 description="Nome do perfil",
-   *                 example="Administrador",
-   *             ),
-   *             @OA\Property(
-   *                 property="description",
-   *                 type="string",
-   *                 description="Descrição",
-   *             ),
-   *             @OA\Property(
-   *                 property="permissions",
-   *                 type="array",
-   *                 description="Permissões",
-   *                 @OA\Items(type="string"),
-   *             ),
-   *         ),
-   *     ),
-   *     @OA\Response(
-   *         response=200,
-   *         description="OK",
-   *         @OA\MediaType(mediaType="application/json"),
-   *     ),
-   *     @OA\Response(
-   *         response=401,
-   *         description="Usuário não autenticado",
-   *     ),
-   *     @OA\Response(
-   *         response=403,
-   *         description="Usuário não tem permissão de acesso",
-   *     ),
-   *     @OA\Response(
-   *         response=404,
-   *         description="Perfil não encontrado",
-   *     ),
-   *     security={{ "bearerAuth": {} }},
-   * )
+   * @route PUT /api/v1/roles/{id}
+   * @title Atualiza os dados do perfil
+   * @tags Perfis
+   * @pathParam id integer required ID do perfil cadastrado
+   * @bodyParam name string required Nome do perfil
+   * @bodyParam description string required Descrição
+   * @bodyParam permissions array Permissões
+   * @response 200 OK
+   * @response 401 Usuário não autenticado
+   * @response 403 Usuário não tem permissão de acesso
+   * @response 404 Perfil não encontrado
+   * @security bearerAuth
    */
   public function update(UpdateRoleRequest $request, int $id): JsonResource
   {
@@ -256,36 +114,16 @@ class RoleController extends Controller
   }
 
   /**
-   * @OA\Delete(
-   *     path="/api/v1/roles/{id}",
-   *     summary="Remove Perfis cadastrados",
-   *     description="Remove informações de Perfis cadastrados",
-   *     tags={"Perfis"},
-   *     @OA\Parameter(
-   *         name="id",
-   *         in="path",
-   *         description="ID do Perfil cadastrado",
-   *         @OA\Schema(type="int"),
-   *     ),
-   *     @OA\Response(
-   *         response=204,
-   *         description="No Content",
-   *         @OA\MediaType(mediaType="application/json"),
-   *     ),
-   *     @OA\Response(
-   *         response=401,
-   *         description="Usuário não autenticado",
-   *     ),
-   *     @OA\Response(
-   *         response=403,
-   *         description="Usuário não tem permissão de acesso",
-   *     ),
-   *     @OA\Response(
-   *         response=404,
-   *         description="Perfil não encontrado",
-   *     ),
-   *     security={{ "bearerAuth": {} }},
-   * )
+   * @route DELETE /api/v1/roles/{id}
+   * @title Remove Perfis cadastrados
+   * @description Remove informações de Perfis cadastrados
+   * @tags Perfis
+   * @pathParam id integer required ID do Perfil cadastrado
+   * @response 204 No Content
+   * @response 401 Usuário não autenticado
+   * @response 403 Usuário não tem permissão de acesso
+   * @response 404 Perfil não encontrado
+   * @security bearerAuth
    */
   public function destroy(int $id): JsonResponse
   {
@@ -295,22 +133,13 @@ class RoleController extends Controller
   }
 
   /**
-   * @OA\Get(
-   *     path="/api/v1/roles/list-all",
-   *     summary="Lista todos os perfis cadastrados",
-   *     description="Retorna perfis cadastrados",
-   *     tags={"Perfis"},
-   *     @OA\Response(
-   *         response=200,
-   *         description="OK",
-   *         @OA\MediaType(mediaType="application/json"),
-   *     ),
-   *     @OA\Response(
-   *         response=401,
-   *         description="Usuário não autenticado",
-   *     ),
-   *     security={{ "bearerAuth": {} }},
-   * )
+   * @route GET /api/v1/roles/list-all
+   * @title Lista todos os perfis cadastrados
+   * @description Retorna perfis cadastrados
+   * @tags Perfis
+   * @response 200 OK
+   * @response 401 Usuário não autenticado
+   * @security bearerAuth
    */
   public function listAll(): JsonResource
   {

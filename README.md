@@ -26,4 +26,8 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 
 ## To Do
 
-- [ ] Install Scramble and remove swagger for API documentation
+- [ ] Apply routes authenticated on scramble
+
+## Bugs
+- [ ] List user order do not work
+- [ ] Button create user do not work

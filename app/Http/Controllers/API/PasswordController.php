@@ -9,92 +9,43 @@ use Illuminate\Http\{JsonResponse, Response};
 
 class PasswordController extends Controller
 {
-    public function __construct(protected PasswordService $service)
-    {
-        $this->service = $service;
-    }
+  public function __construct(protected PasswordService $service)
+  {
+    $this->service = $service;
+  }
 
-    /**
-     * @OA\Post(
-     *     path="/api/v1/forgot-password",
-     *     tags={"Password"},
-     *     summary="Password recovery request",
-     *     operationId="forgot-password",
-     *
-     *     @OA\RequestBody(
-     *         required=true,
-     *         description="Pass user credentials",
-     *
-     *         @OA\JsonContent(
-     *             required={"email"},
-     *
-     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
-     *         ),
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=204,
-     *         description="No Content",
-     *
-     *         @OA\JsonContent(
-     *
-     *         )
-     *     ),
-     *
-     *    @OA\Response(
-     *         response=422,
-     *         description="Failure to validate submitted data.",
-     *     )
-     *
-     * )
-     */
-    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
-    {
-        $this->service->forgotPassword($request->validated());
+  /**
+   * @route POST /api/v1/forgot-password
+   * @tags Password
+   * @title Password recovery request
+   * @description Pass user credentials
+   * @bodyParam email string required The user's email address
+   * @response 204 No Content
+   * @response 422 Failure to validate submitted data
+   */
+  public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
+  {
+    $this->service->forgotPassword($request->validated());
 
-        return response()->json([], Response::HTTP_NO_CONTENT);
-    }
+    return response()->json([], Response::HTTP_NO_CONTENT);
+  }
 
-    /**
-     * @OA\Post(
-     *     path="/api/v1/reset-password",
-     *     tags={"Password"},
-     *     summary="Password recovery",
-     *     operationId="password-recovery",
-     *
-     *     @OA\RequestBody(
-     *         required=true,
-     *         description="Pass user credentials",
-     *
-     *         @OA\JsonContent(
-     *             required={"email", "token", "password", "password_confirmation"},
-     *
-     *             @OA\Property(property="email",  type="string", format="email"),
-     *             @OA\Property(property="token",  type="string", format="password", example="############"),
-     *             @OA\Property(property="password", type="string", format="password", example="password123"),
-     *             @OA\Property(property="password_confirmation", type="string", format="password", example="password123")
-     *         ),
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=204,
-     *         description="No Content",
-     *
-     *         @OA\JsonContent(
-     *         )
-     *     ),
-     *
-     *    @OA\Response(
-     *         response=422,
-     *         description="Failure to validate submitted data.",
-     *     )
-     *
-     * )
-     */
-    public function resetPassword(ResetPasswordRequest $request): JsonResponse
-    {
-        $this->service->resetPassword($request->validated());
+  /**
+   * @route POST /api/v1/reset-password
+   * @tags Password
+   * @title Password recovery
+   * @description Pass user credentials
+   * @bodyParam email string required The user's email address
+   * @bodyParam token string required The password reset token
+   * @bodyParam password string required The new password
+   * @bodyParam password_confirmation string required Password confirmation
+   * @response 204 No Content
+   * @response 422 Failure to validate submitted data
+   */
+  public function resetPassword(ResetPasswordRequest $request): JsonResponse
+  {
+    $this->service->resetPassword($request->validated());
 
-        return response()->json([], Response::HTTP_NO_CONTENT);
-    }
+    return response()->json([], Response::HTTP_NO_CONTENT);
+  }
 }
