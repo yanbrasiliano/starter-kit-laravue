@@ -10,7 +10,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\{Collection, Model};
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
-use Throwable;
 
 class RoleRepository extends AbstractRepository implements RoleRepositoryInterface
 {
@@ -21,39 +20,25 @@ class RoleRepository extends AbstractRepository implements RoleRepositoryInterfa
 
     public function list(CustomPaginateParamsDTO $paramsDTO): LengthAwarePaginator
     {
-        $query = $this->role->query();
-
-        $query->when($paramsDTO->search, function () use ($paramsDTO, $query) {
-            $query->where('name', 'ilike', "%{$paramsDTO->search}%")
-                ->orWhere('description', 'ilike', "%{$paramsDTO->search}%");
-        })->when($paramsDTO->sortBy, function () use ($paramsDTO, $query) {
-            $query->orderBy($paramsDTO->sortBy, $paramsDTO->sortOrder);
-        });
-
-        return $query->paginate($paramsDTO->rowsPerPage);
+        return $this->role->query()
+          ->when($paramsDTO->search, fn ($query) => $query->where('name', 'ilike', "%{$paramsDTO->search}%")
+            ->orWhere('description', 'ilike', "%{$paramsDTO->search}%"))
+          ->when($paramsDTO->sortBy, fn ($query) => $query->orderBy($paramsDTO->sortBy, $paramsDTO->sortOrder))
+          ->with('permissions')
+          ->paginate($paramsDTO->rowsPerPage);
     }
 
     public function create(CreateRoleDTO $roleDTO): Model|Role
     {
-        DB::beginTransaction();
-
-        try {
-            $role = $this->role->create([
+        return DB::transaction(fn () => tap(
+            $this->role->create([
                 'name' => $roleDTO->name,
                 'guard_name' => 'web',
                 'slug' => str()->slug($roleDTO->name),
                 'description' => $roleDTO->description,
-            ]);
-            $role->syncPermissions($roleDTO->permissions);
-
-            DB::commit();
-
-            return $role;
-        } catch (Throwable $throw) {
-            DB::rollBack();
-
-            throw $throw;
-        }
+            ]),
+            fn ($role) => $role->syncPermissions($roleDTO->permissions)
+        ));
     }
 
     public function getById(int $id): Model|Role
@@ -65,12 +50,7 @@ class RoleRepository extends AbstractRepository implements RoleRepositoryInterfa
 
     public function update(UpdateRoleDTO $roleDTO): Model|Role
     {
-        DB::beginTransaction();
-
-        try {
-
-            $role = $this->role->findOrFail($roleDTO->id);
-
+        return DB::transaction(fn () => tap($this->role->findOrFail($roleDTO->id), function ($role) use ($roleDTO) {
             $role->update([
                 'name' => $roleDTO->name,
                 'guard_name' => 'web',
@@ -78,35 +58,13 @@ class RoleRepository extends AbstractRepository implements RoleRepositoryInterfa
                 'description' => $roleDTO->description,
             ]);
 
-            if ($roleDTO->permissions !== null) {
-                $role->syncPermissions($roleDTO->permissions);
-            }
-
-            DB::commit();
-
-            return $role;
-        } catch (Throwable $throw) {
-            DB::rollBack();
-
-            throw $throw;
-        }
+            $roleDTO->permissions ? $role->syncPermissions($roleDTO->permissions) : null;
+        }));
     }
 
     public function delete(int $id): bool
     {
-        DB::beginTransaction();
-
-        try {
-            $role = $this->role->findOrFail($id);
-
-            DB::commit();
-
-            return $role->delete();
-        } catch (Throwable $throw) {
-            DB::rollBack();
-
-            throw $throw;
-        }
+        return $this->role->findOrFail($id)->delete();
     }
 
     public function getBySlug(string $slug): Model|Role
@@ -118,6 +76,6 @@ class RoleRepository extends AbstractRepository implements RoleRepositoryInterfa
 
     public function listAll(): Collection
     {
-        return $this->role->all(['id', 'name']);
+        return $this->role->with('permissions')->get(['id', 'name']);
     }
 }

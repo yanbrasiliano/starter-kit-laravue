@@ -27,4 +27,3 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 ## To Do
 
 - [ ] Install Scramble and remove swagger for API documentation
-

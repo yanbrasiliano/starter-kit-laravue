@@ -21,16 +21,12 @@ class RoleService
 
     public function create(CreateRoleDTO $roleDto): RoleDTO
     {
-        $role = $this->repository->create($roleDto);
-
-        return new RoleDTO(...$role->toArray());
+        return new RoleDTO(...$this->repository->create($roleDto)->toArray());
     }
 
     public function getById(int $id): RoleDTO
     {
-        $role = $this->repository->getById($id);
-
-        return new RoleDTO(...$role->toArray());
+        return new RoleDTO(...$this->repository->getById($id)->toArray());
     }
 
     public function update(UpdateRoleDTO $roleDTO): RoleDTO
@@ -39,13 +35,9 @@ class RoleService
          * @var \App\Models\User $user
          */
         $user = Auth::user();
+        $roleDTO->permissions = $user->hasRole($roleDTO->id) ? null : $roleDTO->permissions;
 
-        if ($user->hasRole($roleDTO->id)) {
-            $roleDTO->permissions = null;
-        }
-        $role = $this->repository->update($roleDTO);
-
-        return new RoleDTO(...$role->toArray());
+        return new RoleDTO(...$this->repository->update($roleDTO)->toArray());
     }
 
     public function delete(int $id): bool
@@ -55,9 +47,7 @@ class RoleService
 
     public function getBySlug(string $slug): RoleDTO
     {
-        $role = $this->repository->getBySlug($slug);
-
-        return new RoleDTO(...$role->toArray());
+        return new RoleDTO(...$this->repository->getBySlug($slug)->toArray());
     }
 
     public function listAll()

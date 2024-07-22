@@ -24,78 +24,57 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
 
     public function list(array $params): LengthAwarePaginator
     {
-        $query = $this->model->query();
-
-        $query->select('users.*', 'roles.name as role', 'role_user.role_id as role_id')
+        return $this->model->query()
+          ->select('users.*', 'roles.name as role', 'role_user.role_id as role_id')
           ->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
-          ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id');
-
-        $query->when(Arr::get($params, 'search'), function ($query, $search) {
-            $query->where(function ($query) use ($search) {
-                $query->where('users.id', 'ilike', "%{$search}%")
-                  ->orWhere('users.name', 'ilike', "%{$search}%")
-                  ->orWhere('users.email', 'ilike', "%{$search}%")
-                  ->orWhere('roles.name', 'ilike', "%{$search}%");
-            });
-        });
-
-        $query->when(Arr::get($params, 'order'), function ($query, $order) use ($params) {
-            $column = match (Arr::get($params, 'column')) {
-                'name' => 'users.name',
-                'email' => 'users.email',
-                'role' => 'roles.name',
-                default => 'users.id',
-            };
-
-            $query->orderBy($column, $order);
-        });
-
-        return $query->paginate(
-            perPage: Arr::get($params, 'limit', 10),
-            page: Arr::get($params, 'page', 1)
-        );
+          ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')
+          ->when(Arr::get($params, 'search'), fn ($query, $search) => $query->where(
+              fn ($query) => $query->where('users.id', 'ilike', "%{$search}%")
+              ->orWhere('users.name', 'ilike', "%{$search}%")
+              ->orWhere('users.email', 'ilike', "%{$search}%")
+              ->orWhere('roles.name', 'ilike', "%{$search}%")
+          ))
+          ->when(Arr::get($params, 'order'), fn ($query, $order) => $query->orderBy(
+              match (Arr::get($params, 'column')) {
+                  'name' => 'users.name',
+                  'email' => 'users.email',
+                  'role' => 'roles.name',
+                  default => 'users.id',
+              },
+              $order
+          ))
+          ->paginate(
+              perPage: Arr::get($params, 'limit', 10),
+              page: Arr::get($params, 'page', 1)
+          );
     }
 
     public function create(array $params): Model|User
     {
-        return DB::transaction(function () use ($params) {
-            $user = $this->model->create([
-                'name' => $params['name'],
-                'email' => $params['email'],
-                'password' => $params['password'],
-                'cpf' => $params['cpf'],
-                'active' => $params['active'],
-            ]);
-
-            $user->syncRoles([$params['role_id']]);
-
-            return $user;
-        });
+        return DB::transaction(fn () => tap(
+            $this->model->create(Arr::only($params, ['name', 'email', 'password', 'cpf', 'active'])),
+            fn ($user) => $user->syncRoles([$params['role_id']])
+        ));
     }
 
     public function getById(int $id): Model|User
     {
-        return $this->model->findOrFail($id);
+        return $this->model->with('roles.permissions')->findOrFail($id);
     }
 
     public function update(int $id, array $params): Model|User
     {
-        return DB::transaction(function () use ($id, $params) {
-            $user = $this->model->findOrFail($id);
-            $user->update($params);
-
-            if (isset($params['role_id'])) {
-                $user->syncRoles([$params['role_id']]);
-            }
-
-            return $user;
-        });
+        return DB::transaction(fn () => tap(
+            $this->model->findOrFail($id),
+            fn ($user) => $user->update($params) && isset($params['role_id']) ? $user->syncRoles([$params['role_id']]) : null
+        ));
     }
 
     public function delete(int $id, string $reason): DeleteReason
     {
         return DB::transaction(function () use ($id, $reason) {
             $user = User::findOrFail($id);
+
             $deleteReason = new DeleteReason([
                 'deleted_user_id' => $user->id,
                 'deleted_user_email' => $user->email,
@@ -106,8 +85,8 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
                 'reason' => $reason,
                 'deleted_at' => now(),
             ]);
-            $deleteReason->save();
 
+            $deleteReason->save();
             $user->delete();
 
             return $deleteReason;
@@ -116,23 +95,16 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
 
     public function updatePassword(int $id, string $password): void
     {
-        $user = $this->model->findOrFail($id);
-        $user->update([
-            'password' => $password,
-        ]);
+        $this->model->findOrFail($id)->update(['password' => $password]);
     }
 
     public function verify(int $id): void
     {
-        $user = $this->model::findOrFail($id);
-
-        if ($user->hasVerifiedEmail()) {
-            throw new Exception(
-                'Seu cadastro já foi validado! Por favor, aguarde até que um administrador realize a liberação do seu acesso.',
-                Response::HTTP_CONFLICT
-            );
-        }
-
-        $user->markEmailAsVerified();
+        tap(
+            $this->model::findOrFail($id),
+            fn ($user) => $user->hasVerifiedEmail()
+            ? throw new Exception('Seu cadastro já foi validado! Por favor, aguarde até que um administrador realize a liberação do seu acesso.', Response::HTTP_CONFLICT)
+            : $user->markEmailAsVerified()
+        );
     }
 }
