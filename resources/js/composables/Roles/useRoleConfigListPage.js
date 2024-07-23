@@ -4,19 +4,14 @@ import { ROLE_PERMISSION } from '@utils/permissions';
 
 export default function useRoleConfigListPage() {
   const columns = ref([
-    { name: 'id', 
-      align: 'left', 
-      label: 'ID', 
-      field: 'id', 
-      sortable: true,
-    },
+    { name: 'id', align: 'left', label: 'ID', field: 'id', sortable: true },
     {
       name: 'name',
-      //required: true,
+      required: true,
       label: 'Name',
       align: 'left',
       field: 'name',
-      sortable: true
+      sortable: true,
     },
     {
       name: 'description',
@@ -25,7 +20,6 @@ export default function useRoleConfigListPage() {
       align: 'left',
       sortable: true,
     },
-
     {
       name: 'action',
       label: 'Options',

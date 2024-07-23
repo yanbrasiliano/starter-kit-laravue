@@ -1,12 +1,7 @@
 <script setup>
 import { isActiveLink } from '@utils/isActiveLink';
 import { hasPermission } from '@utils/hasPermission';
-import {
-  USER_PERMISSION,
-  ROLE_PERMISSION,
-  ACCESS_HISTORY_PERMISSION,
-  SETTINGS_PERMISSION,
-} from '@utils/permissions';
+import { USER_PERMISSION, ROLE_PERMISSION } from '@utils/permissions';
 
 const props = defineProps({
   miniState: Boolean,
@@ -36,15 +31,7 @@ const props = defineProps({
       </q-item>
     </q-list>
 
-    <q-list
-      v-if="
-        hasPermission([
-          USER_PERMISSION.LIST,
-          ROLE_PERMISSION.LIST,
-          ACCESS_HISTORY_PERMISSION.LIST,
-          SETTINGS_PERMISSION.LIST,
-        ])
-      ">
+    <q-list v-if="hasPermission([USER_PERMISSION.LIST, ROLE_PERMISSION.LIST])">
       <q-item v-show="!props.miniState">
         <q-item-label header class="text-white font-weight-bold">
           ACCESS MANAGEMENT
@@ -75,24 +62,6 @@ const props = defineProps({
           <q-icon name="contacts" />
         </q-item-section>
         <q-item-section class="text-white"> Profiles </q-item-section>
-      </q-item>
-
-      <q-item
-        v-if="hasPermission([ACCESS_HISTORY_PERMISSION.LIST])"
-        v-ripple
-        clickable
-        exact>
-        <q-item-section avatar class="text-white">
-          <q-icon name="find_in_page" />
-        </q-item-section>
-        <q-item-section class="text-white"> Access History </q-item-section>
-      </q-item>
-
-      <q-item v-if="hasPermission([SETTINGS_PERMISSION.LIST])" v-ripple clickable exact>
-        <q-item-section avatar class="text-white">
-          <q-icon name="settings" />
-        </q-item-section>
-        <q-item-section class="text-white"> Settings </q-item-section>
       </q-item>
     </q-list>
   </q-scroll-area>

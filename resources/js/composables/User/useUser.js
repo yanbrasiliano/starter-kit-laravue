@@ -180,6 +180,7 @@ const useUser = () => {
     filter,
     user,
     columns,
+    router,
     listPage,
     updatePagination,
     handleSearch,

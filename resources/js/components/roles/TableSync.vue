@@ -33,19 +33,18 @@ const fetchPagination = async (event) => {
   pagination.value.rowsPerPage = event.pagination?.rowsPerPage;
   pagination.value.page = event.pagination?.page;
 
-  await store.fetchRoles({...pagination.value });
-}
+  await store.fetchRoles({ ...pagination.value });
+};
 
 watch(filter, async (newFilter, oldFilter) => {
   if (newFilter !== oldFilter) {
-    await search()
+    await search();
   }
-})
+});
 
 const search = async () => {
   await store.fetchRoles({ ...pagination.value, search: filter.value });
-}
-
+};
 </script>
 
 <template>
@@ -63,13 +62,6 @@ const search = async () => {
     :computed-rows-number="20"
     @update:pagination="fetchPagination"
     @request="fetchPagination">
-    <template #top-left>
-      <q-input v-model="filter" debounce="300" color="grey-3" text-color="deep-purple-3" label-color="grey-5" outlined label="Filter">
-        <template #append>
-          <q-icon color="secondary" name="search"/>
-        </template>
-      </q-input>
-    </template>
     <template #header="props">
       <q-dialog v-model="confirmRowDelete" persistent>
         <q-card>

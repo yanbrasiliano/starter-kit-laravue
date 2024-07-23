@@ -30,19 +30,17 @@ async function onSave() {
   $q.loading.show();
   const params = getParams();
 
-  if (route.params.id) {
-    await update(route.params.id, params);
-  } else {
-    await store(params);
-  }
+  await (route.params.id ? update(route.params.id, params) : store(params));
+
   $q.loading.hide();
 
-  const color = isSuccess.value ? 'positive' : 'negative';
-  $q.notify({ message: message.value, color, position: 'top-right' });
+  $q.notify({
+    message: message.value,
+    color: isSuccess.value ? 'positive' : 'negative',
+    position: 'top-right',
+  });
 
-  if (isSuccess.value) {
-    router.push({ name: 'listRoles' });
-  }
+  isSuccess.value && router.push({ name: 'listRoles' });
 }
 
 function getParams() {
