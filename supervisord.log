@@ -792,3 +792,22 @@
 2024-07-22 19:09:04,245 INFO reaped unknown pid 184 (exit status 0)
 2024-07-22 23:35:40,702 INFO reaped unknown pid 912 (exit status 0)
 2024-07-23 02:34:09,910 INFO reaped unknown pid 90 (terminated by SIGINT)
+2024-07-23 14:18:42,554 INFO reaped unknown pid 1325 (terminated by SIGINT)
+2024-07-23 14:32:31,881 INFO reaped unknown pid 1654 (terminated by SIGINT)
+2024-07-23 14:32:35,898 WARN received SIGQUIT indicating exit request
+2024-07-23 14:32:35,910 INFO waiting for laravel-queue, nginx, php-fpm to die
+2024-07-23 14:32:35,935 INFO stopped: php-fpm (exit status 0)
+2024-07-23 14:32:35,943 INFO stopped: nginx (exit status 0)
+2024-07-23 14:32:36,955 WARN stopped: laravel-queue (terminated by SIGTERM)
+2024-07-24 03:19:47,321 INFO Set uid to user 0 succeeded
+2024-07-24 03:19:47,342 INFO supervisord started with pid 1
+2024-07-24 03:19:48,349 INFO spawned: 'laravel-queue' with pid 7
+2024-07-24 03:19:48,351 INFO spawned: 'nginx' with pid 8
+2024-07-24 03:19:48,353 INFO spawned: 'php-fpm' with pid 9
+2024-07-24 03:19:49,448 INFO success: laravel-queue entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-24 03:19:49,448 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-24 03:19:49,449 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-24 03:20:11,335 WARN exited: laravel-queue (exit status 1; not expected)
+2024-07-24 03:20:12,342 INFO spawned: 'laravel-queue' with pid 56
+2024-07-24 03:20:13,348 INFO success: laravel-queue entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-24 03:21:17,649 INFO reaped unknown pid 61 (exit status 0)
