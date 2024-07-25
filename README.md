@@ -29,6 +29,7 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 - [ ] Refactor permissions on frontend
 - [ ] Refactor components to use more composables
 - [ ] Remove Repository pattern and use scopes on models
+- [ ] Refactor pagination 
 
 ## Bugs
 
