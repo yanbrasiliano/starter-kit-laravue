@@ -1,3 +1,17 @@
-echo "Running pre-push hook..."
-docker exec -i starterkit-app php artisan optimize:clear
-docker exec -i starterkit-app php artisan test --env=testing --coverage --parallel
+echo -e "\n🧪 Executando testes para PHP \n"
+
+run_docker_command() {
+  local command="$1"
+  echo "🚀 Executando: $command"
+  if docker exec -i starterkit-app $command; then
+    echo "✅ Comando executado com sucesso: $command"
+  else
+    echo "❌ Erro ao executar comando: $command"
+    exit 1
+  fi
+}
+
+run_docker_command "php artisan optimize:clear"
+run_docker_command "php artisan test --env=testing --coverage --parallel"
+
+echo -e "\n🏁 Testes finalizados com sucesso!\n"
