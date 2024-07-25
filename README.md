@@ -18,7 +18,7 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 
 ## Stack
 
-- **Laravel 11**
+- **Laravel 11 with directory structure Laravel 10**
 - **Spatie Permission**
 - **Vue 3.4**
 - **Composition API**
@@ -26,11 +26,10 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 
 ## To Do
 
-- [ ] Refactor permissions on frontend
-- [ ] Refactor components to use more composables
+- [ ] Refactor permissions on frontend;
+- [ ] Refactor components to use more composables;
 - [ ] Remove Repository pattern and use scopes on models
-- [ ] Refactor pagination 
-
+  
 ## Bugs
 
 - [ ] List user order do not work
