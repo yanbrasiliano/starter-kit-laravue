@@ -1,7 +1,5 @@
 <script setup>
 import FormRole from "@/components/roles/FormRole.vue";
-
-
 </script>
 <template>
   <div class="q-pa-md items-start q-gutter-md">

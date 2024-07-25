@@ -5,9 +5,7 @@ const index = async (params) => {
   const { data, status } = await http.get(route, {
     params,
   });
-  
-  
-  return { pagination: data.pagination, roles: data.data, status };
+  return { pagination: data.meta, roles: data.data, status };
 };
 
 const get = async (id) => {
