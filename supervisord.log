@@ -824,3 +824,12 @@
 2024-07-25 11:27:04,164 INFO stopped: php-fpm (exit status 0)
 2024-07-25 11:27:04,166 INFO stopped: nginx (exit status 0)
 2024-07-25 11:27:05,174 WARN stopped: laravel-queue (terminated by SIGTERM)
+2024-07-26 16:15:03,117 INFO Set uid to user 0 succeeded
+2024-07-26 16:15:03,222 INFO supervisord started with pid 1
+2024-07-26 16:15:04,229 INFO spawned: 'laravel-queue' with pid 7
+2024-07-26 16:15:04,231 INFO spawned: 'nginx' with pid 8
+2024-07-26 16:15:04,233 INFO spawned: 'php-fpm' with pid 9
+2024-07-26 16:15:05,284 INFO success: laravel-queue entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-26 16:15:05,284 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-26 16:15:05,285 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-26 16:21:45,190 INFO reaped unknown pid 121 (exit status 0)
