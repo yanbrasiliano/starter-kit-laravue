@@ -137,16 +137,16 @@
         },
         {
             "name": "dedoc/scramble",
-            "version": "v0.11.7",
+            "version": "v0.11.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dedoc/scramble.git",
-                "reference": "e87cfd14729b96f55886fab3edd7dbc6c6a2c441"
+                "reference": "e116aeb7de74ac668497ae22bfc4a66f0e794eee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dedoc/scramble/zipball/e87cfd14729b96f55886fab3edd7dbc6c6a2c441",
-                "reference": "e87cfd14729b96f55886fab3edd7dbc6c6a2c441",
+                "url": "https://api.github.com/repos/dedoc/scramble/zipball/e116aeb7de74ac668497ae22bfc4a66f0e794eee",
+                "reference": "e116aeb7de74ac668497ae22bfc4a66f0e794eee",
                 "shasum": ""
             },
             "require": {
@@ -199,7 +199,7 @@
             ],
             "support": {
                 "issues": "https://github.com/dedoc/scramble/issues",
-                "source": "https://github.com/dedoc/scramble/tree/v0.11.7"
+                "source": "https://github.com/dedoc/scramble/tree/v0.11.9"
             },
             "funding": [
                 {
@@ -207,7 +207,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-25T11:45:32+00:00"
+            "time": "2024-07-31T12:54:27+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -1126,16 +1126,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v11.18.1",
+            "version": "v11.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "b19ba518c56852567e99fbae9321bc436c2cc5a8"
+                "reference": "5e103d499e9ee5bcfc184412d034c4e516b87085"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/b19ba518c56852567e99fbae9321bc436c2cc5a8",
-                "reference": "b19ba518c56852567e99fbae9321bc436c2cc5a8",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/5e103d499e9ee5bcfc184412d034c4e516b87085",
+                "reference": "5e103d499e9ee5bcfc184412d034c4e516b87085",
                 "shasum": ""
             },
             "require": {
@@ -1328,7 +1328,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-07-26T10:39:29+00:00"
+            "time": "2024-07-30T15:22:41+00:00"
         },
         {
             "name": "laravel/prompts",
