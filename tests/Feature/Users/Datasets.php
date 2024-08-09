@@ -124,18 +124,6 @@ dataset('emailAlreadyExists', [
     ],
 ]);
 
-dataset('invalidCPF', [
-    fn () => [
-        'cpf' => '000000000',
-        'name' => fake('pt_BR')->name(),
-        'email' => fake('pt_BR')->email(),
-        'password' => fake('pt_BR')->password(10),
-        'active' => 1,
-        'send_random_password' => true,
-        'role_id' => fake('pt_BR')->randomElement([1]),
-    ],
-]);
-
 dataset('invalidRole', [
     fn () => [
         'name' => fake('pt_BR')->name(),

@@ -28,7 +28,6 @@ class CreateUserRequest extends FormRequest
         $rules = [
             'name' => ['required', 'string'],
             'email' => ['required', 'email',  Rule::unique('users', 'email')->ignore($this->id)],
-            'cpf' => ['string', new \App\Rules\ValidateCPF(), Rule::unique('users', 'cpf')->ignore($this->id)],
             'active' => ['required', Rule::in(StatusEnum::ENABLED, StatusEnum::DISABLED)],
             'role_id' => ['required', 'exists:roles,id'],
             'send_random_password' => ['required', 'boolean'],
@@ -51,7 +50,6 @@ class CreateUserRequest extends FormRequest
             'password' => 'Senha',
             'role_id' => 'Perfil',
             'active' => 'Status',
-            'cpf' => 'CPF',
         ];
     }
 
@@ -67,5 +65,4 @@ class CreateUserRequest extends FormRequest
             'password.min' => 'O campo Senha deve conter no minimo 8 caracteres.',
         ];
     }
-
 }

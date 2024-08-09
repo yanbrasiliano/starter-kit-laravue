@@ -146,21 +146,6 @@ describe('Users Management', function () {
             }
         )->with('invalidRole');
 
-        it(
-            'should return a 422 status code when CPF informed is invalid',
-            function (array $invalidCPF) {
-
-                actingAs($this->asAdmin)->post(route('users.create'), $invalidCPF)
-                  ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                  ->assertJson([
-                      'errors' => [
-                          'cpf' => [
-                              'O CPF inserido não é um cpf válido.',
-                          ],
-                      ],
-                  ]);
-            }
-        )->with('invalidCPF');
     });
 
     describe('Updating Users', function () {

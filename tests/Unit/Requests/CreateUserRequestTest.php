@@ -19,7 +19,6 @@ describe('CreateUserRequest', function () {
 
     it('should pass without errors', function () {
         $validator = Validator::make([
-            'cpf' => preg_replace('/\D/', '', fake('pt_BR')->cpf()),
             'name' => fake('pt_BR')->name(),
             'email' => fake('pt_BR')->email(),
             'password' => fake('pt_BR')->password(10),
@@ -29,20 +28,6 @@ describe('CreateUserRequest', function () {
         ], $this->rules, $this->messages);
 
         expect($validator->fails())->toBeFalse();
-    });
-
-    it('validates cpf field correctly for invalid format', function () {
-        $validator = Validator::make([
-            'cpf' => '00000000000',
-            'name' => fake('pt_BR')->name(),
-            'email' => fake('pt_BR')->email(),
-            'password' => fake('pt_BR')->password(10),
-            'active' => fake('pt_BR')->randomElement([0, 1]),
-            'send_random_password' => true,
-            'role_id' => $this->role->id,
-        ], $this->rules, $this->messages);
-        expect($validator->fails())->toBeTrue();
-        expect($validator->errors()->first('cpf'))->toBe('O cpf inserido não é um cpf válido.');
     });
 
     it('validates email field correctly for invalid format', function () {

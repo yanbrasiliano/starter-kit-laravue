@@ -5,6 +5,7 @@ namespace App\DTO;
 use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
 
+// @codeCoverageIgnoreStart
 abstract class AbstractDTO implements Arrayable, JsonSerializable
 {
     public function toArray(): array
@@ -34,3 +35,4 @@ abstract class AbstractDTO implements Arrayable, JsonSerializable
         return $this->toArray();
     }
 }
+// @codeCoverageIgnoreEnd

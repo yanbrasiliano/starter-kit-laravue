@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Role;
 
 use App\DTO\Paginate\PaginateParamsDTO;
 use App\DTO\Role\{CreateRoleDTO, RoleDTO, UpdateRoleDTO};

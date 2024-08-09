@@ -41,5 +41,20 @@ class RoleSeeder extends Seeder
 
         $visitorPermissions = Permission::whereIn('name', ['users.list', 'users.view'])->pluck('id')->toArray();
         $visitor->syncPermissions($visitorPermissions);
+
+        $reviewer = Role::updateOrCreate(
+            ['slug' => 'reviewer'],
+            [
+                'name' => 'Reviewer',
+                'guard_name' => 'web',
+                'slug' => 'reviewer',
+                'description' => 'Reviewer with limited access to the system, can only view and list users.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        $reviewerPermissions = Permission::whereIn('name', ['users.list', 'users.view'])->pluck('id')->toArray();
+        $reviewer->syncPermissions($reviewerPermissions);
     }
 }

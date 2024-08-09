@@ -6,7 +6,7 @@ use App\DTO\Paginate\{PaginateDataDTO, PaginateParamsDTO};
 use App\DTO\User\{CreateUserDTO, RegisterExternalUserDTO, UpdateUserDTO, UserDTO};
 use App\Mail\{AccountDeletionNotification, SendNotificationUserActivation, SendRandomPassword, SendVerifyEmail};
 use App\Repositories\Contracts\UserRepositoryInterface;
-use App\Services\RoleService;
+use App\Services\Role\RoleService;
 use Illuminate\Support\Facades\{Hash, Mail};
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -15,7 +15,7 @@ class UserService
 {
     public function __construct(
         private UserRepositoryInterface $repository,
-        private RoleService $roleService
+        private RoleService $service
     ) {
     }
 
@@ -82,7 +82,7 @@ class UserService
 
     public function registerExternal(RegisterExternalUserDTO $registerExternalUserDTO): void
     {
-        $role = $this->roleService->getBySlug($registerExternalUserDTO->role);
+        $role = $this->service->getBySlug($registerExternalUserDTO->role);
 
         tap(
             $this->repository->create(array_merge(['role_id' => [$role->id]], $registerExternalUserDTO->toArray())),

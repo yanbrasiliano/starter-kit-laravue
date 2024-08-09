@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PermissionResource;
-use App\Services\PermissionService;
+use App\Services\Permission\PermissionService;
 
 class PermissionController extends Controller
 {

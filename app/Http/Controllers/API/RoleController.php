@@ -6,7 +6,7 @@ use App\DTO\Paginate\PaginateParamsDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Role\{CreateRoleRequest, UpdateRoleRequest};
 use App\Http\Resources\RoleResource;
-use App\Services\RoleService;
+use App\Services\Role\RoleService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\{JsonResponse, Request, Response};
 
