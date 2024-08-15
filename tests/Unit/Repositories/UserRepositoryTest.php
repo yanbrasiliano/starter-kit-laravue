@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Repositories;
 
+use App\DTO\Paginate\PaginateParamsDTO;
 use App\Models\{DeleteReason, User};
 use App\Repositories\EloquentRepository\UserRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -17,25 +18,32 @@ beforeEach(function () {
 describe('Listing users in the repository', function () {
     it('returns the users registered in the database', function () {
         expect(app(UserRepository::class)->list(
-            []
+            new PaginateParamsDTO()
         ))->toBeInstanceOf(LengthAwarePaginator::class);
     });
 
     it('returns the users registered in the database, sorted by name ', function () {
         expect(app(UserRepository::class)->list(
-            ['column' => 'name', 'order' => 'desc']
+            new PaginateParamsDTO(
+                column: 'name',
+                order: 'desc'
+            )
         ))->toBeInstanceOf(LengthAwarePaginator::class);
     });
 
     it('returns the users registered in the database, sorted by email ', function () {
         expect(app(UserRepository::class)->list(
-            ['column' => 'email']
+            new PaginateParamsDTO(
+                column: 'email',
+            )
         ))->toBeInstanceOf(LengthAwarePaginator::class);
     });
 
     it('returns the users registered in the database, sorted by role', function () {
         expect(app(UserRepository::class)->list(
-            ['column' => 'role']
+            new PaginateParamsDTO(
+                column: 'role',
+            )
         ))->toBeInstanceOf(LengthAwarePaginator::class);
     });
 });

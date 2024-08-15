@@ -2,12 +2,13 @@
 
 namespace App\Repositories\EloquentRepository;
 
+use App\DTO\Paginate\PaginateParamsDTO;
 use App\Models\{DeleteReason, User};
 use App\Repositories\AbstractRepository;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\{Collection, Model};
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -22,31 +23,38 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
         $this->model = $user;
     }
 
-    public function list(array $params): LengthAwarePaginator
+    public function list(PaginateParamsDTO $paramsDTO): LengthAwarePaginator|Collection
     {
-        return $this->model->query()
-          ->select('users.*', 'roles.name as role', 'role_user.role_id as role_id')
+        $query = $this->model->newQuery();
+
+        $query->select([
+            'users.*',
+            'roles.name as role',
+            'role_user.role_id as role_id',
+        ])
           ->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
-          ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')
-          ->when(Arr::get($params, 'search'), fn ($query, $search) => $query->where(
-              fn ($query) => $query->where('users.id', 'ilike', "%{$search}%")
-              ->orWhere('users.name', 'ilike', "%{$search}%")
-              ->orWhere('users.email', 'ilike', "%{$search}%")
-              ->orWhere('roles.name', 'ilike', "%{$search}%")
-          ))
-          ->when(Arr::get($params, 'order'), fn ($query, $order) => $query->orderBy(
-              match (Arr::get($params, 'column')) {
-                  'name' => 'users.name',
-                  'email' => 'users.email',
-                  'role' => 'roles.name',
-                  default => 'users.id',
-              },
-              $order
-          ))
-          ->paginate(
-              perPage: Arr::get($params, 'limit', 10),
-              page: Arr::get($params, 'page', 1)
-          );
+          ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id');
+
+        $query->when($paramsDTO->search, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('users.id', 'ilike', "%$search%")
+                  ->orWhere('users.name', 'ilike', "%$search%")
+                  ->orWhere('users.email', 'ilike', "%$search%")
+                  ->orWhere('roles.name', 'ilike', "%$search%");
+            });
+        });
+
+        $query->when($paramsDTO->order, function ($query, $order) use ($paramsDTO) {
+            $column = match ($paramsDTO->column) {
+                'name' => 'users.name',
+                'email' => 'users.email',
+                'role' => 'roles.name',
+                default => 'users.id',
+            };
+            $query->orderBy($column, $order);
+        });
+
+        return $paramsDTO->paginated ? $query->paginate($paramsDTO->limit ?? 10) : $query->get();
     }
 
     public function create(array $params): Model|User

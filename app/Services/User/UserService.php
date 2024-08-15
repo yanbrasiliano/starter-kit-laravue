@@ -2,11 +2,13 @@
 
 namespace App\Services\User;
 
-use App\DTO\Paginate\{PaginateDataDTO, PaginateParamsDTO};
+use App\DTO\Paginate\{PaginateParamsDTO};
 use App\DTO\User\{CreateUserDTO, RegisterExternalUserDTO, UpdateUserDTO, UserDTO};
 use App\Mail\{AccountDeletionNotification, SendNotificationUserActivation, SendRandomPassword, SendVerifyEmail};
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\Role\RoleService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\{Hash, Mail};
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -19,11 +21,11 @@ class UserService
     ) {
     }
 
-    public function index(PaginateParamsDTO $params): PaginateDataDTO
+    public function index(PaginateParamsDTO $params): LengthAwarePaginator|Collection
     {
-        $users = $this->repository->list($params->toArray());
+        $users = $this->repository->list($params);
 
-        return new PaginateDataDTO(...collect($users)->toArray());
+        return $users;
     }
 
     public function create(CreateUserDTO $createUserDto): UserDTO

@@ -19,7 +19,7 @@ run_formatter() {
 for file in $staged_files; do
   case "$file" in
   *.php) run_formatter "./vendor/bin/pint" "$file" ;;
-  *.js | *.vue | *.css | *.md) run_formatter "npm run lint" "$file" ;;
+  *.js | *.vue) run_formatter "npm run lint" "$file" ;;
   esac
 done
 

@@ -2,26 +2,31 @@
 
 namespace Tests\Unit\Services;
 
-use App\DTO\Paginate\{PaginateDataDTO, PaginateParamsDTO};
+use App\DTO\Paginate\{PaginateParamsDTO};
 use App\DTO\User\{CreateUserDTO, UpdateUserDTO, UserDTO};
 use App\Mail\AccountDeletionNotification;
 use App\Models\User;
 use App\Services\User\UserService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\{DB, Mail};
+use Illuminate\Support\Facades\{DB, Mail, Notification, Queue};
 use Spatie\Permission\Exceptions\RoleDoesNotExist;
 
 beforeEach(function () {
     $this->users = User::factory(20)->create();
     $this->userAuth = User::factory()->create();
     $this->role = DB::table('roles')->first()->id;
+    Queue::fake();
+    Mail::fake();
+    Notification::fake();
+    Mail::assertNothingQueued();
 });
 
 describe('Lists users registered in the system', function () {
     it('returns the users registered in the system', function () {
         expect(app(UserService::class)->index(
-            new PaginateParamsDTO(fake('pt_BR')->randomNumber())
-        ))->toBeInstanceOf(PaginateDataDTO::class);
+            new PaginateParamsDTO()
+        ))->toBeInstanceOf(LengthAwarePaginator::class);
     });
 });
 
@@ -41,7 +46,6 @@ describe('Create new users', function () {
     });
 
     it('return the user registered in the system with generating a random password', function () {
-        Mail::fake();
         expect(app(UserService::class)->create(
             new CreateUserDTO(
                 fake('pt_BR')->name(),
@@ -71,7 +75,6 @@ describe('Create new users', function () {
 });
 describe('Updates user data', function () {
     it('returns the updated user data without notifying the status activation', function () {
-        Mail::fake();
         expect(app(UserService::class)->update(
             $this->users->first()->id,
             new UpdateUserDTO(
@@ -87,7 +90,6 @@ describe('Updates user data', function () {
     });
 
     it('returns updated user data notifying status activation', function () {
-        Mail::fake();
         expect(app(UserService::class)->update(
             $this->users->first()->id,
             new UpdateUserDTO(
