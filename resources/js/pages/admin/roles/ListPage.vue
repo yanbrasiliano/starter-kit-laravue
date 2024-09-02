@@ -1,62 +1,15 @@
 <script setup>
 import TableSync from '@/components/roles/TableSync.vue';
-import useRoleStore from '@/store/useRoleStore';
 import { useRouter } from 'vue-router';
-import { Notify, useQuasar } from 'quasar';
 import useRoleConfigListPage from '@composables/Roles/useRoleConfigListPage';
-import { storeToRefs } from 'pinia';
+import useRole from '@composables/Roles/useRole';
 import { hasPermission } from '@utils/hasPermission';
 import { ROLE_PERMISSION } from '@utils/permissions';
 
-const store = useRoleStore();
 const router = useRouter();
-const $q = useQuasar();
+const { loading, roles, pagination, updatePagination, onEdit, onDelete } = useRole();
 const { columns } = useRoleConfigListPage();
 
-const { roles, pagination, loading } = storeToRefs(useRoleStore());
-
-async function updatePagination(event) {
-  try {
-    $q.loading.show();
-    pagination.value = { ...event?.pagination };
-    await store.fetchRoles({
-      limit: event.pagination?.rowsPerPage,
-      page: event.pagination?.page,
-      order:
-        event.pagination?.descending || event?.pagination?.descending == undefined
-          ? 'desc'
-          : 'asc',
-      column: event.pagination?.sortBy,
-    });
-  } finally {
-    $q.loading.hide();
-  }
-}
-
-const onEdit = (event) => {
-  router.push({
-    name: 'editRoles',
-    params: {
-      id: event.id,
-    },
-  });
-};
-
-const onDelete = async (event) => {
-  try {
-    $q.loading.show();
-    await store.destroy(event.id);
-    Notify.create({
-      position: 'top-right',
-      color: 'positive',
-      message: 'Perfil removido com sucesso!',
-    });
-  } finally {
-    $q.loading.hide();
-
-    await store.fetchRoles({ ...pagination.value });
-  }
-};
 </script>
 <template>
   <div>

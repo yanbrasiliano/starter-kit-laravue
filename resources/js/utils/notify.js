@@ -1,6 +1,6 @@
 import { Notify } from 'quasar';
 
-export default function notify(message, color = 'positive', timeout = 1000) {
+export default function notify(message, color = 'positive', timeout = 5000) {
   Notify.create({
     position: 'top-right',
     color,

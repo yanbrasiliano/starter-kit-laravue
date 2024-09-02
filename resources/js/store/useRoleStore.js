@@ -52,7 +52,6 @@ const useRoleStore = defineStore('roles', {
           this.pagination.rowsPerPage = pagination?.per_page;
           this.pagination.page = pagination?.current_page;
           this.pagination.rowsNumber = pagination?.total;
-          this.pagination.descending = pagination?.descending;
         }
       } finally {
         this.loading = false;

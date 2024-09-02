@@ -13,74 +13,81 @@ use Spatie\Permission\Models\Role;
 
 class RoleRepository extends AbstractRepository implements RoleRepositoryInterface
 {
-    public function __construct(private Role $role)
-    {
-        $this->role = $role;
-    }
+  public function __construct(private Role $role)
+  {
+    $this->role = $role;
+  }
 
-    public function list(PaginateParamsDTO $paramsDTO): LengthAwarePaginator|Collection
-    {
-        return $this->role->query()
-          ->with('permissions')
-          ->when(isset($paramsDTO->order), function ($query) use ($paramsDTO) {
-              $column = $paramsDTO->column ?? 'id';
-              $query->orderBy($column, $paramsDTO->order);
-          })
-          ->when($paramsDTO->paginated, function ($query) use ($paramsDTO) {
-              return $query->paginate($paramsDTO->limit ?? 10);
-          }, function ($query) {
-              return $query->get();
-          });
-    }
+  public function list(PaginateParamsDTO $paramsDTO): LengthAwarePaginator|Collection
+  {
+    return $this->role->query()
+      ->with('permissions')
+      ->when(isset($paramsDTO->order), function ($query) use ($paramsDTO) {
+        $column = $paramsDTO->column ?? 'id';
+        $query->orderBy($column, $paramsDTO->order);
+      })
+      ->when($paramsDTO->paginated, function ($query) use ($paramsDTO) {
+        return $query->paginate($paramsDTO->limit ?? 10);
+      }, function ($query) {
+        return $query->get();
+      });
+  }
 
-    public function create(CreateRoleDTO $roleDTO): Model|Role
-    {
-        return DB::transaction(fn () => tap(
-            $this->role->create([
-                'name' => $roleDTO->name,
-                'guard_name' => 'web',
-                'slug' => str()->slug($roleDTO->name),
-                'description' => $roleDTO->description,
-            ]),
-            fn ($role) => $role->syncPermissions($roleDTO->permissions)
-        ));
-    }
+  public function hasUsersWithProfile(int $id): bool
+  {
+    $role = $this->role->findOrFail($id);
 
-    public function getById(int $id): Model|Role
-    {
-        return $this->role->with(['permissions' => function ($query) {
-            return $query->select(['id', 'description']);
-        }])->findOrFail($id);
-    }
+    return $role->users()->exists();
+  }
 
-    public function update(UpdateRoleDTO $roleDTO): Model|Role
-    {
-        return DB::transaction(fn () => tap($this->role->findOrFail($roleDTO->id), function ($role) use ($roleDTO) {
-            $role->update([
-                'name' => $roleDTO->name,
-                'guard_name' => 'web',
-                'slug' => str()->slug($roleDTO->name),
-                'description' => $roleDTO->description,
-            ]);
+  public function create(CreateRoleDTO $roleDTO): Model|Role
+  {
+    return DB::transaction(fn() => tap(
+      $this->role->create([
+        'name' => $roleDTO->name,
+        'guard_name' => 'web',
+        'slug' => str()->slug($roleDTO->name),
+        'description' => $roleDTO->description,
+      ]),
+      fn($role) => $role->syncPermissions($roleDTO->permissions)
+    ));
+  }
 
-            $roleDTO->permissions ? $role->syncPermissions($roleDTO->permissions) : null;
-        }));
-    }
+  public function getById(int $id): Model|Role
+  {
+    return $this->role->with(['permissions' => function ($query) {
+      return $query->select(['id', 'description']);
+    }])->findOrFail($id);
+  }
 
-    public function delete(int $id): bool
-    {
-        return $this->role->findOrFail($id)->delete();
-    }
+  public function update(UpdateRoleDTO $roleDTO): Model|Role
+  {
+    return DB::transaction(fn() => tap($this->role->findOrFail($roleDTO->id), function ($role) use ($roleDTO) {
+      $role->update([
+        'name' => $roleDTO->name,
+        'guard_name' => 'web',
+        'slug' => str()->slug($roleDTO->name),
+        'description' => $roleDTO->description,
+      ]);
 
-    public function getBySlug(string $slug): Model|Role
-    {
-        return $this->role->with(['permissions' => function ($query) {
-            return $query->select(['id', 'description']);
-        }])->where('slug', $slug)->firstOrFail();
-    }
+      $roleDTO->permissions ? $role->syncPermissions($roleDTO->permissions) : null;
+    }));
+  }
 
-    public function listAll(): Collection
-    {
-        return $this->role->with('permissions')->get(['id', 'name']);
-    }
+  public function delete(int $id): bool
+  {
+    return $this->role->findOrFail($id)->delete();
+  }
+
+  public function getBySlug(string $slug): Model|Role
+  {
+    return $this->role->with(['permissions' => function ($query) {
+      return $query->select(['id', 'description']);
+    }])->where('slug', $slug)->firstOrFail();
+  }
+
+  public function listAll(): Collection
+  {
+    return $this->role->with('permissions')->get(['id', 'name']);
+  }
 }
