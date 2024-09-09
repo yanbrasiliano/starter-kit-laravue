@@ -10,7 +10,6 @@ uses(
 
 uses(
     TestCase::class,
-    RefreshDatabase::class,
 )->in('Unit');
 
 expect()->extend('toBeOne', function () {

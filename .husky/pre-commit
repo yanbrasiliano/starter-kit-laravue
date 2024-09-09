@@ -1,6 +1,6 @@
 echo "🔍 Executando pre-commit hook..."
 
-staged_files=$(git diff --name-only --cached)
+staged_files=$(git diff --name-only --cached --diff-filter=d)
 
 if [ -z "$staged_files" ]; then
   echo "🚫 Nenhum arquivo staged encontrado."
