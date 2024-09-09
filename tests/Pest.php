@@ -1,16 +1,12 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+pest()->extend(Tests\TestCase::class)
+  ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+  ->in('Feature');
 
-uses(
-    TestCase::class,
-    RefreshDatabase::class,
-)->in('Feature');
+pest()->extend(Tests\TestCase::class)->in('Unit');
 
-uses(
-    TestCase::class,
-)->in('Unit');
+pest()->theme()->compact();
 
 expect()->extend('toBeOne', function () {
     return $this->toBe(1);
