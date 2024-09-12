@@ -31,6 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   jpegoptim \
   optipng \
   pngquant \
+  unzip \
   gifsicle \
   libxml2-dev \
   && pecl install -o -f redis xdebug \
@@ -53,10 +54,8 @@ RUN { \
   && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
   && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-# Copy Composer from the composer stage
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-# Copy Node and NPM from the node stage
 COPY --from=node /usr/local/bin /usr/local/bin
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 
@@ -67,12 +66,10 @@ RUN rm -f /etc/nginx/sites-enabled/default \
 
 COPY ./docker/SUPERVISOR/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Copy application files and set permissions
 COPY --chown=www-data:www-data . .
 RUN chmod +x ./permissions.sh \
   && ./permissions.sh
 
-# Install PHP and Node.js dependencies
 RUN composer install --no-dev --no-interaction --no-progress --no-suggest --optimize-autoloader \
   && composer clear-cache \
   && npm install \
