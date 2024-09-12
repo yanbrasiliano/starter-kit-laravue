@@ -6,7 +6,7 @@ pest()->extend(Tests\TestCase::class)
 
 pest()->extend(Tests\TestCase::class)->in('Unit');
 
-pest()->theme()->compact();
+pest()->printer()->compact();
 
 expect()->extend('toBeOne', function () {
     return $this->toBe(1);
