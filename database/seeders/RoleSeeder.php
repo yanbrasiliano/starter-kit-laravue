@@ -27,7 +27,7 @@ class RoleSeeder extends Seeder
         $permissions = Permission::all()->pluck('id')->toArray();
         $admin->syncPermissions($permissions);
 
-        $visitor = Role::updateOrCreate(
+       Role::updateOrCreate(
             ['slug' => 'visitor'],
             [
                 'name' => 'Guest',
@@ -39,10 +39,7 @@ class RoleSeeder extends Seeder
             ]
         );
 
-        $visitorPermissions = Permission::whereIn('name', ['users.list', 'users.view'])->pluck('id')->toArray();
-        $visitor->syncPermissions($visitorPermissions);
-
-        $reviewer = Role::updateOrCreate(
+      Role::updateOrCreate(
             ['slug' => 'reviewer'],
             [
                 'name' => 'Reviewer',
@@ -53,8 +50,5 @@ class RoleSeeder extends Seeder
                 'updated_at' => now(),
             ]
         );
-
-        $reviewerPermissions = Permission::whereIn('name', ['users.list', 'users.view'])->pluck('id')->toArray();
-        $reviewer->syncPermissions($reviewerPermissions);
     }
 }

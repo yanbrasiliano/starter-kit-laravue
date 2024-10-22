@@ -7,6 +7,7 @@ use App\DTO\Role\{CreateRoleDTO, RoleDTO, UpdateRoleDTO};
 use App\Exceptions\RoleIsAssignedToUserException;
 use App\Repositories\Contracts\RoleRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class RoleService
 {
@@ -21,7 +22,9 @@ class RoleService
 
   public function create(CreateRoleDTO $roleDto): RoleDTO
   {
-    return new RoleDTO(...$this->repository->create($roleDto)->toArray());
+    return DB::transaction(function () use ($roleDto) {
+      return new RoleDTO(...$this->repository->create($roleDto)->toArray());
+    });
   }
 
   public function getById(int $id): RoleDTO
@@ -37,9 +40,10 @@ class RoleService
     $user = Auth::user();
     $roleDTO->permissions = $user->hasRole($roleDTO->id) ? null : $roleDTO->permissions;
 
-    return new RoleDTO(...$this->repository->update($roleDTO)->toArray());
+    return DB::transaction(function () use ($roleDTO) {
+      return new RoleDTO(...$this->repository->update($roleDTO)->toArray());
+    });
   }
-
 
   public function delete(int $id): bool
   {

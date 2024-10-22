@@ -9,110 +9,111 @@ use App\Repositories\Contracts\UserRepositoryInterface;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\{Collection, Model};
-use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @property object $roles
  */
 class UserRepository extends AbstractRepository implements UserRepositoryInterface
 {
-    public function __construct(User $user)
-    {
-        $this->model = $user;
+  public function __construct(User $user)
+  {
+    $this->model = $user;
+  }
+
+  public function list(PaginateParamsDTO $paramsDTO): LengthAwarePaginator|Collection
+  {
+    $query = $this->model->newQuery();
+
+    $query->select([
+      'users.*',
+      'roles.name as role',
+      'role_user.role_id as role_id',
+    ])
+      ->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
+      ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id');
+
+    $query->when($paramsDTO->search, function ($query, $search) {
+      $query->where(function ($query) use ($search) {
+        $query->where('users.id', 'ilike', "%$search%")
+          ->orWhere('users.name', 'ilike', "%$search%")
+          ->orWhere('users.email', 'ilike', "%$search%")
+          ->orWhere('roles.name', 'ilike', "%$search%");
+      });
+    });
+
+    $query->when($paramsDTO->order, function ($query, $order) use ($paramsDTO) {
+      $column = match ($paramsDTO->column) {
+        'name' => 'users.name',
+        'email' => 'users.email',
+        'role' => 'roles.name',
+        'setSituation' => 'users.active',
+        default => 'users.id',
+      };
+      $query->orderBy($column, $order);
+    });
+
+    return $paramsDTO->paginated ? $query->paginate($paramsDTO->limit ?? 10) : $query->get();
+  }
+
+  public function create(array $params): Model|User
+  {
+    $user = $this->model->create(Arr::only($params, ['name', 'email', 'password', 'cpf', 'active']));
+    $user->syncRoles([$params['role_id']]);
+    return $user;
+  }
+
+  public function getById(int $id): Model|User
+  {
+    return $this->model->with('roles.permissions')->findOrFail($id);
+  }
+
+  public function update(int $id, array $params): Model|User
+  {
+    $user = $this->model->findOrFail($id);
+    $user->update($params);
+
+    if (isset($params['role_id'])) {
+      $user->syncRoles([$params['role_id']]);
     }
 
-    public function list(PaginateParamsDTO $paramsDTO): LengthAwarePaginator|Collection
-    {
-        $query = $this->model->newQuery();
+    return $user;
+  }
 
-        $query->select([
-            'users.*',
-            'roles.name as role',
-            'role_user.role_id as role_id',
-        ])
-          ->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
-          ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id');
+  public function delete(int $id, string $reason): DeleteReason
+  {
+    $user = User::findOrFail($id);
 
-        $query->when($paramsDTO->search, function ($query, $search) {
-            $query->where(function ($query) use ($search) {
-                $query->where('users.id', 'ilike', "%$search%")
-                  ->orWhere('users.name', 'ilike', "%$search%")
-                  ->orWhere('users.email', 'ilike', "%$search%")
-                  ->orWhere('roles.name', 'ilike', "%$search%");
-            });
-        });
+    $deleteReason = new DeleteReason([
+      'deleted_user_id' => $user->id,
+      'deleted_user_email' => $user->email,
+      'deleted_user_name' => $user->name,
+      'deleted_by_user_id' => auth()->id(),
+      'deleted_by_user_name' => auth()->user()->name,
+      'deleted_by_user_email' => auth()->user()->email,
+      'reason' => $reason,
+      'deleted_at' => now(),
+    ]);
 
-        $query->when($paramsDTO->order, function ($query, $order) use ($paramsDTO) {
-            $column = match ($paramsDTO->column) {
-                'name' => 'users.name',
-                'email' => 'users.email',
-                'role' => 'roles.name',
-                default => 'users.id',
-            };
-            $query->orderBy($column, $order);
-        });
+    $deleteReason->save();
+    $user->delete();
 
-        return $paramsDTO->paginated ? $query->paginate($paramsDTO->limit ?? 10) : $query->get();
-    }
+    return $deleteReason;
+  }
 
-    public function create(array $params): Model|User
-    {
-        return DB::transaction(fn () => tap(
-            $this->model->create(Arr::only($params, ['name', 'email', 'password', 'cpf', 'active'])),
-            fn ($user) => $user->syncRoles([$params['role_id']])
-        ));
-    }
+  public function updatePassword(int $id, string $password): void
+  {
+    $this->model->findOrFail($id)->update(['password' => $password]);
+  }
 
-    public function getById(int $id): Model|User
-    {
-        return $this->model->with('roles.permissions')->findOrFail($id);
-    }
-
-    public function update(int $id, array $params): Model|User
-    {
-        return DB::transaction(fn () => tap(
-            $this->model->findOrFail($id),
-            fn ($user) => $user->update($params) && isset($params['role_id']) ? $user->syncRoles([$params['role_id']]) : null
-        ));
-    }
-
-    public function delete(int $id, string $reason): DeleteReason
-    {
-        return DB::transaction(function () use ($id, $reason) {
-            $user = User::findOrFail($id);
-
-            $deleteReason = new DeleteReason([
-                'deleted_user_id' => $user->id,
-                'deleted_user_email' => $user->email,
-                'deleted_user_name' => $user->name,
-                'deleted_by_user_id' => auth()->id(),
-                'deleted_by_user_name' => auth()->user()->name,
-                'deleted_by_user_email' => auth()->user()->email,
-                'reason' => $reason,
-                'deleted_at' => now(),
-            ]);
-
-            $deleteReason->save();
-            $user->delete();
-
-            return $deleteReason;
-        });
-    }
-
-    public function updatePassword(int $id, string $password): void
-    {
-        $this->model->findOrFail($id)->update(['password' => $password]);
-    }
-
-    public function verify(int $id): void
-    {
-        tap(
-            $this->model::findOrFail($id),
-            fn ($user) => $user->hasVerifiedEmail()
-            ? throw new Exception('Seu cadastro já foi validado! Por favor, aguarde até que um administrador realize a liberação do seu acesso.', Response::HTTP_CONFLICT)
-            : $user->markEmailAsVerified()
-        );
-    }
+  public function verify(int $id): void
+  {
+    tap(
+      $this->model::findOrFail($id),
+      fn($user) => $user->hasVerifiedEmail()
+        ? throw new Exception('Seu cadastro já foi validado! Por favor, aguarde até que um administrador realize a liberação do seu acesso.', Response::HTTP_CONFLICT)
+        : $user->markEmailAsVerified()
+    );
+  }
 }

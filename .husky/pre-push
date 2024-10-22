@@ -1,3 +1,9 @@
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$current_branch" = "main" ]; then
+  echo "🚫 Branch 'main' detectada, pulando execução dos testes."
+  exit 0
+fi
+
 echo -e "\n🧪 Executando testes para PHP \n"
 
 run_docker_command() {

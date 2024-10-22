@@ -38,6 +38,7 @@ export default function useUserConfigListPage() {
       required: true,
       label: 'Situação',
       align: 'left',
+      sortable: true,
       field: (row) => row.active,
       format: (val) => `${val}`,
     },

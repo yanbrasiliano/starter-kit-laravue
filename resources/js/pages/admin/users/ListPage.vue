@@ -33,7 +33,11 @@ const {
       <q-card-section>
         <div class="row justify-between">
           <div class="col-md-4">
-            <q-input v-model="filter" filled label="Pesquisar por...">
+            <q-input
+              v-model="filter"
+              filled
+              label="Pesquisar por..."
+              @update:model-value="handleSearch">
               <template #append>
                 <q-icon name="search" class="cursor-pointer" @click="handleSearch" />
               </template>

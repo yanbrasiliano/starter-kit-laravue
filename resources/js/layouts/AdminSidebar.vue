@@ -11,7 +11,7 @@ const props = defineProps({
 <template>
   <q-scroll-area
     style="height: calc(100% - 100px); margin-top: 70px; border-right: 1px solid #ddd">
-    <q-list padding style="margin-top: 30px">
+    <q-list padding class="q-mt-md">
       <q-item v-show="!props.miniState">
         <q-item-label header class="text-white font-weight-bold">
           ADMINISTRATION

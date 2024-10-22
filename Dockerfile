@@ -1,10 +1,7 @@
-# Stage 1: Composer
 FROM composer:2 as composer
 
-# Stage 2: Node
 FROM node:18 as node
 
-# Stage 3: Base PHP
 FROM php:8.3-fpm as base
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV ACCEPT_EULA=Y
@@ -72,7 +69,7 @@ RUN chmod +x ./permissions.sh \
 
 RUN composer install --no-dev --no-interaction --no-progress --no-suggest --optimize-autoloader \
   && composer clear-cache \
-  && npm install \
-  && npm install -g npm@latest npx gulp-cli cross-env node-sass sass postcss-cli autoprefixer
+  && npm i \
+  && npm i -g npm@latest npx gulp-cli cross-env sass postcss-cli autoprefixer
 
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

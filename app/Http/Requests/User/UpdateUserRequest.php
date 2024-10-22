@@ -2,79 +2,102 @@
 
 namespace App\Http\Requests\User;
 
+use App\DTO\User\UpdateUserDTO;
 use App\Enums\StatusEnum;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
+  public function authorize(): bool
+  {
+    return true;
+  }
+
+  public function rules(): array
+  {
+    return array_merge($this->baseRules(), $this->cpfRule(), $this->passwordRule(), $this->roleSlugRule());
+  }
+
+  protected function baseRules(): array
+  {
+    return [
+      'name' => ['required', 'string'],
+      'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->id)],
+      'active' => ['required', Rule::in(StatusEnum::ENABLED, StatusEnum::DISABLED)],
+      'role_id' => ['required', 'exists:roles,id'],
+      'notify_status' => ['boolean'],
+    ];
+  }
+
+  protected function cpfRule(): array
+  {
+    if (!$this->filled('cpf')) {
+      return [];
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
-    {
-        $rules = [
-            'name' => ['required', 'string'],
-            'email' => ['required', 'string', 'email', Rule::unique('users', 'email')->ignore($this->id)],
-            'active' => ['required', Rule::in(StatusEnum::ENABLED, StatusEnum::DISABLED)],
-            'role_id' => ['required', 'exists:roles,id'],
-        ];
+    return [
+      'cpf' => [
+        'required',
+        'string',
+        new \App\Rules\ValidateCPF(),
+        Rule::unique('users', 'cpf')
+          ->where(function ($query) {
+            $query->whereExists(function ($subQuery) {
+              $subQuery->select(DB::raw(1))
+                ->from('role_user')
+                ->whereColumn('role_user.user_id', 'users.id')
+                ->where('role_user.role_id', $this->role_id);
+            });
+          })
+          ->ignore($this->id),
+      ],
+    ];
+  }
 
-        if (isset($this->password)) {
-            $rules = array_merge($rules, [
-                'password' => ['required', 'min:8'],
-            ]);
-        }
+  protected function passwordRule(): array
+  {
+    return $this->filled('password') ? ['password' => ['nullable', 'min:8']] : [];
+  }
 
-        return $rules;
-    }
+  protected function roleSlugRule(): array
+  {
+    return $this->filled('role_slug') ? ['role_slug' => ['required']] : [];
+  }
+  public function attributes(): array
+  {
+    return [
+      'name' => 'Nome',
+      'email' => 'E-mail',
+      'password' => 'Senha',
+      'role_id' => 'Perfil',
+      'role_slug' => 'Perfil',
+      'active' => 'Status',
+      'cpf' => 'CPF',
+      'registration' => 'Matrícula',
+      'notify_status' => 'Envio de Notificação',
+    ];
+  }
 
-    public function attributes(): array
-    {
-        return [
-            'name' => 'Nome',
-            'role_id' => 'Perfil',
-            'active' => 'Status',
-            'email' => 'E-mail',
-        ];
-    }
+  public function messages(): array
+  {
+    return [
+      'cpf.unique' => 'CPF já cadastrado no SISTEX, realize o login com suas credenciais.',
+      'email.unique' => 'O e-mail já foi cadastrado.',
+      'email.email' => 'O :attribute inserido não é válido.',
+      'boolean' => 'O campo :attribute não é booleano.',
+      'required' => 'O campo :attribute é obrigatório.',
+      'exists' => 'O :attribute é inválido.',
+      'max' => 'O :attribute inserido excede o limite de caracteres.',
+      'unique' => 'O :attribute inserido já está em uso.',
+      'in' => 'O :attribute inserido não é válido.',
+      'password.min' => 'O campo Senha deve conter no minimo 8 caracteres.',
+    ];
+  }
 
-    public function messages(): array
-    {
-        return [
-            'required' => 'O campo :attribute é obrigatório.',
-            'exists' => 'O :attribute é inválido.',
-            'max' => 'O :attribute inserido excede o limite de caracteres.',
-            'unique' => 'O :attribute inserido já está em uso.',
-            'email' => 'O :attribute inserido não é válido.',
-            'string' => 'O :attribute contém um tipo inválido',
-            'in' => 'O :attribute inserido não é válido.',
-            'password.min' => 'O campo Senha deve conter no minimo 8 caracteres.',
-        ];
-    }
-
-    protected function failedValidation(Validator $validator): HttpResponseException
-    {
-        throw new HttpResponseException(
-            response()->json(
-                [
-                    'errors' => $validator->errors(),
-                ],
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            )
-        );
-    }
+  public function validated($key = null, $default = null): UpdateUserDTO|array
+  {
+    return new UpdateUserDTO(...parent::validated());
+  }
 }

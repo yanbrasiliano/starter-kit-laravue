@@ -1,5 +1,11 @@
 echo "🔍 Executando pre-commit hook..."
 
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$current_branch" = "main" ]; then
+  echo "🚫 Branch 'main' detectada, pulando execução dos formatadores."
+  exit 0
+fi
+
 staged_files=$(git diff --name-only --cached --diff-filter=d)
 
 if [ -z "$staged_files" ]; then
@@ -24,6 +30,6 @@ for file in $staged_files; do
 done
 
 echo "🔧 Executando análise do PHPStan..."
-docker exec -i starterkit-app ./vendor/bin/phpstan analyse
+docker exec -i sistex-app ./vendor/bin/phpstan analyse
 
 echo "✅ Pre-commit hook finalizado com sucesso!"

@@ -8,7 +8,6 @@ use App\Repositories\AbstractRepository;
 use App\Repositories\Contracts\RoleRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\{Collection, Model};
-use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class RoleRepository extends AbstractRepository implements RoleRepositoryInterface
@@ -42,15 +41,16 @@ class RoleRepository extends AbstractRepository implements RoleRepositoryInterfa
 
   public function create(CreateRoleDTO $roleDTO): Model|Role
   {
-    return DB::transaction(fn() => tap(
-      $this->role->create([
-        'name' => $roleDTO->name,
-        'guard_name' => 'web',
-        'slug' => str()->slug($roleDTO->name),
-        'description' => $roleDTO->description,
-      ]),
-      fn($role) => $role->syncPermissions($roleDTO->permissions)
-    ));
+    $role = $this->role->create([
+      'name' => $roleDTO->name,
+      'guard_name' => 'web',
+      'slug' => str()->slug($roleDTO->name),
+      'description' => $roleDTO->description,
+    ]);
+
+    $role->syncPermissions($roleDTO->permissions);
+
+    return $role;
   }
 
   public function getById(int $id): Model|Role
@@ -62,16 +62,19 @@ class RoleRepository extends AbstractRepository implements RoleRepositoryInterfa
 
   public function update(UpdateRoleDTO $roleDTO): Model|Role
   {
-    return DB::transaction(fn() => tap($this->role->findOrFail($roleDTO->id), function ($role) use ($roleDTO) {
-      $role->update([
-        'name' => $roleDTO->name,
-        'guard_name' => 'web',
-        'slug' => str()->slug($roleDTO->name),
-        'description' => $roleDTO->description,
-      ]);
+    $role = $this->role->findOrFail($roleDTO->id);
+    $role->update([
+      'name' => $roleDTO->name,
+      'guard_name' => 'web',
+      'slug' => str()->slug($roleDTO->name),
+      'description' => $roleDTO->description,
+    ]);
 
-      $roleDTO->permissions ? $role->syncPermissions($roleDTO->permissions) : null;
-    }));
+    if ($roleDTO->permissions) {
+      $role->syncPermissions($roleDTO->permissions);
+    }
+
+    return $role;
   }
 
   public function delete(int $id): bool
