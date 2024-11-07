@@ -14,17 +14,6 @@ const userRoutes = {
       },
     },
     {
-      path: 'show/:id',
-      name: 'showUsers',
-      component: async () => import('@pages/admin/users/ShowPage.vue'),
-      meta: {
-        requiresAuth: true,
-        module: 'Users',
-        icon: 'people_alt',
-        roles: [USER_PERMISSION.VIEW],
-      },
-    },
-    {
       path: 'edit/:id',
       name: 'editUsers',
       component: async () => import('@pages/admin/users/EditPage.vue'),

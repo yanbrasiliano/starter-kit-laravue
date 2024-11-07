@@ -67,7 +67,7 @@ export default defineConfig({
       },
     }),
     quasar({
-      sassVariables: 'resources/css/quasar-variables.sass',
+      sassVariables: '@css/quasar-variables.sass',
     }),
     laravel({
       input: ['resources/css/app.sass', 'resources/js/app.js'],

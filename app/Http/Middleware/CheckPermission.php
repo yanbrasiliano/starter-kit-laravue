@@ -4,35 +4,27 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Exception;
-use Illuminate\Http\{Request, Response as HttpResponse};
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 class CheckPermission
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next, $permission = null)
-    {
-        /**
-         * @var \App\Models\User $user
-         */
-        $user = auth()->user();
-        $permission = Route::currentRouteName();
+  public function handle(Request $request, Closure $next)
+  {
 
-        if (str_contains($permission, 'view')) {
-            $permission = [
-                $permission,
-                str_replace('view', 'edit', $permission),
-            ];
-        }
+      
+    $user = auth()->user();
+    $permission = Route::currentRouteName();
 
-        if (!$user->canAny($permission)) {
-            throw new Exception('Você não tem permissão para realizar esta ação.', HttpResponse::HTTP_FORBIDDEN);
-        }
+    $permissions = str_contains($permission, 'view')
+      ? [$permission, str_replace('view', 'edit', $permission)]
+      : [$permission];
 
-        return $next($request);
+    if (!$user->canAny($permissions)) {
+      throw new Exception('Você não tem permissão para realizar esta ação.', HttpResponse::HTTP_FORBIDDEN);
     }
+
+    return $next($request);
+  }
 }

@@ -1,5 +1,4 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
   <main>
@@ -7,8 +6,7 @@
       <RouterView></RouterView>
     </component>
   </main>
-</template> 
-
+</template>
 
 <style lang="sass">
 @import '@css/app.sass'
