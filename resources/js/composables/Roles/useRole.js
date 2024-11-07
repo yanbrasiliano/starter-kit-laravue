@@ -61,7 +61,7 @@ const useRole = () => {
       $q.loading.show();
       await store.destroy(event.id);
 
-      notify('Perfil removido com sucesso!');
+      notify('Perfil removido com sucesso');
     } finally {
       $q.loading.hide();
 

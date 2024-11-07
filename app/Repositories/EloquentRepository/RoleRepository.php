@@ -34,25 +34,17 @@ class RoleRepository extends AbstractRepository implements RoleRepositoryInterfa
 
   public function hasUsersWithProfile(int $id): bool
   {
-    $role = $this->role->findOrFail($id);
-
-    return $role->users()->exists();
+    return $this->role->findOrFail($id)->users()->exists();
   }
-
   public function create(CreateRoleDTO $roleDTO): Model|Role
   {
-    $role = $this->role->create([
+    return tap($this->role->create([
       'name' => $roleDTO->name,
       'guard_name' => 'web',
       'slug' => str()->slug($roleDTO->name),
       'description' => $roleDTO->description,
-    ]);
-
-    $role->syncPermissions($roleDTO->permissions);
-
-    return $role;
+    ]), fn($role) => $role->syncPermissions($roleDTO->permissions));
   }
-
   public function getById(int $id): Model|Role
   {
     return $this->role->with(['permissions' => function ($query) {
@@ -62,21 +54,16 @@ class RoleRepository extends AbstractRepository implements RoleRepositoryInterfa
 
   public function update(UpdateRoleDTO $roleDTO): Model|Role
   {
-    $role = $this->role->findOrFail($roleDTO->id);
-    $role->update([
-      'name' => $roleDTO->name,
-      'guard_name' => 'web',
-      'slug' => str()->slug($roleDTO->name),
-      'description' => $roleDTO->description,
-    ]);
+    return tap($this->role->findOrFail($roleDTO->id), function ($role) use ($roleDTO) {
+      $role->update([
+        'name' => $roleDTO->name,
+        'guard_name' => 'web',
+        'description' => $roleDTO->description,
+      ]);
 
-    if ($roleDTO->permissions) {
-      $role->syncPermissions($roleDTO->permissions);
-    }
-
-    return $role;
+      $roleDTO->permissions ? $role->syncPermissions($roleDTO->permissions) : null;
+    });
   }
-
   public function delete(int $id): bool
   {
     return $this->role->findOrFail($id)->delete();

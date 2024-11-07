@@ -12,8 +12,11 @@ const route = useRoute();
 
 const formData = ref({
   send_random_password: false,
+  role_slug: null,
   active: 0,
 });
+
+const submitted = ref(false);
 
 onMounted(() => {
   formData.value.name = props.user?.name || '';
@@ -24,12 +27,14 @@ onMounted(() => {
 });
 
 const onSubmit = async () => {
+  submitted.value = true;
   emit('send', {
     email: formData.value.email,
     name: formData.value.name,
     cpf: formData.value.cpf,
     password: formData.value.password,
-    role_id: formData.value.role.id,
+    role_id: formData.value.role?.id,
+    role_slug: formData.value.role?.slug,
     active: formData.value.active ?? 0,
     send_random_password: formData.value.send_random_password,
   });
@@ -42,93 +47,115 @@ watch([formData, () => formData.value.send_random_password], () => {
 
 <template>
   <q-form class="q-gutter-md" @submit.prevent="onSubmit">
-    <div>
-      <label for="name" class="text-weight-bold">Name</label>
-      <q-input
-        v-model="formData.name"
-        filled
-        placeholder="Enter the name"
-        lazy-rules
-        autofocus
-        :rules="[(val) => (val && val.length > 0) || 'Please enter the name']" />
-    </div>
-    <div>
-      <label for="email" class="text-weight-bold">Email</label>
-      <q-input
-        v-model="formData.email"
-        filled
-        type="email"
-        placeholder="Enter your email"
-        lazy-rules
-        autofocus
-        :rules="[(val) => (val && val.length > 0) || 'Please enter your email']" />
-    </div>
-    <div>
-      <label for="password" class="text-weight-bold">Password</label>
-      <q-input
-        v-model="formData.password"
-        filled
-        label="Password"
-        type="password"
-        placeholder="Enter your password"
-        lazy-rules
-        autofocus
-        :rules="[]"
-        :readonly="formData.send_random_password" />
-    </div>
-    <div v-if="route.name !== 'editUsers'">
-      <q-checkbox
-        v-model="formData.send_random_password"
-        label="Send random password by email" />
-    </div>
-    <div class="row">
+    <div class="row q-col-gutter-md">
       <div class="col-md-6">
-        <label for="role_id" class="text-weight-bold">Role</label>
+        <label for="name" class="text-weight-bold">Nome</label>
+        <q-input
+          v-model="formData.name"
+          filled
+          placeholder="Digite o nome"
+          lazy-rules
+          :style="{ width: '100%' }"
+          :rules="[(val) => (val && val.length > 0) || 'Por favor, insira o nome']" />
+      </div>
+      <div class="col-md-6">
+        <label for="cpf" class="text-weight-bold">CPF</label>
+        <q-input
+          v-model="formData.cpf"
+          filled
+          placeholder="Digite o CPF"
+          lazy-rules
+          :style="{ width: '100%' }"
+          :rules="[(val) => (val && val.length > 0) || 'Por favor, insira o CPF']" />
+      </div>
+    </div>
+    <div class="row q-col-gutter-md">
+      <div class="col-md-12">
+        <label for="email" class="text-weight-bold">Email</label>
+        <q-input
+          v-model="formData.email"
+          filled
+          type="email"
+          placeholder="Digite o email"
+          lazy-rules
+          :style="{ width: '100%' }"
+          :rules="[(val) => (val && val.length > 0) || 'Por favor, insira o email']" />
+      </div>
+    </div>
+    <div class="row q-col-gutter-md">
+      <div class="col-md-12">
+        <label for="password" class="text-weight-bold">Senha</label>
+        <q-input
+          v-model="formData.password"
+          filled
+          label="Senha"
+          type="password"
+          placeholder="Digite a senha"
+          lazy-rules
+          :style="{ width: '100%' }"
+          :rules="[]"
+          :readonly="formData.send_random_password" />
+      </div>
+    </div>
+    <div v-if="route.name !== 'editUsers'" class="row q-col-gutter-md">
+      <div class="col-md-12">
+        <q-checkbox
+          v-model="formData.send_random_password"
+          label="Enviar senha aleatória por email" />
+      </div>
+    </div>
+    <div class="row q-col-gutter-md">
+      <div class="col-md-6">
+        <label for="role_id" class="text-weight-bold">Perfil</label>
         <q-select
           v-model="formData.role"
-          :style="{ width: '100%', minWidth: '200px' }"
+          :style="{ width: '100%' }"
           :options="props.profiles"
           option-label="name"
           option-value="id"
           filled
-          label="Select a role"
+          label="Selecione um perfil"
           autofocus
           :rules="[
-            (val) => (val && (val.id || val.id === undefined)) || 'Please select a role',
+            (val) =>
+              (submitted.value && val && (val.id || val.id === undefined)) ||
+              !submitted.value ||
+              'Por favor, selecione um perfil',
           ]">
           <template #no-option>
             <q-item>
               <q-item-section class="text-italic text-grey">
-                No options available
+                Nenhuma opção disponível
               </q-item-section>
             </q-item>
           </template>
         </q-select>
       </div>
-      <div>
+      <div class="col-md-6 d-flex align-items-end">
         <q-toggle
           v-model="formData.active"
-          :style="{ display: 'flex', flexDirection: 'column-reverse' }"
           :true-value="1"
           :false-value="0"
           class="text-weight-bold"
           name="active"
-          label="Active"
-          autofocus
-          :rules="[(val) => val !== undefined || 'Please select the user status']" />
+          label="Ativo"
+          :style="{ width: '100%' }"
+          :rules="[
+            (val) => val !== undefined || 'Por favor, selecione o status do usuário',
+          ]" />
       </div>
     </div>
     <div class="q-mt-lg q-gutter-sm">
       <q-btn
         :loading="props.loading"
         class="text-weight-bold"
-        label="Save"
+        label="Salvar"
         type="submit"
         color="secondary" />
       <q-btn
         flat
         class="text-weight-bold"
-        label="Return"
+        label="Retornar"
         type="button"
         color="primary"
         :to="{ name: 'listUsers' }" />

@@ -59,11 +59,11 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
 
   public function create(array $params): Model|User
   {
-    $user = $this->model->create(Arr::only($params, ['name', 'email', 'password', 'cpf', 'active']));
-    $user->syncRoles([$params['role_id']]);
-    return $user;
+    return tap(
+      $this->model->create(Arr::only($params, ['name', 'email', 'password', 'cpf', 'active'])),
+      fn($user) => $user->syncRoles([$params['role_id']])
+    );
   }
-
   public function getById(int $id): Model|User
   {
     return $this->model->with('roles.permissions')->findOrFail($id);
@@ -71,20 +71,14 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
 
   public function update(int $id, array $params): Model|User
   {
-    $user = $this->model->findOrFail($id);
-    $user->update($params);
-
-    if (isset($params['role_id'])) {
-      $user->syncRoles([$params['role_id']]);
-    }
-
-    return $user;
+    return tap($this->model->findOrFail($id), function ($user) use ($params) {
+      $user->update($params);
+      isset($params['role_id']) ? $user->syncRoles([$params['role_id']]) : null;
+    });
   }
-
   public function delete(int $id, string $reason): DeleteReason
   {
     $user = User::findOrFail($id);
-
     $deleteReason = new DeleteReason([
       'deleted_user_id' => $user->id,
       'deleted_user_email' => $user->email,

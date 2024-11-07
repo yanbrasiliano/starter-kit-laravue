@@ -33,10 +33,9 @@ const loadRoles = async () => {
     await roleStore.listAll();
     profilesAvailable.value = roleStore.getAllRoles.length > 0;
     if (!profilesAvailable.value) {
-      notify('Unable to load user profiles!', 'negative');
+      notify('Não foi possível carregar os perfis', 'negative');
     }
   } catch (error) {
-    notify('Error loading profiles!', 'negative');
     console.error('Failed to fetch roles:', error);
   } finally {
     $q.loading.hide();
@@ -48,10 +47,9 @@ const loadUserData = async () => {
     await userStore.consult(route.params.id);
     user.value = userStore.getUser;
     if (!user.value) {
-      notify('User not found!', 'negative');
+      notify('Usuário não encontrado', 'negative');
     }
   } catch (error) {
-    notify('Error loading user data!', 'negative');
     console.error('Failed to load user data:', error);
   }
 };
@@ -74,10 +72,9 @@ const send = async (payload) => {
     if (authStore.user?.id === updatedUser?.id) {
       authStore.setCredentials({ user: updatedUser });
     }
-    notify('User successfully updated!', 'positive');
+    notify('Usuário atualizado com sucesso', 'positive');
     router.push({ name: 'listUsers' });
   } catch (error) {
-    notify('Error updating user!', 'negative');
     console.error('Failed to update user:', error);
   } finally {
     loading.value = false;
@@ -89,12 +86,12 @@ const send = async (payload) => {
   <div class="q-pa-md items-start q-gutter-md">
     <q-card class="q-pa-md">
       <q-card-section>
-        <div class="row text-h5 q-mt-sm q-mb-xs text-weight-bold">Edit your users</div>
+        <div class="row text-h5 q-mt-sm q-mb-xs text-weight-bold">Editar Usuário</div>
       </q-card-section>
       <q-separator inset />
       <q-card-section>
         <div class="row justify-end">
-          <span class="text-weight-bold"> Created on: {{ formattedDate }} </span>
+          <span class="text-weight-bold"> Criado em: {{ formattedDate }} </span>
         </div>
         <Form
           v-if="profilesAvailable && user"
@@ -102,7 +99,7 @@ const send = async (payload) => {
           :profiles="roleStore.getAllRoles"
           :user="user"
           @send="send" />
-        <div v-else class="text-subtitle1 text-center q-my-md">Loading...</div>
+        <div v-else class="text-subtitle1 text-center q-my-md">Carregando...</div>
       </q-card-section>
     </q-card>
   </div>

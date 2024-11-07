@@ -8,7 +8,7 @@
       <q-card-section>
         <div class="row">
           <q-card class="col q-pa-sm">
-            <q-card-section class="text-h6 text-weight-bold"> Users </q-card-section>
+            <q-card-section class="text-h6 text-weight-bold"> Usuários </q-card-section>
             <q-card-section>
               <div class="row items-center">
                 <q-icon name="people" class="q-mr-sm" size="32px" />
@@ -18,21 +18,11 @@
           </q-card>
 
           <q-card class="col q-pa-sm">
-            <q-card-section class="text-h6 text-weight-bold"> Roles </q-card-section>
+            <q-card-section class="text-h6 text-weight-bold"> Perfis </q-card-section>
             <q-card-section>
               <div class="row items-center">
                 <q-icon name="contacts" class="q-mr-sm" size="32px" />
                 <span class="text-h6">10</span>
-              </div>
-            </q-card-section>
-          </q-card>
-
-          <q-card class="col q-pa-sm">
-            <q-card-section class="text-h6 text-weight-bold"> Settings </q-card-section>
-            <q-card-section>
-              <div class="row items-center">
-                <q-icon name="settings" class="q-mr-sm" size="32px" />
-                <span class="text-h6">5</span>
               </div>
             </q-card-section>
           </q-card>

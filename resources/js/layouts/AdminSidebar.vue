@@ -14,7 +14,7 @@ const props = defineProps({
     <q-list padding class="q-mt-md">
       <q-item v-show="!props.miniState">
         <q-item-label header class="text-white font-weight-bold">
-          ADMINISTRATION
+          Administração
         </q-item-label>
       </q-item>
 
@@ -34,7 +34,7 @@ const props = defineProps({
     <q-list v-if="hasPermission([USER_PERMISSION.LIST, ROLE_PERMISSION.LIST])">
       <q-item v-show="!props.miniState">
         <q-item-label header class="text-white font-weight-bold">
-          ACCESS MANAGEMENT
+          Gerenciamento de Usuários
         </q-item-label>
       </q-item>
 
@@ -48,7 +48,7 @@ const props = defineProps({
         <q-item-section avatar class="text-white">
           <q-icon name="people_alt" />
         </q-item-section>
-        <q-item-section class="text-white"> Users </q-item-section>
+        <q-item-section class="text-white"> Usuários </q-item-section>
       </q-item>
 
       <q-item
@@ -61,7 +61,7 @@ const props = defineProps({
         <q-item-section avatar class="text-white">
           <q-icon name="contacts" />
         </q-item-section>
-        <q-item-section class="text-white"> Profiles </q-item-section>
+        <q-item-section class="text-white"> Perfis </q-item-section>
       </q-item>
     </q-list>
   </q-scroll-area>

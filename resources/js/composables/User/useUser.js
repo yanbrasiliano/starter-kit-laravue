@@ -89,7 +89,7 @@ const useUser = () => {
     try {
       await store.verifyEmail(params);
 
-      notify('Confirmação de cadastro realizada com sucesso!');
+      notify('Confirmação de cadastro realizada com sucesso');
     } finally {
       router.push({ name: 'login' });
     }
@@ -121,7 +121,7 @@ const useUser = () => {
         notify_status: isNotify,
       });
 
-      notify('Status atualizado com sucesso!');
+      notify('Status atualizado com sucesso');
 
       dataHandleStatus.value = null;
     } finally {
@@ -152,7 +152,7 @@ const useUser = () => {
       $q.loading.show();
       await store.destroy(payload);
 
-      notify('Usuário removido com sucesso!');
+      notify('Usuário removido com sucesso');
     } finally {
       $q.loading.hide();
       await listPage({

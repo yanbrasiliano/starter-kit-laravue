@@ -27,10 +27,9 @@ const loadRoles = async () => {
     await roleStore.listAll();
     profilesAvailable.value = roleStore.getAllRoles.length > 0;
     if (!profilesAvailable.value) {
-      notify('Unable to load user profiles!', 'negative');
+      notify('Não foi possível carregar os perfis', 'negative');
     }
   } catch (error) {
-    notify('Error loading profiles!', 'negative');
     console.error('Failed to fetch roles:', error);
   } finally {
     $q.loading.hide();
@@ -43,10 +42,9 @@ const send = async (payload) => {
   try {
     loading.value = true;
     await userStore.store(payload);
-    notify('User successfully registered!', 'positive');
+    notify('Usuário registrado com sucesso', 'positive');
     router.push({ name: 'listUsers' });
   } catch (error) {
-    notify('Error registering user!', 'negative');
     console.error('Failed to store user:', error);
   } finally {
     loading.value = false;
@@ -59,7 +57,7 @@ const send = async (payload) => {
     <q-card class="q-pa-md">
       <q-card-section>
         <div class="row text-h5 q-mt-sm q-mb-xs text-weight-bold">
-          Register your users
+          Cadastra o seu Usuário
         </div>
       </q-card-section>
       <q-separator inset />
