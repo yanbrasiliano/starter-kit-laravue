@@ -21,7 +21,6 @@ http.interceptors.response.use(
   (response) => response,
   (error) => {
     Loading.hide();
-    console.log(error);
     if (!error.response) {
       Notify.create({
         position: 'top-right',
