@@ -3,11 +3,12 @@
 namespace App\Services\Role;
 
 use App\DTO\Paginate\PaginateParamsDTO;
-use App\DTO\Role\{CreateRoleDTO, RoleDTO, UpdateRoleDTO};
+use App\DTO\Role\{CreateRoleDTO, UpdateRoleDTO};
 use App\Exceptions\RoleIsAssignedToUserException;
 use App\Repositories\Contracts\RoleRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 class RoleService
 {
@@ -20,28 +21,25 @@ class RoleService
     return $this->repository->list($paramsDTO);
   }
 
-  public function create(CreateRoleDTO $roleDto): RoleDTO
+  public function create(CreateRoleDTO $roleDto): Role
   {
     return DB::transaction(function () use ($roleDto) {
-      return new RoleDTO(...$this->repository->create($roleDto)->toArray());
+      return $this->repository->create($roleDto);
     });
   }
 
-  public function getById(int $id): RoleDTO
+  public function getById(int $id): Role
   {
-    return new RoleDTO(...$this->repository->getById($id)->toArray());
+    return $this->repository->getById($id);
   }
 
-  public function update(UpdateRoleDTO $roleDTO): RoleDTO
+  public function update(UpdateRoleDTO $roleDTO): Role
   {
-    /**
-     * @var \App\Models\User $user
-     */
     $user = Auth::user();
     $roleDTO->permissions = $user->hasRole($roleDTO->id) ? null : $roleDTO->permissions;
 
     return DB::transaction(function () use ($roleDTO) {
-      return new RoleDTO(...$this->repository->update($roleDTO)->toArray());
+      return $this->repository->update($roleDTO);
     });
   }
 
@@ -52,9 +50,9 @@ class RoleService
     return $this->repository->delete($id);
   }
 
-  public function getBySlug(string $slug): RoleDTO
+  public function getBySlug(string $slug): Role
   {
-    return new RoleDTO(...$this->repository->getBySlug($slug)->toArray());
+    return $this->repository->getBySlug($slug);
   }
 
   public function listAll()

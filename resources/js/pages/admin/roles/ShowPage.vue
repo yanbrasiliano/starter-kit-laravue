@@ -47,7 +47,7 @@ onMounted(async () => {
         <span v-else>No permissions assigned</span>
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn flat label="Return" color="primary" :to="{ name: 'listRoles' }" />
+        <q-btn flat label="Voltar" color="primary" :to="{ name: 'listRoles' }" />
       </q-card-actions>
     </q-card>
   </div>

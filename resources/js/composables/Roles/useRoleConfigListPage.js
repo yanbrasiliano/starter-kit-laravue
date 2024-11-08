@@ -8,21 +8,21 @@ export default function useRoleConfigListPage() {
     {
       name: 'name',
       required: true,
-      label: 'Name',
+      label: 'Nome',
       align: 'left',
       field: 'name',
       sortable: true,
     },
     {
       name: 'description',
-      label: 'Description',
+      label: 'Descrição',
       field: 'shortDescription',
       align: 'left',
       sortable: true,
     },
     {
       name: 'action',
-      label: 'Options',
+      label: 'Opções',
       align: 'center',
       field: 'action',
       methods: {

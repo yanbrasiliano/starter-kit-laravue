@@ -21,7 +21,7 @@ http.interceptors.response.use(
   (response) => response,
   (error) => {
     Loading.hide();
-
+    console.log(error);
     if (!error.response) {
       Notify.create({
         position: 'top-right',
@@ -105,7 +105,10 @@ function handleErrorResponse(status, message, data) {
       break;
     }
     case 500: {
-      notifyError('Server error, please try again later or contact the support team.');
+      notifyError(
+        data.message ||
+          'Erro interno do servidor. Tente novamente mais tarde ou entre em contato com a equipe de desenvolvimento.',
+      );
       break;
     }
     default: {

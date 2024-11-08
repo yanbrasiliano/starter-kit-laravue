@@ -8,7 +8,7 @@ const roleRoutes = {
       component: async () => import('@pages/admin/roles/ListPage.vue'),
       meta: {
         requiresAuth: true,
-        module: 'Profiles',
+        module: 'Perfis',
         icon: 'contacts',
         roles: [ROLE_PERMISSION.LIST],
       },
@@ -19,7 +19,7 @@ const roleRoutes = {
       component: async () => import('@pages/admin/roles/ShowPage.vue'),
       meta: {
         requiresAuth: true,
-        module: 'Profiles',
+        module: 'Perfis',
         icon: 'contacts',
         roles: [ROLE_PERMISSION.VIEW],
       },
@@ -30,7 +30,7 @@ const roleRoutes = {
       component: async () => import('@pages/admin/roles/EditPage.vue'),
       meta: {
         requiresAuth: true,
-        module: 'Profiles',
+        module: 'Perfis',
         icon: 'contacts',
         roles: [ROLE_PERMISSION.EDIT],
       },
@@ -41,7 +41,7 @@ const roleRoutes = {
       component: async () => import('@pages/admin/roles/CreatePage.vue'),
       meta: {
         requiresAuth: true,
-        module: 'Profiles',
+        module: 'Perfis',
         icon: 'contacts',
         roles: [ROLE_PERMISSION.CREATE],
       },

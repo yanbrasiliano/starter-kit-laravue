@@ -11,10 +11,11 @@ const router = useRouter();
       <q-card-section class="error-card-content">
         <h2 class="error-heading">Oops...Página não encontrada!</h2>
         <p class="error-message">
-          Sorry, but the page you are looking for does not exist.
+          Parece que você tentou acessar uma página que não existe. Clique no botão abaixo
+          para voltar para a página anterior.
         </p>
         <q-btn style="margin-top: 15px" flat color="primary" @click="router.go(-1)">
-          Return
+          Voltar
         </q-btn>
       </q-card-section>
       <q-img

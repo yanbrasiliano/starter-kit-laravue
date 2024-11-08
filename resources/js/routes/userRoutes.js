@@ -8,7 +8,7 @@ const userRoutes = {
       component: async () => import('@pages/admin/users/ListPage.vue'),
       meta: {
         requiresAuth: true,
-        module: 'Users',
+        module: 'Usuários',
         icon: 'people_alt',
         roles: [USER_PERMISSION.LIST],
       },
@@ -19,7 +19,7 @@ const userRoutes = {
       component: async () => import('@pages/admin/users/EditPage.vue'),
       meta: {
         requiresAuth: true,
-        module: 'Users',
+        module: 'Usuários',
         icon: 'people_alt',
         roles: [USER_PERMISSION.EDIT],
       },
@@ -30,7 +30,7 @@ const userRoutes = {
       component: async () => import('@pages/admin/users/CreatePage.vue'),
       meta: {
         requiresAuth: true,
-        module: 'Users',
+        module: 'Usuários',
         icon: 'people_alt',
         roles: [USER_PERMISSION.CREATE],
       },
