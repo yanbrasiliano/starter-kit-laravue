@@ -12,7 +12,7 @@ const router = useRouter();
         <h2 class="error-heading">Oops...Acesso Negado!</h2>
         <p class="error-message">Você não tem permissão para acessar este conteúdo</p>
         <q-btn style="margin-top: 15px" flat color="primary" @click="router.go(-1)">
-          Return
+          Voltar
         </q-btn>
       </q-card-section>
       <q-img
