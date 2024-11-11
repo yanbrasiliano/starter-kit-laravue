@@ -1,5 +1,5 @@
 const adminHomeRoutes = {
-  path: 'home',
+  path: 'inicio',
   name: 'adminHome',
   component: async () => import('@pages/admin/AdminHomePage.vue'),
   meta: {

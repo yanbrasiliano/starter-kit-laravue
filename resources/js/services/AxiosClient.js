@@ -120,11 +120,11 @@ function handleErrorResponse(status, message, data) {
       if (message === 'Unauthorized.') {
         message =
           'You do not have permission to access this resource or your session has expired.';
-        router.replace('/admin/home');
+        router.replace('/admin/inicio');
       }
 
       if (message === 'This action is unauthorized.') {
-        router.replace('/admin/home');
+        router.replace('/admin/inicio');
       }
       break;
     }
