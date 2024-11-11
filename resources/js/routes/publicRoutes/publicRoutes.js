@@ -1,8 +1,8 @@
-const LoginPage = () => import('@pages/LoginPage.vue');
-const ForgotPasswordPage = () => import('@pages/password/ForgotPassword.vue');
-const ResetPasswordPage = () => import('@pages/password/ResetPassword.vue');
-const RegisterPage = () => import('@pages/register/RegisterPage.vue');
-const VerifyEmailPage = () => import('@pages/register/VerifyEmailPage.vue');
+const LoginPage = () => import('@pages/auth/LoginPage.vue');
+const ForgotPasswordPage = () => import('@pages/auth/ForgotPassword.vue');
+const ResetPasswordPage = () => import('@pages/auth/ResetPassword.vue');
+const RegisterPage = () => import('@pages/auth/RegisterPage.vue');
+const VerifyEmailPage = () => import('@pages/auth/VerifyEmailPage.vue');
 
 const publicRoutes = [
   {

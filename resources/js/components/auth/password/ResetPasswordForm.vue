@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
-import { Notify } from 'quasar';
-import usePassword from '@/composables/Password/usePassword';
+import notify from '@utils/notify';
+import usePassword from '@/composables/Authenticate/usePassword';
 import { useRoute, useRouter } from 'vue-router';
 
 const loading = ref(false);
@@ -17,14 +17,9 @@ const route = useRoute();
 onMounted(() => {
   const { token, email } = route.query;
   if (!token || token == '' || !email || email == '') {
-    Notify.create({
-      position: 'top-right',
-      color: 'negative',
-      message: 'Acesso Negado',
-      timeout: 1000,
-    });
+    notify('Acesso Negado', 'negative');
 
-    router.push({name: 'login'});
+    router.push({ name: 'login' });
   }
 });
 
@@ -33,12 +28,8 @@ const sendResetPassword = async () => {
   try {
     const { token, email } = route.query;
     await send({ ...credentials.value, token, email });
-    Notify.create({
-      position: 'top-right',
-      color: 'positive',
-      message: 'Senha alterada com sucesso',
-      timeout: 1000,
-    });
+
+    notify('Senha alterada com sucesso');
     router.push('/');
   } finally {
     loading.value = false;
@@ -49,6 +40,7 @@ const sendResetPassword = async () => {
   <q-form @submit.prevent="sendResetPassword">
     <q-input
       v-model="credentials.password"
+      class="input-color-blue"
       filled
       label="Nova senha"
       type="password"
@@ -60,6 +52,7 @@ const sendResetPassword = async () => {
     <q-input
       v-model="credentials.password_confirmation"
       filled
+      class="input-color-blue"
       label="Confirmar senha"
       type="password"
       :rules="[
@@ -78,17 +71,3 @@ const sendResetPassword = async () => {
     </div>
   </q-form>
 </template>
-
-<style scoped>
-.q-card {
-  max-width: none;
-  width: 100%;
-}
-.q-btn {
-  width: 100%;
-  margin-top: 20px;
-}
-.q-input {
-  margin-bottom: 20px;
-}
-</style>

@@ -1,0 +1,90 @@
+<script setup>
+import { ref, watch, onMounted } from 'vue';
+import notify from '@/utils/notify';
+import useAuthenticate from '@/composables/Authenticate/useAuthenticate';
+import { useRoute, useRouter } from 'vue-router';
+import useAuthStore from '@/store/useAuthStore';
+
+const authStore = useAuthStore();
+
+const showPassword = ref(false);
+const { login, myProfile } = useAuthenticate();
+const router = useRouter();
+const route = useRoute();
+
+onMounted(() => {
+  authStore.clearExternalCredentials();
+  authStore.clearLdapCredentials();
+});
+
+const auth = async () => {
+  await login({ ...authStore.externalCredentials });
+  await myProfile();
+
+  notify('Logado com Sucesso', 'positive');
+
+  const { routeName, id } = route.query || {};
+  router.push(routeName && id ? { name: routeName, params: { id } } : '/admin/inicio');
+};
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
+};
+
+watch(
+  () => authStore.externalCredentials.email,
+  (newEmail) => {
+    const ldapDomains = ['@uefs.br', '@uefs.local', '@discente.uefs.br'];
+    ldapDomains.some((domain) => newEmail.endsWith(domain))
+      ? (authStore.setLdapCredentials({
+          ...authStore.ldapCredentials,
+          name: newEmail,
+        }),
+        authStore.setActiveTab('ldap'))
+      : null;
+  },
+);
+</script>
+
+<template>
+  <q-form @submit.prevent="auth">
+    <span class="text-weight-medium text--font-13">Usuário ou E-mail</span>
+    <q-input
+      v-model="authStore.externalCredentials.email"
+      class="input-color-blue input--margin-bottom"
+      filled
+      placeholder="E-mail">
+    </q-input>
+
+    <span class="text-weight-medium text--font-13">Senha</span>
+    <q-input
+      v-model="authStore.externalCredentials.password"
+      class="input-color-blue input--margin-bottom"
+      filled
+      :type="showPassword ? 'text' : 'password'"
+      placeholder="Digite sua senha">
+      <template #append>
+        <q-icon
+          :name="showPassword ? 'visibility_off' : 'visibility'"
+          class="cursor-pointer"
+          @click="togglePasswordVisibility" />
+      </template>
+    </q-input>
+    <div class="row justify-between">
+      <div class="col-md-4">
+        <q-checkbox
+          v-model="authStore.externalCredentials.remember"
+          class="text--font-13"
+          label="Lembre-me" />
+      </div>
+      <div class="col-md-4 flex flex-center">
+        <RouterLink to="/esqueci-minha-senha" class="link--style text--font-13" color="primary">
+          Esqueceu a senha?
+        </RouterLink>
+      </div>
+    </div>
+    <div class="q-mt-xs">
+      <q-btn label="Entrar" type="submit" color="secondary" class="full-width" />
+    </div>
+  </q-form>
+</template>
