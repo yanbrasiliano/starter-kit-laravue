@@ -1,0 +1,24 @@
+.page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card__heading {
+    font-size: 2.5rem;
+    font-weight: 400;
+    margin-bottom: 15px;
+    color: #3b3b3b;
+}
+
+.card__message {
+    font-size: 1.2rem;
+    margin-bottom: 0px;
+    color: #3b3b3b;
+}
+
+.card__image {
+    width: 80%;
+    margin: 0%;
+    height: auto;
+}
