@@ -12,7 +12,7 @@ class AuthenticationException extends Exception
 
     protected $redirectTo;
 
-    public function __construct($message = 'Unauthenticated.', array $guards = [], $redirectTo = null)
+    public function __construct($message = 'Não Autenticado', array $guards = [], $redirectTo = null)
     {
         parent::__construct($message);
 
