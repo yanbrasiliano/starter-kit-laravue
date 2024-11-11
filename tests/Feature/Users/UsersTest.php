@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Users;
 
+use App\Mail\SendNotificationUserActivation;
+use App\Mail\SendRandomPassword;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
@@ -52,8 +54,6 @@ describe('Users Management', function () {
     it(
       'should return a 200 status code and proper JSON structure for valid user data',
       function (array $registerUser, array $validJsonStructure) {
-
-        Mail::fake();
 
         actingAs($this->asAdmin)
           ->post(route('users.register'), $registerUser)
@@ -161,6 +161,7 @@ describe('Users Management', function () {
       ->with('updateUserData')
       ->with('userJsonValidStructure');
 
+
     it(
       'should return a 422 status code when name is not provided',
       function (array $nameNotProvided) {
@@ -251,7 +252,6 @@ describe('Users Management', function () {
     it('should delete a user and return a 204 status code for valid user ID', function () {
       $user = createUser();
 
-      Mail::fake();
       actingAs($this->asAdmin)
         ->delete(route('users.delete', [$user->id]), ['reason' => 'Test deletion reason'])
         ->assertStatus(Response::HTTP_NO_CONTENT)
@@ -271,7 +271,6 @@ describe('Users Management', function () {
 
   describe('Register Users', function () {
     it('Should return status 200 of registered user', function (array $registerUser) {
-      Mail::fake();
 
       $resp = post(route('users.register'), $registerUser);
 
@@ -279,7 +278,9 @@ describe('Users Management', function () {
         ->assertJson(['message' => 'Um e-mail de confirmação foi encaminhado. Por favor, realize os procedimentos para ativação da sua conta.']);
     })
       ->with('registerUser');
+
   });
+
 
   describe('User email verification', function () {
     it('should return that the users email has been verified', function () {

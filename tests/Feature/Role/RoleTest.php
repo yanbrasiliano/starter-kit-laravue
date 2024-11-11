@@ -73,7 +73,7 @@ describe('RoleTest', function () {
           Permission::all()->first()->id,
         ],
       ]);
-      $response->assertStatus(Response::HTTP_OK);
+      $response->assertStatus(Response::HTTP_CREATED);
       $response->assertJsonStructure([
         'data' => [
           'id',
@@ -159,4 +159,4 @@ describe('RoleTest', function () {
       ]);
     });
   });
-})->group('RoleTest');
+})->group('roles');
