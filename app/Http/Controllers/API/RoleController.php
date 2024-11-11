@@ -42,8 +42,6 @@ class RoleController extends Controller
       new PaginateParamsDTO(...$request->toArray())
     );
 
-    $this->logGeneralActivity('Gestão de Perfis', new Role(), 'Visualizou a lista de perfis');
-
     return RoleResource::collection($roles);
   }
 
@@ -67,7 +65,6 @@ class RoleController extends Controller
     if ($role instanceof Role) {
       $this->logGeneralActivity('Gestão de Perfis', $role, 'Criou um novo perfil');
     }
-
     return new RoleResource($role);
   }
 
@@ -159,8 +156,6 @@ class RoleController extends Controller
   public function listAll(): JsonResource
   {
     $roles = $this->service->listAll();
-
-    $this->logGeneralActivity('Gestão de Perfis', new Role(), 'Visualizou todos os perfis');
 
     return RoleResource::collection($roles);
   }

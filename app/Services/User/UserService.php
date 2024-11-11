@@ -52,22 +52,45 @@ class UserService
     return new UserDTO(...array_merge($user->toArray(), ['roles' => $user->roles->load('permissions')->toArray()]));
   }
 
+  public function getModelAndDTOById(int $id): array
+  {
+    $user = $this->repository->getById($id);
+    $userData = $user->toArray();
+    $userData['roles'] = $user->roles->toArray();
+
+    $userDTO = new UserDTO(
+      $userData['id'],
+      $userData['name'],
+      $userData['email'],
+      $userData['cpf'] ?? null,
+      $userData['active'] ?? 0,
+      $userData['email_verified_at'] ?? '',
+      $userData['created_at'] ?? '',
+      $userData['updated_at'] ?? '',
+      $userData['roles'] ?? []
+    );
+
+    return [$user, $userDTO];
+  }
+
   public function update(int $id, UpdateUserDTO $updateUserDTO): UserDTO
   {
     return DB::transaction(function () use ($id, $updateUserDTO) {
-      $params = array_filter($updateUserDTO->toArray(), 'strlen');
+      $params = array_filter(get_object_vars($updateUserDTO), fn($value) => !is_null($value));
+
       $user = $this->repository->update($id, $params);
 
-      !empty($params['notify_status'])
+      $updateUserDTO->notify_status
         ? Mail::to($user)->queue(new SendNotificationUserActivation($user))
         : null;
-        
-      $userData = $user->toArray();
-      $userData['roles'] = $user->roles->load('permissions')->toArray();
 
-      return new UserDTO(...$userData);
+      return new UserDTO(
+        ...$user->only(['id', 'name', 'email', 'cpf', 'active', 'email_verified_at', 'created_at', 'updated_at']),
+        roles: $user->roles->load('permissions')->toArray()
+      );
     });
   }
+
 
   public function delete(int $id, string $reason): void
   {
@@ -77,10 +100,11 @@ class UserService
         tap(
           $this->repository->delete($id, $reason),
           fn($deleteReason) => Mail::to($deleteReason->deleted_user_email)
-            ->send(new AccountDeletionNotification($deleteReason->deleted_user_name, $deleteReason->reason))
+            ->send(new AccountDeletionNotification($deleteReason->deleted_user_name, $reason))
         );
       });
   }
+
 
   public function updatePassword(int $id, string $password): void
   {

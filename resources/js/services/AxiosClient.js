@@ -1,16 +1,15 @@
 import axios from 'axios';
-import { Loading, Notify } from 'quasar';
+import { Loading } from 'quasar';
 import useAuthStore from '@/store/useAuthStore';
 import router from '@/routes';
-
-const IS_DEBUG = import.meta.env.VITE_APP_DEBUG === 'true';
+import notify from '@/utils/notify';
 
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  timeout: 30000,
+  timeout: 1000000,
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
     'Content-Type': 'application/json',
@@ -19,116 +18,120 @@ const http = axios.create({
 
 http.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     Loading.hide();
+
     if (!error.response) {
-      Notify.create({
-        position: 'top-right',
-        color: 'negative',
-        message: 'Ocorreu um erro de rede inesperado.',
-      });
+      notify('Ocorreu um erro de rede inesperado.', 'negative');
       return Promise.reject(error);
     }
 
     const timeoutMessage =
       'Não foi possível carregar esta página corretamente, verifique sua conexão com a internet e tente novamente';
     if (error.code === 'ECONNABORTED') {
-      notifyError(timeoutMessage);
+      notify(timeoutMessage, 'negative');
       return Promise.reject({ message: timeoutMessage });
     }
 
-    const { status, data } = error.response;
+    let { status, data } = error.response;
+    if (data instanceof Blob) {
+      data = JSON.parse(await data.text());
+    }
+
     const message = data?.message || 'Erro inesperado';
 
-    handleErrorResponse(status, message, data);
+    handleErrorResponse(status, message, data, error.config);
 
-    if (IS_DEBUG) {
-      return Promise.reject(error);
-    }
-    return Promise.reject(error.response.data);
+    return Promise.reject(error);
   },
 );
 
-function notifyError(message) {
-  Notify.create({
-    position: 'top-right',
-    color: 'negative',
-    message: message,
-  });
-}
+function handleErrorResponse(status, message, data, config) {
+  const authStore = useAuthStore();
 
-function handleErrorResponse(status, message, data) {
-  const notifyError = (msg) => {
-    Notify.create({
-      position: 'top-right',
-      color: 'negative',
-      message: msg,
-    });
-  };
-  const commonErrorAction = (msg) => {
-    notifyError(msg);
-    const authStore = useAuthStore();
-    status === 401 && msg === 'Usuário ou senha inválidos'
-      ? authStore.logout()
-      : status === 401 && (authStore.logout(), router.push({ name: 'login' }));
+  const isAuthRoute = ['/api/v1/login', '/api/v1/ldap/login'].some((route) =>
+    config.url.includes(route),
+  );
+
+  const logoutAndRedirect = () => {
+    authStore.logout();
+    router.push({ name: 'login' });
   };
 
-  const errors = data?.errors || {};
+  const errorHandlers = {
+    401: () => {
+      notify(message, 'negative');
 
-  switch (status) {
-    case 403: {
-      data.error === 'Usuário não ativado' ? notifyError(message) : router.go(-1);
-      break;
-    }
-    case 404:
-    case 401:
-    case 429: {
-      commonErrorAction(message);
-      break;
-    }
-    case 408: {
-      notifyError('Request Timeout');
+      const actions = {
+        true: () => {},
+        false: () => logoutAndRedirect(),
+      };
+
+      actions[
+        isAuthRoute ||
+          message === 'Usuário ou senha inválidos' ||
+          message ===
+            'O domínio não é válido. Os domínios válidos são @uefs.br, @uefs.local e @discente.uefs.br.'
+      ]();
+    },
+    403: () => {
+      const errors = [
+        'Usuário não ativado',
+        'Usuário inativo',
+        'Usuário não é servidor UEFS',
+      ];
+      const errorMessage = data.error || data.errors;
+      return errors.includes(errorMessage) ? notify(message, 'negative') : router.go(-1);
+    },
+    404: () => {
+      const errorMessage = data?.message.includes('No query results for model')
+        ? 'Nenhum registro foi encontrado'
+        : data?.message;
+      notify(errorMessage, 'negative');
+    },
+    408: () => {
+      notify('Tempo de solicitação esgotado', 'negative');
       window.location.reload();
-      break;
-    }
-    case 422: {
-      const messagesErrors = Object.values(errors);
-      for (const values of messagesErrors) {
-        notifyError(values.toString());
-      }
-      break;
-    }
-    case 419: {
-      notifyError('Session expired or invalid token.');
+    },
+    419: () => {
+      notify(
+        'Sessão expirada. Por favor, atualize a página e tente novamente.',
+        'negative',
+      );
       router.replace('/');
-      break;
-    }
-    case 500: {
-      notifyError(
-        data.message ||
-          'Erro interno do servidor. Tente novamente mais tarde ou entre em contato com a equipe de desenvolvimento.',
+    },
+    422: () => {
+      const errors = data?.errors || {};
+      const messagesErrors = Object.values(errors);
+      for (const index in messagesErrors) {
+        if (index < 8) notify(messagesErrors[index].toString(), 'negative');
+        break;
+      }
+    },
+    429: () => {
+      notify(message, 'negative');
+      logoutAndRedirect();
+    },
+    500: () => {
+      notify(
+        'Erro interno do servidor. Por favor, contate a administração do sistema para mais informações.',
+        'negative',
       );
-      break;
-    }
-    default: {
-      notifyError(
+    },
+    default: () => {
+      notify(
         message === 'This action is unauthorized.'
-          ? 'You do not have permission to access this resource or your session has expired.'
+          ? 'Você não tem permissão para acessar este recurso'
           : message,
+        'negative',
       );
 
-      if (message === 'Unauthorized.') {
-        message =
-          'You do not have permission to access this resource or your session has expired.';
-        router.replace('/admin/inicio');
-      }
+      message === 'Unauthorized.' && router.replace('/admin/inicio');
+      message === 'This action is unauthorized.' && router.replace('/admin/inicio');
+    },
+  };
 
-      if (message === 'This action is unauthorized.') {
-        router.replace('/admin/inicio');
-      }
-      break;
-    }
-  }
+  (errorHandlers[status] || errorHandlers.default)();
 }
 
 export default http;

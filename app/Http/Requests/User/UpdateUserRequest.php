@@ -96,8 +96,13 @@ class UpdateUserRequest extends FormRequest
     ];
   }
 
-  public function validated($key = null, $default = null): UpdateUserDTO|array
+  public function validated($key = null, $default = null): array
   {
-    return new UpdateUserDTO(...parent::validated());
+    return parent::validated($key, $default);
+  }
+
+  public function toDTO(): UpdateUserDTO
+  {
+    return new UpdateUserDTO(...$this->validated());
   }
 }

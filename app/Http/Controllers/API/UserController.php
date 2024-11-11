@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\API;
 
 use App\DTO\Paginate\PaginateParamsDTO;
-use App\DTO\User\{CreateUserDTO, RegisterExternalUserDTO, UpdateUserDTO};
+use App\DTO\User\{CreateUserDTO, RegisterExternalUserDTO};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\{CreateUserRequest, RegisterExternalUserRequest, UpdateUserRequest};
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Services\User\UserService;
+use App\Traits\LogsActivityTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\{JsonResponse, Request, Response};
 
 class UserController extends Controller
 {
+  use LogsActivityTrait;
+
   public function __construct(
     private UserService $service
   ) {}
@@ -37,7 +41,6 @@ class UserController extends Controller
     $users = $this->service->index(
       new PaginateParamsDTO(...$request->toArray())
     );
-
     return new UserResource($users);
   }
 
@@ -60,11 +63,13 @@ class UserController extends Controller
    */
   public function store(CreateUserRequest $request): JsonResource
   {
-    $user = $this->service->create(
-      new CreateUserDTO(...$request->toArray())
+    [$user, $userDTO] = $this->service->getModelAndDTOById(
+      $this->service->create(new CreateUserDTO(...$request->toArray()))->id
     );
 
-    return new UserResource($user);
+    $this->logGeneralActivity('Gestão de Usuários', $user, 'Criou um novo usuário');
+
+    return new UserResource($userDTO);
   }
 
   /**
@@ -105,12 +110,14 @@ class UserController extends Controller
    */
   public function update(UpdateUserRequest $request, int $id): JsonResource
   {
-    $user = $this->service->update(
-      $id,
-      new UpdateUserDTO(...$request->toArray())
-    );
+    [$user] = $this->service->getModelAndDTOById($id);
 
-    return new UserResource($user);
+    $updateUserDTO = $request->toDTO();
+
+    $updatedUserDTO = $this->service->update($id, $updateUserDTO);
+
+    $this->logUpdateActivity('Gestão de Usuários', $user, $request->validated(), 'Atualizou um usuário');
+    return new UserResource($updatedUserDTO);
   }
 
   /**
@@ -127,11 +134,16 @@ class UserController extends Controller
    */
   public function destroy(int $id, Request $request): Response
   {
+    [$user] = $this->service->getModelAndDTOById($id);
     $reason = $request->input('reason');
+
+    $this->logDeleteActivity('Gestão de Usuários', $user, 'Excluiu um usuário');
+
     $this->service->delete($id, $reason);
 
     return response([], Response::HTTP_NO_CONTENT);
   }
+
 
   /**
    * @route POST /api/v1/users/register
