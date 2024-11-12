@@ -3,10 +3,6 @@
 * (OBS: o padrão de nomenclatura para novas ´class´ é o BEM)
 **/
 
-.q-layout-container > div > div {
-    max-height: auto !important;
-}
-
 .dropdown__header--style {
     border-radius: 0px;
 }
