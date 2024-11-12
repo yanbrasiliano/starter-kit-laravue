@@ -18,15 +18,15 @@ const goToEditProfile = () => {
       <slot></slot>
 
       <q-btn-dropdown
-        class="q-pl-xs"
+        class="q-pl-xs dropdown__header--style"
         color="primary"
         flat
         round
         dense
-        size="lg"
+        size="md"
         :label="authStore.getUser?.name || 'Conta'"
         icon="account_circle">
-        <q-list style="min-width: 150px">
+        <q-list>
           <q-item v-close-popup clickable @click="goToEditProfile">
             <q-item-section>
               <q-item-label>Meu Perfil</q-item-label>

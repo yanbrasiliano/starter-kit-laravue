@@ -1,4 +1,6 @@
 <script setup>
+import logoImage from '@assets/logo-125px40px.png';
+import logoSmaller from '@assets/icons/logoSmaller-50px40px.png';
 import { isActiveLink } from '@utils/isActiveLink';
 import { hasPermission } from '@utils/hasPermission';
 import { USER_PERMISSION, ROLE_PERMISSION } from '@utils/permissions';
@@ -13,7 +15,7 @@ const props = defineProps({
     style="height: calc(100% - 100px); margin-top: 70px; border-right: 1px solid #ddd">
     <q-list padding class="q-mt-md">
       <q-item v-show="!props.miniState">
-        <q-item-label header class="text-white font-weight-bold">
+        <q-item-label header class="text-white font-weight-bold text-uppercase">
           Administração
         </q-item-label>
       </q-item>
@@ -33,8 +35,8 @@ const props = defineProps({
 
     <q-list v-if="hasPermission([USER_PERMISSION.LIST, ROLE_PERMISSION.LIST])">
       <q-item v-show="!props.miniState">
-        <q-item-label header class="text-white font-weight-bold">
-          Gerenciamento de Usuários
+        <q-item-label header class="text-white font-weight-bold text-uppercase">
+          Gestão de acessos
         </q-item-label>
       </q-item>
 
@@ -65,11 +67,10 @@ const props = defineProps({
       </q-item>
     </q-list>
   </q-scroll-area>
+  <div v-if="!props.miniState" class="logo__sidebar--active">
+    <img :src="logoImage" width="124px" />
+  </div>
+  <div v-else class="logo__sidebar--inactive">
+    <img :src="logoSmaller" width="50px" />
+  </div>
 </template>
-
-<style scoped>
-.q-item__section--avatar {
-  color: inherit;
-  min-width: 0px !important;
-}
-</style>

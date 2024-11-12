@@ -1,12 +1,12 @@
 <template>
-  <q-page class="q-pa-md">
+  <q-page>
     <q-card class="q-mb-md">
       <q-card-section class="text-h5"> Dashboard </q-card-section>
     </q-card>
 
     <q-card class="q-mb-md">
       <q-card-section>
-        <div class="row">
+        <div class="row q-gutter-md">
           <q-card class="col q-pa-sm">
             <q-card-section class="text-h6 text-weight-bold"> Usuários </q-card-section>
             <q-card-section>
@@ -31,16 +31,3 @@
     </q-card>
   </q-page>
 </template>
-
-<script setup></script>
-
-<style scoped>
-.row {
-  display: flex;
-  justify-content: space-between;
-}
-.col {
-  flex: 1;
-  margin: 0 8px;
-}
-</style>

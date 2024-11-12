@@ -1,0 +1,32 @@
+/**
+*    Folha de Estilo Geral de customização do layout
+* (OBS: o padrão de nomenclatura para novas ´class´ é o BEM)
+**/
+
+/* body {
+} */
+.q-layout-container > div > div {
+    max-height: auto !important;
+}
+
+.dropdown__header--style {
+    border-radius: 0px;
+}
+
+.text__header--style{
+    font-size: 18px;
+    color: #3B3B3B;
+}
+
+.bg__grey--style{
+    background-color: #eef0ff;
+}
+
+.logo__sidebar--inactive{
+    top: 15px; left: 5px; position: absolute
+}
+
+.logo__sidebar--active{
+    top: 15px; left: 35px; position: absolute
+}
+

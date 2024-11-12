@@ -31,8 +31,8 @@ function handleDrawer() {
   <q-layout view="lHh Lpr lff" container style="min-height: 100vh">
     <AdminHeaderLayout>
       <div v-if="route?.meta?.module && route?.meta?.icon" class="desktop-only">
-        <span :style="{ fontSize: '20px', color: '#3B3B3B' }">
-          <q-icon size="1.5em" :name="route?.meta?.icon" style="padding-bottom: 8px;"/>
+        <span class="text__header--style">
+          <q-icon size="1.4em" :name="route?.meta?.icon" class="q-mb-xs" />
           {{ route?.meta?.module }}
         </span>
       </div>
@@ -42,23 +42,29 @@ function handleDrawer() {
 
     <q-drawer
       v-model="drawer"
-      show-if-above      
+      show-if-above
       :mini="miniState"
       :width="300"
       bordered
+      mini-to-overlay
+      :breakpoint="100"
       :class="$q.dark.isActive ? 'bg-primary' : 'bg-primary'"
       @mouseover="miniState = false"
       @mouseout="miniState = true">
       <AdminSidebar :mini-state="miniState"></AdminSidebar>
     </q-drawer>
 
-    <q-page-container style="background-color: #eef0ff">
+    <q-page-container class="bg__grey--style">
       <q-page padding class="q-mt-md">
         <router-view></router-view>
       </q-page>
       
     </q-page-container>
-    <q-page-sticky v-if="!$q.screen.lt.md" position="top-left" :offset="offset" style="z-index: 2000">
+    <q-page-sticky 
+    v-show="miniState"
+    position="top-left" 
+    :offset="offset"
+    class="z-max">
       <q-btn
         color="secondary"
         round
@@ -69,9 +75,6 @@ function handleDrawer() {
     </q-page-sticky>
   </q-layout>
 </template>
-
-<style scoped>
-body {
-  background-color: #eef0ff;
-}
+<style lang="css">
+@import '@css/admin.css';
 </style>
