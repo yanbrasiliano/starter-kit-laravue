@@ -24,7 +24,3 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 - **Composition API**
 - **Pinia**
 
-## To Do
-
-- [ ] Refactor permissions on frontend;
-- [ ] Replace the use of direct inline css classes with quasar classes or use more global css classes.
