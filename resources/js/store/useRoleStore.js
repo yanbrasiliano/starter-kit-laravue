@@ -44,58 +44,49 @@ const useRoleStore = defineStore('roles', {
   },
   actions: {
     async fetchRoles(params) {
+      this.loading = true;
       try {
-        this.loading = true;
         const { pagination, roles, status } = await roleService.index(params);
-        if (status === 200) {
-          this.roles = roles;
-          this.pagination.rowsPerPage = pagination?.per_page;
-          this.pagination.page = pagination?.current_page;
-          this.pagination.rowsNumber = pagination?.total;
-        }
+        String(status).startsWith('2') &&
+          ((this.roles = roles),
+          (this.pagination = {
+            rowsPerPage: pagination?.per_page,
+            page: pagination?.current_page,
+            rowsNumber: pagination?.total,
+          }));
       } finally {
         this.loading = false;
       }
     },
     async fetchById(id) {
+      this.loading = true;
       try {
-        this.loading = true;
         const { role, status } = await roleService.get(id);
-
-        if (status === 200) {
-          this.role = role;
-        }
+        String(status).startsWith('2') && (this.role = role);
       } finally {
         this.loading = false;
       }
     },
+
     async shouldBlockEditRoleAdmin(idRoleRow) {
-      if (userAuth.value === undefined) {
-        await store.consult(user.value.id);
-        userAuth.value = store.getUser;
-      }
-      if (idRoleRow == 1) {
-        return !userAuth.value?.roles.find(({ id }) => id == 1);
-      }
-      return true;
+      userAuth.value =
+        userAuth.value ?? (await store.consult(user.value.id), store.getUser);
+      return idRoleRow == 1 ? !userAuth.value?.roles.some(({ id }) => id == 1) : true;
     },
+
     async shouldBlockDeleteRoleUserAuth(idRoleRow) {
-      if (userAuth.value === undefined) {
-        await store.consult(user.value.id);
-        userAuth.value = store.getUser;
-      }
-      return !userAuth.value?.roles.find(({ id }) => id == idRoleRow);
+      userAuth.value =
+        userAuth.value ?? (await store.consult(user.value.id), store.getUser);
+      return userAuth.value?.roles.some(({ id }) => id === idRoleRow) ? false : true;
     },
     async store(params) {
-      try {
-        this.loading = true;
-        this.message = null;
+      this.loading = true;
+      this.message = null;
 
+      try {
         const { data, status } = await roleService.store(params);
-        if (status === 200) {
-          this.message = data?.message || 'Perfil criado com sucesso!';
-          this.isSuccess = true;
-        }
+        this.isSuccess = String(status).startsWith('2');
+        this.message = this.isSuccess && (data?.message ?? 'Perfil criado com sucesso!');
       } catch (error) {
         this.isSuccess = false;
         this.errors = error.response.data.errors;
@@ -105,14 +96,13 @@ const useRoleStore = defineStore('roles', {
       }
     },
     async update(id, params) {
-      try {
-        this.loading = true;
+      this.loading = true;
 
+      try {
         const { data, status } = await roleService.update(id, params);
-        if (status === 200) {
-          this.message = data.message || 'Perfil atualizado com sucesso!';
-          this.isSuccess = true;
-        }
+        this.isSuccess = String(status).startsWith('2');
+        this.message =
+          this.isSuccess && (data?.message ?? 'Perfil atualizado com sucesso!');
       } catch (error) {
         this.isSuccess = false;
         this.errors = error.response.data.errors;
@@ -124,21 +114,13 @@ const useRoleStore = defineStore('roles', {
     async destroy(id) {
       await roleService.destroy(id);
     },
-
     async listAll() {
       const data = await roleService.listAll();
       this.rolesAll = data;
     },
-
     resetStore() {
-      this.role = {
-        name: '',
-        description: '',
-        permissions: [],
-      };
-      this.isSuccess = false;
-      this.message = null;
-      this.errors = null;
+      this.role = { name: '', description: '', permissions: [] };
+      this.isSuccess = this.message = this.errors = null;
     },
   },
 });
