@@ -62,7 +62,6 @@ describe('ForgotPasswordTest', function () {
         $user = User::factory()->create();
         $role = DB::table('roles')->where('slug', RolesEnum::REVIEWER)->first();
         $user->assignRole([$role->id]);
-        Mail::fake();
         $payload = ['email' => $user->email];
         $response = $this->postJson(route('forgot-password'), $payload);
         $response->assertStatus(Response::HTTP_NO_CONTENT);

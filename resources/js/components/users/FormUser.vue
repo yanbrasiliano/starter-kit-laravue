@@ -65,6 +65,7 @@ watch([formData, () => formData.value.send_random_password], () => {
           filled
           placeholder="Digite o CPF"
           lazy-rules
+          mask="###.###.###-##"
           :style="{ width: '100%' }"
           :rules="[(val) => (val && val.length > 0) || 'Por favor, insira o CPF']" />
       </div>

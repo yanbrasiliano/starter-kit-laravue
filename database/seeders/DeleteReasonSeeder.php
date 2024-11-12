@@ -7,13 +7,8 @@ use Illuminate\Database\Seeder;
 
 class DeleteReasonSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        DeleteReason::factory()->count(1)->create();
-    }
+  public function run()
+  {
+    DeleteReason::factory()->count(1)->create();
+  }
 }

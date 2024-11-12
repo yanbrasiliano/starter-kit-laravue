@@ -3,7 +3,8 @@ import Form from '@/components/users/FormUser.vue';
 import { onMounted, ref } from 'vue';
 import useUserStore from '@/store/useUserStore';
 import { useRouter } from 'vue-router';
-import { Notify, useQuasar } from 'quasar';
+import { useQuasar } from 'quasar';
+import notify from '@/utils/notify';
 import useRoleStore from '@/store/useRoleStore';
 
 const $q = useQuasar();
@@ -12,14 +13,6 @@ const router = useRouter();
 const loading = ref(false);
 const roleStore = useRoleStore();
 const profilesAvailable = ref(false);
-
-const notify = (message, color) => {
-  Notify.create({
-    position: 'top-right',
-    color: color,
-    message: message,
-  });
-};
 
 const loadRoles = async () => {
   $q.loading.show();
@@ -67,9 +60,7 @@ const send = async (payload) => {
           :loading="loading"
           :profiles="roleStore.getAllRoles"
           @send="send" />
-        <div v-else class="text-subtitle1 text-center q-my-md">
-          No profiles available. Please try again later.
-        </div>
+        <div v-else class="text-subtitle1 text-center q-my-md">Carregando...</div>
       </q-card-section>
     </q-card>
   </div>
