@@ -94,18 +94,20 @@ class UserService
 
   public function delete(int $id, string $reason): void
   {
-    auth()->id() === $id
-      ? throw new BadRequestException('Não é possível realizar essa ação.')
-      : DB::transaction(function () use ($id, $reason) {
-        tap(
-          $this->repository->delete($id, $reason),
-          fn($deleteReason) => Mail::to($deleteReason->deleted_user_email)
-            ->send(new AccountDeletionNotification($deleteReason->deleted_user_name, $reason))
-        );
-      });
+    throw_if(
+      auth()->id() === $id,
+      BadRequestException::class,
+      'Não é possível realizar essa ação.'
+    );
+
+    DB::transaction(function () use ($id, $reason) {
+      tap(
+        $this->repository->delete($id, $reason),
+        fn($deleteReason) => Mail::to($deleteReason->deleted_user_email)
+          ->send(new AccountDeletionNotification($deleteReason->deleted_user_name, $reason))
+      );
+    });
   }
-
-
   public function updatePassword(int $id, string $password): void
   {
     $this->repository->updatePassword($id, Hash::make($password));
