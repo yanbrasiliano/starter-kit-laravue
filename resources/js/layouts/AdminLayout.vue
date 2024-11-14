@@ -28,7 +28,7 @@ function handleDrawer() {
 </script>
 
 <template>
-  <q-layout view="lHh Lpr lff" container style="min-height: 100vh">
+  <q-layout view="lHh Lpr lff" container class="layout__admin">
     <AdminHeaderLayout>
       <div v-if="route?.meta?.module && route?.meta?.icon" class="desktop-only">
         <span class="text__header--style">
@@ -76,5 +76,5 @@ function handleDrawer() {
   </q-layout>
 </template>
 <style lang="css">
-@import '@css/admin.css';
+@import '@css/admin.scss';
 </style>

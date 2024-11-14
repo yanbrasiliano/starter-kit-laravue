@@ -2,6 +2,11 @@
 *    Folha de Estilo Geral de customização do layout
 * (OBS: o padrão de nomenclatura para novas ´class´ é o BEM)
 **/
+@import 'quasar-variables.sass';
+
+.layout__admin{
+    min-height: 100vh;
+}
 
 .dropdown__header--style {
     border-radius: 0px;
@@ -24,3 +29,7 @@
     top: 15px; left: 35px; position: absolute
 }
 
+.title__page--style{
+    font-size: 20px;
+    color: $dark;
+}

@@ -46,13 +46,15 @@ const send = async (payload) => {
 </script>
 
 <template>
-  <div class="q-pa-md items-start q-gutter-md">
-    <q-card class="q-pa-md">
-      <q-card-section>
-        <div class="row text-h5 q-mt-sm q-mb-xs text-weight-bold">
+  <div>
+    <div class="row">
+      <div class="col-md-4 q-mb-md">
+        <span class="text-weight-bold title__page--style" >
           Cadastra o seu Usuário
-        </div>
-      </q-card-section>
+        </span>
+      </div>
+    </div>
+    <q-card class="q-pa-md">
       <q-separator inset />
       <q-card-section>
         <Form

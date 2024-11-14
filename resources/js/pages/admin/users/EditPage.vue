@@ -83,12 +83,15 @@ const send = async (payload) => {
 </script>
 
 <template>
-  <div class="q-pa-md items-start q-gutter-md">
+  <div>
+    <div class="row">
+      <div class="col-md-4 q-mb-md">
+        <span class="text-weight-bold title__page--style" >
+          Editar Usuário
+        </span>
+      </div>
+    </div>
     <q-card class="q-pa-md">
-      <q-card-section>
-        <div class="row text-h5 q-mt-sm q-mb-xs text-weight-bold">Editar Usuário</div>
-      </q-card-section>
-      <q-separator inset />
       <q-card-section>
         <div class="row justify-end">
           <span class="text-weight-bold"> Criado em: {{ formattedDate }} </span>

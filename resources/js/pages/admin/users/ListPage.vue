@@ -1,9 +1,13 @@
 <script setup>
-import TableSync from '@/components/users/TableSync.vue';
-import { hasPermission } from '@utils/hasPermission';
-import { USER_PERMISSION } from '@utils/permissions';
-import useUser from '@/composables/User/useUser';
-import useUserConfigListPage from '@/composables/User/useUserConfigListPage';
+import { hasPermission } from "@utils/hasPermission";
+import { USER_PERMISSION } from "@utils/permissions";
+import useUser from "@/composables/User/useUser";
+import useUserConfigListPage from "@/composables/User/useUserConfigListPage";
+import TableSync from "@/components/users/TableSync.vue";
+import PageTopTitle from "@/components/shared/PageTopTitle.vue";
+import PageWrapper from "../PageWrapper.vue";
+import SearchInput from "@/components/shared/SearchInput.vue";
+
 const { columns } = useUserConfigListPage();
 const {
   router,
@@ -21,76 +25,68 @@ const {
 } = useUser();
 </script>
 <template>
-  <div>
-    <div class="row">
-      <div class="col-md-4" :style="{ marginBottom: '20px' }">
-        <span :style="{ fontSize: '20px', fontWeight: 'bold', color: '#3B3B3B' }">
-          Gerencie a sua lista de usuários
-        </span>
-      </div>
-    </div>
-    <q-card>
-      <q-card-section>
-        <div class="row justify-between">
-          <div class="col-md-4">
-            <q-input
-              v-model="filter"
-              filled
-              label="Pesquisar por..."
-              @update:model-value="handleSearch">
-              <template #append>
-                <q-icon name="search" class="cursor-pointer" @click="handleSearch" />
-              </template>
-            </q-input>
-          </div>
-          <div class="col-md-4 offset-md-4">
-            <div class="column items-end">
-              <q-btn
-                v-if="hasPermission([USER_PERMISSION.CREATE])"
-                icon="add"
-                label="Criar"
-                color="secondary"
-                @click="router.push({ name: 'createUsers' })">
-              </q-btn>
-            </div>
-          </div>
+  <PageWrapper>
+    <template #title>
+      <PageTopTitle>Gerencie a sua lista de usuários</PageTopTitle>
+    </template>
+    <template #actions>
+      <div class="row justify-between">
+        <div class="col-md-4">
+          <SearchInput
+            :value="filter"
+            @update-search="handleSearch"
+            @trigger-search="handleSearch"
+          />
         </div>
-      </q-card-section>
-      <q-card-section>
-        <TableSync
-          :loading="loading"
-          :columns="columns"
-          :rows="rows"
-          :pagination="pagination"
-          :pagination-values="pagination"
-          @update-pagination="updatePagination"
-          @on-status="onStatus"
-          @on-edit="onEdit"
-          @on-delete="onDelete" />
-      </q-card-section>
-      <q-card> </q-card>
-    </q-card>
-    <q-dialog v-model="confirmHandleStatus" persistent>
-      <q-card>
-        <q-card-section class="row items-center">
-          <span class="q-ml-sm"
-            >Deseja enviar e-mail para esse usuário notificando a ativação?</span
-          >
-        </q-card-section>
-        <q-card-actions align="center">
-          <q-btn
-            v-close-popup
-            outline
-            label="Sim"
+        <div class="col-md-4 offset-md-4">
+          <ActionButton
+            v-if="hasPermission([USER_PERMISSION.CREATE])"
+            icon="add"
+            label="Criar"
             color="secondary"
-            @click="handleStatus(true)" />
-          <q-btn
-            v-close-popup
-            label="Não"
-            color="secondary"
-            @click="handleStatus(false)" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-  </div>
+            @click-action="router.push({ name: 'createUsers' })"
+          />
+        </div>
+      </div>
+    </template>
+    <template #content>
+      <TableSync
+        :loading="loading"
+        :columns="columns"
+        :rows="rows"
+        :pagination="pagination"
+        :pagination-values="pagination"
+        @update-pagination="updatePagination"
+        @on-status="onStatus"
+        @on-edit="onEdit"
+        @on-delete="onDelete"
+      />
+
+      <q-dialog v-model="confirmHandleStatus" persistent>
+        <q-card>
+          <q-card-section class="row items-center">
+            <span class="q-ml-sm"
+              >Deseja enviar e-mail para esse usuário notificando a ativação?</span
+            >
+          </q-card-section>
+          <q-card-actions align="center">
+            <q-btn
+              v-close-popup
+              outline
+              label="Sim"
+              color="secondary"
+              @click="handleStatus(true)"
+            />
+            <q-btn
+              v-close-popup
+              label="Não"
+              color="secondary"
+              @click="handleStatus(false)"
+            />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+      
+    </template>
+  </PageWrapper>
 </template>
