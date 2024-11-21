@@ -23,4 +23,8 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 - **Vue 3.4**
 - **Composition API**
 - **Pinia**
+- 
+## To Do
 
+- [ ] Fix errors larastan.
+- [ ] Create policies for roles, users and permissions.
