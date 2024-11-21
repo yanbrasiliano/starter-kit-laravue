@@ -28,3 +28,4 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 
 - [ ] Fix errors larastan.
 - [ ] Create policies for roles, users and permissions.
+- [ ] Add more tests for roles, users and permissions.
