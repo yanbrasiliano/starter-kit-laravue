@@ -4,6 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    @if (app()->environment('development', 'staging'))
+        <meta name="robots" content="noindex">
+    @endif
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <title>Starter Kit</title>
     <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon.png">
@@ -21,9 +24,7 @@
 </head>
 
 <body>
-
     <div id="app"></div>
-
 </body>
 
 </html>
