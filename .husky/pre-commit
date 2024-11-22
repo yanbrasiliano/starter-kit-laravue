@@ -1,8 +1,9 @@
 echo "🔍 Executando pre-commit hook..."
 
 current_branch=$(git rev-parse --abbrev-ref HEAD)
+
 if [ "$current_branch" = "main" ]; then
-  echo "🚫 Branch 'main' detectada, pulando execução dos formatadores."
+  echo "🚫 Branch 'main' detectada. Pulando execução dos testes."
   exit 0
 fi
 
@@ -13,13 +14,44 @@ if [ -z "$staged_files" ]; then
   exit 0
 fi
 
+# Identifica o nome do container que contém '-app'
+container_name=$(docker ps --format "{{.Names}}" | grep "-app")
+
+if [ -z "$container_name" ]; then
+  echo "❌ Nenhum container com '-app' no nome foi encontrado. Certifique-se de que ele está em execução."
+  exit 1
+fi
+
 run_formatter() {
   formatter="$1"
   file="$2"
-
-  echo "✨ Executando $formatter em $file"
-  docker exec -i starterkit-app $formatter "$file"
+  echo "✨ Formatando $file com $formatter"
+  docker exec -i "$container_name" $formatter "$file"
   git add "$file"
+}
+
+run_tests() {
+  coverage_mode="$1"
+  echo "🧪 Executando testes para a branch '$current_branch' $coverage_mode..."
+
+  case "$coverage_mode" in
+  "--no-coverage")
+    docker exec -i "$container_name" php artisan test --env=testing --parallel || {
+      echo "❌ Falha nos testes. Corrija os problemas antes de commitar."
+      exit 1
+    }
+    ;;
+  "--with-coverage")
+    docker exec -i "$container_name" php artisan test --env=testing --parallel \
+      --log-junit=tests/coverage/results.xml \
+      --coverage-clover=tests/coverage/clover.xml || {
+      echo "❌ Falha nos testes. Corrija os problemas antes de commitar."
+      exit 1
+    }
+    git add tests/coverage/results.xml tests/coverage/clover.xml
+    echo "✅ Relatórios adicionados ao commit."
+    ;;
+  esac
 }
 
 for file in $staged_files; do
@@ -30,6 +62,12 @@ for file in $staged_files; do
 done
 
 echo "🔧 Executando análise do PHPStan..."
-docker exec -i sistex-app ./vendor/bin/phpstan analyse
+docker exec -i "$container_name" ./vendor/bin/phpstan analyse
+
+[ "$current_branch" = "hml" ] && run_tests "--no-coverage" && exit 0
+[ "$current_branch" = "dev" ] && run_tests "--with-coverage" && exit 0
+
+echo "📂 Branch auxiliar detectada. Executando testes com cobertura."
+run_tests "--with-coverage"
 
 echo "✅ Pre-commit hook finalizado com sucesso!"
