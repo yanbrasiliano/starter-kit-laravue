@@ -11,18 +11,17 @@ use Symfony\Component\HttpFoundation\Response;
 // @codeCoverageIgnoreStart
 class RedirectIfAuthenticated
 {
-    public function handle(Request $request, Closure $next, string ...$guards): Response
-    {
-        $guards = empty($guards) ? [null] : $guards;
+  public function handle(Request $request, Closure $next, string ...$guards): Response
+  {
+    $guards = empty($guards) ? [null] : $guards;
 
-        foreach ($guards as $guard) {
-            if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
-            }
-        }
-
-        return $next($request);
+    foreach ($guards as $guard) {
+      if (Auth::guard($guard)->check()) {
+        return redirect(RouteServiceProvider::HOME)->send();
+      }
     }
-}
 
+    return $next($request);
+  }
+}
 // @codeCoverageIgnoreEnd

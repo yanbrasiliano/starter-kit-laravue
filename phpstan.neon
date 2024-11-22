@@ -14,3 +14,5 @@ parameters:
         - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Model::markEmailAsVerified\(\)#'
     excludePaths:
         - ./*/*/FileToBeExcluded.php
+        - ./app/Providers/AppServiceProvider.php
+

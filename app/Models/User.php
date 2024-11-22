@@ -11,27 +11,27 @@ use Spatie\Permission\Traits\{HasPermissions, HasRoles};
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens;
-    use HasFactory;
-    use HasPermissions;
-    use HasRoles;
-    use Notifiable;
+  use HasApiTokens;
+  use HasFactory;
+  use HasPermissions;
+  use HasRoles;
+  use Notifiable;
 
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'cpf',
-        'active',
-    ];
+  protected $fillable = [
+    'name',
+    'email',
+    'password',
+    'cpf',
+    'active',
+  ];
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+  protected $hidden = [
+    'password',
+    'remember_token',
+  ];
 
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
+  protected $casts = [
+    'email_verified_at' => 'datetime',
+    'password' => 'hashed',
+  ];
 }

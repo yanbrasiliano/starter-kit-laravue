@@ -20,10 +20,10 @@ class Handler extends ExceptionHandler
   public function render($request, Throwable $exception)
   {
     $status = match (true) {
-      $exception instanceof InvalidCredentialsException => $exception->getCode(),
+      $exception instanceof InvalidCredentialsException => (int) ($exception->getCode() ?: Response::HTTP_BAD_REQUEST),
       $exception instanceof AuthenticationException => Response::HTTP_UNAUTHORIZED,
-      $exception instanceof UnactivatedUserException => $exception->getCode(),
-      default => $exception->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR
+      $exception instanceof UnactivatedUserException => (int) ($exception->getCode() ?: Response::HTTP_FORBIDDEN),
+      default => Response::HTTP_INTERNAL_SERVER_ERROR,
     };
 
     if ($status !== Response::HTTP_INTERNAL_SERVER_ERROR || $exception->getCode() !== 0) {
