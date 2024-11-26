@@ -15,15 +15,21 @@ if [ -z "$staged_files" ]; then
 fi
 
 run_formatter() {
-  formatter="$1"
-  file="$2"
+  local formatter="$1"
+  local file="$2"
+
+  if [ ! -f "$file" ]; then
+    echo "⚠️ Arquivo $file não encontrado. Pulando."
+    return
+  fi
+
   echo "✨ Formatando $file com $formatter"
   docker exec -i starterkit-app $formatter "$file"
   git add "$file"
 }
 
 run_tests() {
-  coverage_mode="$1"
+  local coverage_mode="$1"
   echo "🧪 Executando testes para a branch '$current_branch' $coverage_mode..."
 
   echo "🔄 Limpando cache antes de executar os testes..."
@@ -50,6 +56,11 @@ run_tests() {
 }
 
 for file in $staged_files; do
+  if [ ! -f "$file" ]; then
+    echo "⚠️ Arquivo $file não encontrado. Pulando."
+    continue
+  fi
+
   case "$file" in
   *.php) run_formatter "./vendor/bin/pint" "$file" ;;
   *.js | *.vue) run_formatter "npm run lint" "$file" ;;
