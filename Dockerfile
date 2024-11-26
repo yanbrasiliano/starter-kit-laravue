@@ -1,8 +1,8 @@
-FROM composer:2 as composer
+FROM composer:2 AS composer
 
-FROM node:18 as node
+FROM node:18 AS node
 
-FROM php:8.3-fpm as base
+FROM php:8.3-fpm AS base
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV ACCEPT_EULA=Y
 ENV DEBIAN_FRONTEND=noninteractive
