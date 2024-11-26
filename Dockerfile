@@ -1,4 +1,4 @@
-FROM composer:2 AS composer
+FROM composer:latest AS composer
 
 FROM node:18 AS node
 

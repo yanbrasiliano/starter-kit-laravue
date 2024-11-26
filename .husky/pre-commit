@@ -18,7 +18,7 @@ run_formatter() {
   formatter="$1"
   file="$2"
   echo "✨ Formatando $file com $formatter"
-  docker exec -i sistex-app $formatter "$file"
+  docker exec -i starterkit-app $formatter "$file"
   git add "$file"
 }
 
@@ -27,17 +27,17 @@ run_tests() {
   echo "🧪 Executando testes para a branch '$current_branch' $coverage_mode..."
 
   echo "🔄 Limpando cache antes de executar os testes..."
-  docker exec -i sistex-app php artisan optimize:clear
+  docker exec -i starterkit-app php artisan optimize:clear
 
   case "$coverage_mode" in
   "--no-coverage")
-    docker exec -i sistex-app php artisan test --env=testing --parallel || {
+    docker exec -i starterkit-app php artisan test --env=testing --parallel || {
       echo "❌ Falha nos testes. Corrija os problemas antes de commitar."
       exit 1
     }
     ;;
   "--with-coverage")
-    docker exec -i sistex-app php artisan test --env=testing --parallel \
+    docker exec -i starterkit-app php artisan test --env=testing --parallel \
       --log-junit=tests/coverage/results.xml \
       --coverage-clover=tests/coverage/clover.xml || {
       echo "❌ Falha nos testes. Corrija os problemas antes de commitar."
@@ -57,7 +57,7 @@ for file in $staged_files; do
 done
 
 echo "🔧 Executando análise do PHPStan..."
-docker exec -i sistex-app ./vendor/bin/phpstan analyse
+docker exec -i starterkit-app ./vendor/bin/phpstan analyse
 
 [ "$current_branch" = "hml" ] && run_tests "--no-coverage" && exit 0
 [ "$current_branch" = "dev" ] && run_tests "--with-coverage" && exit 0
