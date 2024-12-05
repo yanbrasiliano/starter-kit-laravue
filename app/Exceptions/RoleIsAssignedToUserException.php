@@ -7,15 +7,22 @@ use Illuminate\Http\Response;
 
 class RoleIsAssignedToUserException extends Exception
 {
-    public $error;
+    /**
+     * @var string
+     */
+    public string $error;
 
+    /**
+     * @param string $message
+     * @param int $code
+     * @param \Throwable|null $previous
+     */
     public function __construct(
-        $message = 'Existem usuário(s) vinculado(s) ao perfil. Exclusão não permitida!',
-        $code = Response::HTTP_CONFLICT,
-        $previous = null
+        string $message = 'Existem usuário(s) vinculado(s) ao perfil. Exclusão não permitida!',
+        int $code = Response::HTTP_CONFLICT,
+        ?\Throwable $previous = null
     ) {
         parent::__construct($message, $code, $previous);
-        $this->code = $code;
         $this->error = 'O Perfil não é válido para exclusão.';
     }
 }

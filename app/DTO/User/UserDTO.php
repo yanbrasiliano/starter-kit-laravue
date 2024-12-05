@@ -4,8 +4,14 @@ namespace App\DTO\User;
 
 use App\DTO\AbstractDTO;
 
+/**
+ * @extends AbstractDTO<array-key, mixed>
+ */
 class UserDTO extends AbstractDTO
 {
+    /**
+     * @param array<int, array<string, mixed>> $roles
+     */
     public function __construct(
         public readonly int $id,
         public readonly string $name,

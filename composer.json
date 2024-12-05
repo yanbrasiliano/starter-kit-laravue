@@ -20,6 +20,7 @@
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "^3.14",
+    "barryvdh/laravel-ide-helper": "^3.2",
     "fakerphp/faker": "^1.9.1",
     "larastan/larastan": "^3.0",
     "laravel/pint": "^1.0",

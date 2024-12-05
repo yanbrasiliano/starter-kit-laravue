@@ -4,6 +4,9 @@ namespace App\DTO\Permissions;
 
 use App\DTO\AbstractDTO;
 
+/**
+ * @extends AbstractDTO<array-key, mixed>
+ */
 class PermissionDTO extends AbstractDTO
 {
     public function __construct(

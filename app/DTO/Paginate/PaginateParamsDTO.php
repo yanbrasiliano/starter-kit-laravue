@@ -4,6 +4,9 @@ namespace App\DTO\Paginate;
 
 use App\DTO\AbstractDTO;
 
+/**
+ * @extends AbstractDTO<array-key, mixed>
+ */
 class PaginateParamsDTO extends AbstractDTO
 {
     public function __construct(

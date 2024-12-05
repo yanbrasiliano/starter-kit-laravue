@@ -8,11 +8,22 @@ use Exception;
 
 class AuthenticationException extends Exception
 {
-    protected $guards;
+    /**
+     * @var array<int, string> $guards
+     */
+    protected array $guards;
 
-    protected $redirectTo;
+    /**
+     * @var string|null $redirectTo
+     */
+    protected ?string $redirectTo;
 
-    public function __construct($message = 'Não Autenticado', array $guards = [], $redirectTo = null)
+    /**
+     * @param string $message
+     * @param array<int, string> $guards
+     * @param string|null $redirectTo
+     */
+    public function __construct(string $message = 'Não Autenticado', array $guards = [], ?string $redirectTo = null)
     {
         parent::__construct($message);
 
@@ -20,12 +31,18 @@ class AuthenticationException extends Exception
         $this->redirectTo = $redirectTo;
     }
 
-    public function guards()
+    /**
+     * @return array<int, string>
+     */
+    public function guards(): array
     {
         return $this->guards;
     }
 
-    public function redirectTo()
+    /**
+     * @return string|null
+     */
+    public function redirectTo(): ?string
     {
         return $this->redirectTo;
     }

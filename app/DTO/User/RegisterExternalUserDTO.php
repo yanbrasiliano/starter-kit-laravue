@@ -4,6 +4,9 @@ namespace App\DTO\User;
 
 use App\DTO\AbstractDTO;
 
+/**
+ * @extends AbstractDTO<array-key, mixed>
+ */
 class RegisterExternalUserDTO extends AbstractDTO
 {
     public function __construct(

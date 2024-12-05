@@ -4,7 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @template TFactory of \Illuminate\Database\Eloquent\Factories\Factory
+ */
 class DeleteReason extends Model
 {
     use HasFactory;
@@ -24,9 +28,17 @@ class DeleteReason extends Model
         'deleted_at',
     ];
 
+    /**
+     * @var array<int, string>
+     */
     protected $dates = ['deleted_at'];
 
-    public function deletedByUser()
+    /**
+     * Get the user who deleted.
+     *
+     * @return BelongsTo
+     */
+    public function deletedByUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'deleted_by_user_id');
     }

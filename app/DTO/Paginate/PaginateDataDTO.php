@@ -4,8 +4,15 @@ namespace App\DTO\Paginate;
 
 use App\DTO\AbstractDTO;
 
+/**
+ * @extends AbstractDTO<array-key, mixed>
+ */
 class PaginateDataDTO extends AbstractDTO
 {
+    /**
+     * @param array<int, mixed> $data
+     * @param array<int, array<string, mixed>> $links
+     */
     public function __construct(
         public readonly ?int $current_page = null,
         public readonly array $data = [],

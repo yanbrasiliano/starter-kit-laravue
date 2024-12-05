@@ -5,9 +5,18 @@ namespace App\DTO;
 use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
 
-// @codeCoverageIgnoreStart
+/**
+ * @template TKey of array-key
+ * @template TValue
+ * @implements Arrayable<TKey, TValue>
+ * @codeCoverageIgnore
+ */
+// @CodeCoverageIgnoreStart
 abstract class AbstractDTO implements Arrayable, JsonSerializable
 {
+    /**
+     * @return array<TKey, TValue>
+     */
     public function toArray(): array
     {
         $recursiveConversion = function ($item) use (&$recursiveConversion) {
@@ -25,14 +34,32 @@ abstract class AbstractDTO implements Arrayable, JsonSerializable
         return $recursiveConversion($this);
     }
 
+    /**
+     * Convert the DTO to JSON.
+     *
+     * @param int $options
+     * @return string
+     * @throws \RuntimeException if JSON encoding fails
+     */
     public function toJson(int $options = 0): string
     {
-        return json_encode($this->toArray(), $options);
+        $json = json_encode($this->toArray(), $options);
+
+        if ($json === false) {
+            throw new \RuntimeException('Failed to encode JSON: ' . json_last_error_msg());
+        }
+
+        return $json;
     }
 
+    /**
+     * Prepare the object for JSON serialization.
+     *
+     * @return array<TKey, TValue>
+     */
     public function jsonSerialize(): array
     {
         return $this->toArray();
     }
 }
-// @codeCoverageIgnoreEnd
+// @CodeCoverageIgnoreEnd

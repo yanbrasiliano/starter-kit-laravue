@@ -12,8 +12,7 @@ use Illuminate\Support\Facades\{Config, URL};
 
 class SendVerifyEmail extends Mailable
 {
-    use Queueable;
-    use SerializesModels;
+    use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
@@ -46,7 +45,12 @@ class SendVerifyEmail extends Mailable
         ]);
     }
 
-    public function getUrl()
+    /**
+     * Get the verification URL for the email.
+     *
+     * @return string
+     */
+    public function getUrl(): string
     {
         $url = URL::temporarySignedRoute(
             'users.verify',

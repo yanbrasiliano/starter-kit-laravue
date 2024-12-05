@@ -9,29 +9,40 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\{HasPermissions, HasRoles};
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string|null $cpf
+ * @property int $active
+ * @property string|null $email_verified_at
+ * @property string $created_at
+ * @property string $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
-  use HasApiTokens;
-  use HasFactory;
-  use HasPermissions;
-  use HasRoles;
-  use Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use HasPermissions;
+    use HasRoles;
+    use Notifiable;
 
-  protected $fillable = [
-    'name',
-    'email',
-    'password',
-    'cpf',
-    'active',
-  ];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'cpf',
+        'active',
+    ];
 
-  protected $hidden = [
-    'password',
-    'remember_token',
-  ];
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
-  protected $casts = [
-    'email_verified_at' => 'datetime',
-    'password' => 'hashed',
-  ];
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 }
