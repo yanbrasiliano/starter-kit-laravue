@@ -27,14 +27,22 @@ class RegisterExternalUserRequest extends FormRequest
             'name' => ['required', 'string'],
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->id)],
             'cpf' => ['required', new \App\Rules\ValidateCPF(), Rule::unique('users', 'cpf')->ignore($this->id)],
-            'role' => ['required', Rule::in([
-                RolesEnum::REVIEWER->value,
-            ])],
+            'role' => [
+                'required',
+                Rule::in([
+                    RolesEnum::REVIEWER->value,
+                ])
+            ],
             'password' => ['required', 'min:8', 'confirmed'],
             'password_confirmation' => ['required', 'min:8'],
         ];
     }
 
+    /**
+     * Custom error messages for validation.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
@@ -52,12 +60,11 @@ class RegisterExternalUserRequest extends FormRequest
             'role.in' => 'O perfil selecionado é inválido.',
 
             'password.required' => 'O campo senha é obrigatório.',
-            'password.min' => 'O campo senha deve conter no minimo 8 caracteres.',
+            'password.min' => 'O campo senha deve conter no mínimo 8 caracteres.',
             'password.confirmed' => 'As senhas não conferem.',
 
             'password_confirmation.required' => 'O campo repetir senha é obrigatório.',
-            'password_confirmation.min' => 'O campo repetir senha deve conter no minimo 8 caracteres.',
-
+            'password_confirmation.min' => 'O campo repetir senha deve conter no mínimo 8 caracteres.',
         ];
     }
 }

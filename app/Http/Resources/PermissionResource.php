@@ -14,18 +14,28 @@ class PermissionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return $this->getPermissionsForSelect($request);
+        return [
+            'permissions' => $this->getPermissionsForSelect($request),
+        ];
     }
 
-    public function getPermissionsForSelect(Request $request)
+    /**
+     * Get permissions formatted for a select field.
+     *
+     * @param Request $request
+     * @return array<int, array<string, mixed>>
+     */
+    public function getPermissionsForSelect(Request $request): array
     {
         $permissions = parent::toArray($request);
 
-        return collect($permissions)->map(function ($permission) {
-            return [
-                'value' => $permission['id'],
-                'label' => $permission['description'],
-            ];
-        })->toArray();
+        return collect(is_array($permissions) ? $permissions : (array) $permissions)
+            ->map(function ($permission) {
+                return [
+                    'value' => $permission['id'],
+                    'label' => $permission['description'],
+                ];
+            })
+            ->toArray();
     }
 }

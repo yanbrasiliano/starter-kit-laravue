@@ -7,11 +7,19 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ForgotPasswordRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, string>
+     */
     public function rules(): array
     {
         return [
@@ -19,6 +27,11 @@ class ForgotPasswordRequest extends FormRequest
         ];
     }
 
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
@@ -28,7 +41,14 @@ class ForgotPasswordRequest extends FormRequest
         ];
     }
 
-    public function validated($key = null, $default = null): array | ForgotPasswordDTO
+    /**
+     * Get the validated data and transform it into a DTO.
+     *
+     * @param string|null $key
+     * @param mixed|null $default
+     * @return ForgotPasswordDTO
+     */
+    public function validated($key = null, $default = null): ForgotPasswordDTO
     {
         return new ForgotPasswordDTO(...parent::validated($key, $default));
     }

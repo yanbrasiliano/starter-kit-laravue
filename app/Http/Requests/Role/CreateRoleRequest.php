@@ -33,6 +33,11 @@ class CreateRoleRequest extends FormRequest
         ];
     }
 
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array<string, string>
+     */
     public function attributes(): array
     {
         return [
@@ -42,6 +47,11 @@ class CreateRoleRequest extends FormRequest
         ];
     }
 
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
@@ -53,14 +63,29 @@ class CreateRoleRequest extends FormRequest
         ];
     }
 
-    public function validated($key = null, $default = null): CreateRoleDTO|array
+    /**
+     * Get the validated data and transform it into a DTO.
+     *
+     * @param string|null $key
+     * @param mixed|null $default
+     * @return CreateRoleDTO
+     */
+    public function validated($key = null, $default = null): CreateRoleDTO
     {
-        $permissions = collect($this->permissions)->pluck('value')->toArray();
+        /**
+         * @var array<int, array<string, mixed>> $permissionsInput
+         */
+        $permissionsInput = is_array($this->input('permissions', [])) ? $this->input('permissions', []) : [];
+
+        $permissions = array_map(
+            fn(array $permission): string => $permission['value'] ?? '',
+            $permissionsInput
+        );
 
         $this->merge([
             'permissions' => $permissions,
         ]);
 
-        return new CreateRoleDTO(...$this->toArray());
+        return new CreateRoleDTO(...parent::validated($key, $default));
     }
 }

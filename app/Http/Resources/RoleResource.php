@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
  * @property int $id
  * @property string $name
  * @property string $description
- * @property array $permissions
+ * @property array<int, array<string, mixed>> $permissions
  * @property mixed $created_at
  * @property string $guard_name
  *
@@ -36,7 +36,12 @@ class RoleResource extends JsonResource
         ];
     }
 
-    protected function getPermissionsForSelect()
+    /**
+     * Get permissions formatted for a select field.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    protected function getPermissionsForSelect(): array
     {
         /**
          * @var \App\Models\User $user
@@ -44,15 +49,15 @@ class RoleResource extends JsonResource
         $user = Auth::user();
 
         if ($user->hasRole($this->id) && $this->permissions) {
-            return collect($this->permissions)->map(fn ($permission) => [
+            return collect($this->permissions)->map(fn($permission) => [
                 'value' => null,
                 'label' => $permission['description'],
-            ]);
+            ])->toArray();
         }
 
-        return collect($this->permissions)->map(fn ($permission) => [
+        return collect($this->permissions)->map(fn($permission) => [
             'value' => $permission['id'],
             'label' => $permission['description'],
-        ]);
+        ])->toArray();
     }
 }
