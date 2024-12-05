@@ -35,24 +35,10 @@ run_tests() {
   echo "🔄 Limpando cache antes de executar os testes..."
   docker exec -i starterkit-app php artisan optimize:clear
 
-  case "$coverage_mode" in
-  "--no-coverage")
-    docker exec -i starterkit-app php artisan test --env=testing --parallel || {
-      echo "❌ Falha nos testes. Corrija os problemas antes de commitar."
-      exit 1
-    }
-    ;;
-  "--with-coverage")
-    docker exec -i starterkit-app php artisan test --env=testing --parallel \
-      --log-junit=tests/coverage/results.xml \
-      --coverage-clover=tests/coverage/clover.xml || {
-      echo "❌ Falha nos testes. Corrija os problemas antes de commitar."
-      exit 1
-    }
-    git add tests/coverage/results.xml tests/coverage/clover.xml
-    echo "✅ Relatórios adicionados ao commit."
-    ;;
-  esac
+  docker exec -i starterkit-app php artisan test --env=testing --parallel $coverage_mode || {
+    echo "❌ Falha nos testes. Corrija os problemas antes de commitar."
+    exit 1
+  }
 }
 
 for file in $staged_files; do
@@ -67,13 +53,14 @@ for file in $staged_files; do
   esac
 done
 
-echo "🔧 Executando análise do PHPStan..."
-docker exec -i starterkit-app ./vendor/bin/phpstan analyse
+if [ "$current_branch" = "hml" ]; then
+  run_tests ""
+  exit 0
+fi
 
-[ "$current_branch" = "hml" ] && run_tests "--no-coverage" && exit 0
-[ "$current_branch" = "dev" ] && run_tests "--with-coverage" && exit 0
-
-echo "📂 Branch auxiliar detectada. Executando testes com cobertura."
-run_tests "--with-coverage"
+if [ "$current_branch" = "dev" ]; then
+  run_tests "--coverage"
+  exit 0
+fi
 
 echo "✅ Pre-commit hook finalizado com sucesso!"
