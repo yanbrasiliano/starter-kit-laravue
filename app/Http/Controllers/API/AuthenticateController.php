@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Services\Authenticate\AuthenticateService;
+use Illuminate\Http\JsonResponse;
 
 /**
  * @apiInfo
@@ -29,9 +30,9 @@ class AuthenticateController extends Controller
      * @response 200 Success
      * @response 401 Unauthorized
      */
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
-        return $this->service->login($request->validated());
+        return response()->json($this->service->login($request->validated()));
     }
 
     /**
@@ -42,16 +43,18 @@ class AuthenticateController extends Controller
      * @response 200 Success
      * @response 200 { "message": "Logout feito com sucesso!" }
      */
-    public function logout()
+    public function logout(): JsonResponse
     {
-        return $this->service->logout();
+        return response()->json([
+            'message' => $this->service->logout()
+        ]);
     }
 
     /**
      * @authenticated
      */
-    public function myProfile()
+    public function myProfile(): JsonResponse
     {
-        return $this->service->myProfile();
+        return response()->json($this->service->myProfile());
     }
 }

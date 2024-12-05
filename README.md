@@ -27,7 +27,7 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 ## To Do
 
 - [ ] Fix errors larastan.
+- [ ] Fix errors in tests.
 - [ ] Create policies for roles, users and permissions(revisit what exists today with regard to permissions.js)
 - [ ] Add more tests for roles, users and permissions.
-- [ ] Create a dashboard for roles, users and permissions.
 - [ ] Create screen to display application logs

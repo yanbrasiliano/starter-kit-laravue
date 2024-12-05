@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PermissionResource;
 use App\Services\Permission\PermissionService;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class PermissionController extends Controller
 {
@@ -25,10 +26,10 @@ class PermissionController extends Controller
      * @response 403 Usuário não tem permissão de acesso
      * @security bearerAuth
      */
-    public function index()
+    public function index(): AnonymousResourceCollection
     {
         $permissions = $this->service->index();
 
-        return new PermissionResource($permissions);
+        return PermissionResource::collection($permissions);
     }
 }
