@@ -13,8 +13,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\{JsonResponse, Request};
 use Symfony\Component\HttpFoundation\Response;
 
-class UserController extends Controller
-{
+class UserController extends Controller {
     use LogsActivityTrait;
 
     public function __construct(
@@ -37,8 +36,7 @@ class UserController extends Controller
      * @response 403 User does not have access permission
      * @security bearerAuth
      */
-    public function index(Request $request): JsonResource
-    {
+    public function index(Request $request): JsonResource {
         $users = $this->service->index(
             new PaginateParamsDTO(...$request->toArray())
         );
@@ -62,8 +60,7 @@ class UserController extends Controller
      * @response 403 User does not have access permission
      * @security bearerAuth
      */
-    public function store(CreateUserRequest $request): JsonResource
-    {
+    public function store(CreateUserRequest $request): JsonResource {
         [$user, $userDTO] = $this->service->getModelAndDTOById(
             $this->service->create(new CreateUserDTO(...$request->toArray()))->id
         );
@@ -85,8 +82,7 @@ class UserController extends Controller
      * @response 404 User not found
      * @security bearerAuth
      */
-    public function show(int $id): JsonResource
-    {
+    public function show(int $id): JsonResource {
         $user = $this->service->getById($id);
 
         return new UserResource($user);
@@ -109,8 +105,7 @@ class UserController extends Controller
      * @response 404 User not found
      * @security bearerAuth
      */
-    public function update(UpdateUserRequest $request, int $id): JsonResource
-    {
+    public function update(UpdateUserRequest $request, int $id): JsonResource {
         [$user] = $this->service->getModelAndDTOById($id);
 
         $updateUserDTO = $request->toDTO();
@@ -133,8 +128,7 @@ class UserController extends Controller
      * @response 404 User not found
      * @security bearerAuth
      */
-    public function destroy(int $id, Request $request): Response
-    {
+    public function destroy(int $id, Request $request): Response {
         [$user] = $this->service->getModelAndDTOById($id);
         $reason = $request->input('reason');
 
@@ -162,8 +156,7 @@ class UserController extends Controller
      * @response 403 CPF is already in use
      * @security bearerAuth
      */
-    public function register(RegisterExternalUserRequest $request): JsonResponse
-    {
+    public function register(RegisterExternalUserRequest $request): JsonResponse {
         $this->service->registerExternal(
             new RegisterExternalUserDTO(...$request->validated())
         );
@@ -183,8 +176,7 @@ class UserController extends Controller
      * @response 404 User not found
      * @security bearerAuth
      */
-    public function verify(Request $request): JsonResponse
-    {
+    public function verify(Request $request): JsonResponse {
         $this->service->verify(
             $request->id
         );
@@ -193,5 +185,4 @@ class UserController extends Controller
             'message' => 'O seu cadastro foi verificado com sucesso!',
         ], Response::HTTP_OK);
     }
-
 }
