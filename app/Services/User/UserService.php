@@ -14,23 +14,18 @@ use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use App\Models\User;
 
-class UserService
-{
+class UserService {
     public function __construct(
         private UserRepositoryInterface $repository,
         private RoleService $service
     ) {
     }
 
-    public function index(PaginateParamsDTO $params): LengthAwarePaginator|Collection
-    {
-        $users = $this->repository->list($params);
-
-        return $users;
+    public function index(PaginateParamsDTO $params): LengthAwarePaginator|Collection {
+        return $this->repository->list($params);
     }
 
-    public function create(CreateUserDTO $createUserDto): UserDTO
-    {
+    public function create(CreateUserDTO $createUserDto): UserDTO {
         return DB::transaction(function () use ($createUserDto) {
             $params = $createUserDto->toArray();
             $password = $params['send_random_password'] ? Str::password(8) : null;
@@ -47,15 +42,13 @@ class UserService
         });
     }
 
-    public function getById(int $id): UserDTO
-    {
+    public function getById(int $id): UserDTO {
         $user = $this->repository->getById($id);
 
         return new UserDTO(...array_merge($user->toArray(), ['roles' => $user->roles->load('permissions')->toArray()]));
     }
 
-    public function getModelAndDTOById(int $id): array
-    {
+    public function getModelAndDTOById(int $id): array {
         $user = $this->repository->getById($id);
         $userData = $user->toArray();
         $userData['roles'] = $user->roles->toArray();
@@ -75,8 +68,7 @@ class UserService
         return [$user, $userDTO];
     }
 
-    public function update(int $id, UpdateUserDTO $updateUserDTO): UserDTO
-    {
+    public function update(int $id, UpdateUserDTO $updateUserDTO): UserDTO {
         return DB::transaction(function () use ($id, $updateUserDTO) {
             $params = array_filter(get_object_vars($updateUserDTO), fn($value) => !is_null($value));
 
@@ -92,8 +84,7 @@ class UserService
             );
         });
     }
-    public function delete(int $id, string $reason): void
-    {
+    public function delete(int $id, string $reason): void {
         throw_if(
             auth()->id() === $id,
             BadRequestException::class,
@@ -108,25 +99,23 @@ class UserService
                     'email' => $deleteReason->deleted_user_email,
                     'name' => $deleteReason->deleted_user_name,
                 ]))->send(new AccountDeletionNotification(
-                            new User([
-                                'id' => $deleteReason->deleted_user_id,
-                                'email' => $deleteReason->deleted_user_email,
-                                'name' => $deleteReason->deleted_user_name,
-                            ]),
-                            $reason
-                        ))
+                    new User([
+                        'id' => $deleteReason->deleted_user_id,
+                        'email' => $deleteReason->deleted_user_email,
+                        'name' => $deleteReason->deleted_user_name,
+                    ]),
+                    $reason
+                ))
             );
         });
     }
 
 
-    public function updatePassword(int $id, string $password): void
-    {
+    public function updatePassword(int $id, string $password): void {
         $this->repository->updatePassword($id, Hash::make($password));
     }
 
-    public function registerExternal(RegisterExternalUserDTO $registerExternalUserDTO): void
-    {
+    public function registerExternal(RegisterExternalUserDTO $registerExternalUserDTO): void {
         DB::transaction(function () use ($registerExternalUserDTO) {
             $role = $this->service->getBySlug($registerExternalUserDTO->role);
 
@@ -137,8 +126,7 @@ class UserService
         });
     }
 
-    public function verify(int $id): void
-    {
+    public function verify(int $id): void {
         $this->repository->verify($id);
     }
 }

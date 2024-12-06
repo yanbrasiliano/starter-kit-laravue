@@ -1,9 +1,9 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
-import notify from '@/utils/notify';
 import useAuthenticate from '@/composables/Authenticate/useAuthenticate';
-import { useRoute, useRouter } from 'vue-router';
 import useAuthStore from '@/store/useAuthStore';
+import notify from '@/utils/notify';
+import { onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
 
@@ -78,7 +78,10 @@ watch(
           label="Lembre-me" />
       </div>
       <div class="col-md-4 flex flex-center">
-        <RouterLink to="/esqueci-minha-senha" class="link--style text--font-13" color="primary">
+        <RouterLink
+          to="/esqueci-minha-senha"
+          class="link--style text--font-13"
+          color="primary">
           Esqueceu a senha?
         </RouterLink>
       </div>

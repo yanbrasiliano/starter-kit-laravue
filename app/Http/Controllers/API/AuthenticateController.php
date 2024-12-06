@@ -13,10 +13,8 @@ use Illuminate\Http\JsonResponse;
  * @version 1.0.0
  * @description staterkit
  */
-class AuthenticateController extends Controller
-{
-    public function __construct(protected AuthenticateService $service)
-    {
+class AuthenticateController extends Controller {
+    public function __construct(private AuthenticateService $service) {
         $this->service = $service;
     }
 
@@ -30,8 +28,7 @@ class AuthenticateController extends Controller
      * @response 200 Success
      * @response 401 Unauthorized
      */
-    public function login(LoginRequest $request): JsonResponse
-    {
+    public function login(LoginRequest $request): JsonResponse {
         return response()->json($this->service->login($request->validated()));
     }
 
@@ -43,8 +40,7 @@ class AuthenticateController extends Controller
      * @response 200 Success
      * @response 200 { "message": "Logout feito com sucesso!" }
      */
-    public function logout(): JsonResponse
-    {
+    public function logout(): JsonResponse {
         return response()->json([
             'message' => $this->service->logout()
         ]);
@@ -53,8 +49,7 @@ class AuthenticateController extends Controller
     /**
      * @authenticated
      */
-    public function myProfile(): JsonResponse
-    {
+    public function myProfile(): JsonResponse {
         return response()->json($this->service->myProfile());
     }
 }

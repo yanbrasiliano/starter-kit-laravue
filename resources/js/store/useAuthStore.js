@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia';
-import { LocalStorage } from 'quasar';
 import { myProfile } from '@/services/AuthenticateService';
 import UserService from '@/services/UserService';
+import { defineStore } from 'pinia';
+import { LocalStorage } from 'quasar';
 
 const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -57,12 +57,16 @@ const useAuthStore = defineStore('auth', {
       this.users = data;
     },
     setCredentials({ user }) {
+      if (!user || !user.id) {
+        throw new Error('Usuário inválido ou não autenticado');
+      }
       this.user = {
         id: user.id,
         name: user.name,
         email: user.email,
       };
     },
+
     logout() {
       this.$reset();
       LocalStorage.clear();

@@ -1,13 +1,13 @@
-import { Notify } from 'quasar';
-import useAuthStore from '@/store/useAuthStore';
 import { authenticate, unauthenticate } from '@/services/AuthenticateService';
+import useAuthStore from '@/store/useAuthStore';
+import { Notify } from 'quasar';
 
 const useAuthenticate = () => {
   const authStore = useAuthStore();
   const login = async (credentials) => {
     const response = await authenticate(credentials);
-    const { user, access_token } = response.data;
-    authStore.setCredentials({ user, token: access_token });
+    const { user, access_token: token } = response.data.original;
+    authStore.setCredentials({ user, token });
     return response;
   };
 
