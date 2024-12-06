@@ -1,12 +1,13 @@
 <script setup>
-import { hasPermission } from "@utils/hasPermission";
-import { USER_PERMISSION } from "@utils/permissions";
-import useUser from "@/composables/User/useUser";
-import useUserConfigListPage from "@/composables/User/useUserConfigListPage";
-import TableSync from "@/components/users/TableSync.vue";
-import PageTopTitle from "@/components/shared/PageTopTitle.vue";
-import PageWrapper from "../PageWrapper.vue";
-import SearchInput from "@/components/shared/SearchInput.vue";
+import ActionButton from '@/components/shared/ActionButton.vue';
+import PageTopTitle from '@/components/shared/PageTopTitle.vue';
+import SearchInput from '@/components/shared/SearchInput.vue';
+import TableSync from '@/components/users/TableSync.vue';
+import useUser from '@/composables/User/useUser';
+import useUserConfigListPage from '@/composables/User/useUserConfigListPage';
+import { hasPermission } from '@utils/hasPermission';
+import { USER_PERMISSION } from '@utils/permissions';
+import PageWrapper from '../PageWrapper.vue';
 
 const { columns } = useUserConfigListPage();
 const {
@@ -35,17 +36,17 @@ const {
           <SearchInput
             :value="filter"
             @update-search="handleSearch"
-            @trigger-search="handleSearch"
-          />
+            @trigger-search="handleSearch" />
         </div>
         <div class="col-md-4 offset-md-4">
-          <ActionButton
-            v-if="hasPermission([USER_PERMISSION.CREATE])"
-            icon="add"
-            label="Criar"
-            color="secondary"
-            @click-action="router.push({ name: 'createUsers' })"
-          />
+          <div class="column items-end">
+            <ActionButton
+              v-if="hasPermission([USER_PERMISSION.CREATE])"
+              icon="add"
+              label="Criar"
+              color="secondary"
+              @click-action="router.push({ name: 'createUsers' })" />
+          </div>
         </div>
       </div>
     </template>
@@ -59,8 +60,7 @@ const {
         @update-pagination="updatePagination"
         @on-status="onStatus"
         @on-edit="onEdit"
-        @on-delete="onDelete"
-      />
+        @on-delete="onDelete" />
 
       <q-dialog v-model="confirmHandleStatus" persistent>
         <q-card>
@@ -75,18 +75,15 @@ const {
               outline
               label="Sim"
               color="secondary"
-              @click="handleStatus(true)"
-            />
+              @click="handleStatus(true)" />
             <q-btn
               v-close-popup
               label="Não"
               color="secondary"
-              @click="handleStatus(false)"
-            />
+              @click="handleStatus(false)" />
           </q-card-actions>
         </q-card>
       </q-dialog>
-      
     </template>
   </PageWrapper>
 </template>
