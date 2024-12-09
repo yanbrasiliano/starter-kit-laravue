@@ -8,6 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 const authStore = useAuthStore();
 
 const showPassword = ref(false);
+const isLoading = ref(false);
 const { login, myProfile } = useAuthenticate();
 const router = useRouter();
 const route = useRoute();
@@ -18,13 +19,21 @@ onMounted(() => {
 });
 
 const auth = async () => {
-  await login({ ...authStore.externalCredentials });
-  await myProfile();
+  isLoading.value = true;
+  try {
+    await login({ ...authStore.externalCredentials });
+    await myProfile();
 
-  notify('Logado com Sucesso', 'positive');
+    notify('Logado com Sucesso', 'positive');
 
-  const { routeName, id } = route.query || {};
-  router.push(routeName && id ? { name: routeName, params: { id } } : '/admin/inicio');
+    const { routeName, id } = route.query || {};
+    router.push(routeName && id ? { name: routeName, params: { id } } : '/admin/inicio');
+  } catch (error) {
+    isLoading.value = false;
+    throw new Error('Erro ao autenticar: ' + error.message);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 const togglePasswordVisibility = () => {
@@ -87,7 +96,15 @@ watch(
       </div>
     </div>
     <div class="q-mt-xs">
-      <q-btn label="Entrar" type="submit" color="secondary" class="full-width" />
+      <q-btn
+        :loading="isLoading"
+        :disable="isLoading"
+        color="secondary"
+        class="full-width"
+        @click="auth">
+        <span v-if="!isLoading">Entrar</span>
+        <span v-else>Conectando...</span>
+      </q-btn>
     </div>
   </q-form>
 </template>

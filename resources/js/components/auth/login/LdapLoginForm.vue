@@ -1,14 +1,15 @@
 <script setup>
-import { ref } from 'vue';
-import notify from '@/utils/notify';
-import useLDAPAuthenticate from '@/composables/Authenticate/useLDAPAuthenticate';
 import useAuthenticate from '@/composables/Authenticate/useAuthenticate';
-import { useRoute, useRouter } from 'vue-router';
+import useLDAPAuthenticate from '@/composables/Authenticate/useLDAPAuthenticate';
 import useAuthStore from '@/store/useAuthStore';
+import notify from '@/utils/notify';
+import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
 
 const showPassword = ref(false);
+const isLoading = ref(false);
 
 const { myProfile } = useAuthenticate();
 const { ldapLogin } = useLDAPAuthenticate();
@@ -16,13 +17,21 @@ const router = useRouter();
 const route = useRoute();
 
 const auth = async () => {
-  await ldapLogin({ ...authStore.ldapCredentials });
-  await myProfile();
+  isLoading.value = true;
+  try {
+    await ldapLogin({ ...authStore.ldapCredentials });
+    await myProfile();
 
-  notify('Logado com Sucesso', 'positive');
+    notify('Logado com Sucesso', 'positive');
 
-  const { routeName, id } = route.query || {};
-  router.push(routeName && id ? { name: routeName, params: { id } } : '/admin/inicio');
+    const { routeName, id } = route.query || {};
+    router.push(routeName && id ? { name: routeName, params: { id } } : '/admin/inicio');
+  } catch (error) {
+    isLoading.value = false;
+    throw new Error('Erro ao autenticar: ' + error.message);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 const togglePasswordVisibility = () => {
@@ -72,7 +81,15 @@ const togglePasswordVisibility = () => {
       </div>
     </div>
     <div class="q-mt-xs">
-      <q-btn label="Entrar" type="submit" color="secondary" class="full-width" />
+      <q-btn
+        :loading="isLoading"
+        :disable="isLoading"
+        color="secondary"
+        class="full-width"
+        @click="auth">
+        <span v-if="!isLoading">Entrar</span>
+        <span v-else>Conectando...</span>
+      </q-btn>
     </div>
   </q-form>
 </template>
