@@ -31,7 +31,7 @@ class RegisterExternalUserRequest extends FormRequest
                 'required',
                 Rule::in([
                     RolesEnum::REVIEWER->value,
-                ])
+                ]),
             ],
             'password' => ['required', 'min:8', 'confirmed'],
             'password_confirmation' => ['required', 'min:8'],

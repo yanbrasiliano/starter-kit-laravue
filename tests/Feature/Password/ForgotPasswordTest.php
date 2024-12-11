@@ -5,7 +5,7 @@ namespace Tests\Feature\Password;
 use App\Enums\RolesEnum;
 use App\Models\User;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\{DB, Mail};
+use Illuminate\Support\Facades\{DB};
 
 beforeEach(function () {
     $this->user = User::factory()->create();

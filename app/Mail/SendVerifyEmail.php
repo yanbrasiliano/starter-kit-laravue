@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\{Config, URL};
 
 class SendVerifyEmail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new message instance.

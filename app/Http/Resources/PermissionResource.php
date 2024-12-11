@@ -30,12 +30,11 @@ class PermissionResource extends JsonResource
         $permissions = parent::toArray($request);
 
         return collect(is_array($permissions) ? $permissions : (array) $permissions)
-            ->map(function ($permission) {
-                return [
-                    'value' => $permission['id'],
-                    'label' => $permission['description'],
-                ];
-            })
+            ->filter(fn($permission) => is_array($permission) && isset ($permission['id'], $permission['description']))
+            ->map(fn($permission) => [
+                'value' => $permission['id'],
+                'label' => $permission['description'],
+            ])
             ->toArray();
     }
 }

@@ -7,17 +7,20 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\{DB, Hash};
 
-class UserSeeder extends Seeder {
+class UserSeeder extends Seeder
+{
     private const ADMIN_EMAIL = 'admin@admin.com';
     private const ADMIN_ROLE = 'Administrador';
 
-    public function run() {
+    public function run()
+    {
         DB::transaction(function () {
             $this->createAdminUser();
             $this->assignAdminRole();
         });
     }
-    private function createAdminUser() {
+    private function createAdminUser()
+    {
         DB::table('users')->updateOrInsert(
             ['email' => self::ADMIN_EMAIL],
             [
@@ -32,7 +35,8 @@ class UserSeeder extends Seeder {
             ]
         );
     }
-    private function assignAdminRole() {
+    private function assignAdminRole()
+    {
         $user = User::where('email', self::ADMIN_EMAIL)->first();
         $roleId = DB::table('roles')
             ->where('name', self::ADMIN_ROLE)

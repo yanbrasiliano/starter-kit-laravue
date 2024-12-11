@@ -78,7 +78,7 @@ class CreateRoleRequest extends FormRequest
         $permissionsInput = is_array($this->input('permissions', [])) ? $this->input('permissions', []) : [];
 
         $permissions = array_map(
-            fn(array $permission): string => $permission['value'] ?? '',
+            fn (array $permission): string => $permission['value'] ?? '',
             $permissionsInput
         );
 

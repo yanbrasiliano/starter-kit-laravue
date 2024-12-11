@@ -4,28 +4,31 @@ namespace App\Services\User;
 
 use App\DTO\Paginate\{PaginateParamsDTO};
 use App\DTO\User\{CreateUserDTO, RegisterExternalUserDTO, UpdateUserDTO, UserDTO};
-use App\Mail\{AccountDeletionNotification, SendNotificationUserActivation, SendRandomPassword, SendVerifyEmail};
+use App\Mail\{AccountDeletionNotification, SendRandomPassword, SendVerifyEmail};
+use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\Role\RoleService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\{Hash, Mail, DB};
+use Illuminate\Support\Facades\{DB, Hash, Mail};
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use App\Models\User;
 
-class UserService {
+class UserService
+{
     public function __construct(
         private UserRepositoryInterface $repository,
         private RoleService $service
     ) {
     }
 
-    public function index(PaginateParamsDTO $params): LengthAwarePaginator|Collection {
+    public function index(PaginateParamsDTO $params): LengthAwarePaginator|Collection
+    {
         return $this->repository->list($params);
     }
 
-    public function create(CreateUserDTO $createUserDto): UserDTO {
+    public function create(CreateUserDTO $createUserDto): UserDTO
+    {
         return DB::transaction(function () use ($createUserDto) {
             $params = $createUserDto->toArray();
             $password = $params['send_random_password'] ? Str::password(8) : null;
@@ -33,7 +36,7 @@ class UserService {
 
             $user = tap(
                 $this->repository->create($params),
-                fn($user) => $password ? Mail::to($user)->queue(new SendRandomPassword($user, $password)) : null
+                fn ($user) => $password ? Mail::to($user)->queue(new SendRandomPassword($user, $password)) : null
             );
 
             $userData = array_merge($user->toArray(), ['roles' => $user->roles->load('permissions')->toArray()]);
@@ -42,13 +45,15 @@ class UserService {
         });
     }
 
-    public function getById(int $id): UserDTO {
+    public function getById(int $id): UserDTO
+    {
         $user = $this->repository->getById($id);
 
         return new UserDTO(...array_merge($user->toArray(), ['roles' => $user->roles->load('permissions')->toArray()]));
     }
 
-    public function getModelAndDTOById(int $id): array {
+    public function getModelAndDTOById(int $id): array
+    {
         $user = $this->repository->getById($id);
         $userData = $user->toArray();
         $userData['roles'] = $user->roles->toArray();
@@ -67,16 +72,14 @@ class UserService {
 
         return [$user, $userDTO];
     }
-
-    public function update(int $id, UpdateUserDTO $updateUserDTO): UserDTO {
+    public function update(int $id, UpdateUserDTO $updateUserDTO): UserDTO
+    {
         return DB::transaction(function () use ($id, $updateUserDTO) {
-            $params = array_filter(get_object_vars($updateUserDTO), fn($value) => !is_null($value));
+            $params = array_filter(get_object_vars($updateUserDTO), fn ($value) => $value !== null);
 
             $user = $this->repository->update($id, $params);
 
-            if ($updateUserDTO->notify_status) {
-                Mail::to($user)->queue(new SendNotificationUserActivation($user));
-            }
+            $updateUserDTO->role_id ? $user->syncRoles([$updateUserDTO->role_id]) : null;
 
             return new UserDTO(
                 ...$user->only(['id', 'name', 'email', 'cpf', 'active', 'email_verified_at', 'created_at', 'updated_at']),
@@ -84,7 +87,9 @@ class UserService {
             );
         });
     }
-    public function delete(int $id, string $reason): void {
+
+    public function delete(int $id, string $reason): void
+    {
         throw_if(
             auth()->id() === $id,
             BadRequestException::class,
@@ -94,39 +99,46 @@ class UserService {
         DB::transaction(function () use ($id, $reason) {
             tap(
                 $this->repository->delete($id, $reason),
-                fn($deleteReason) => Mail::to(new User([
-                    'id' => $deleteReason->deleted_user_id,
-                    'email' => $deleteReason->deleted_user_email,
-                    'name' => $deleteReason->deleted_user_name,
-                ]))->send(new AccountDeletionNotification(
-                    new User([
-                        'id' => $deleteReason->deleted_user_id,
-                        'email' => $deleteReason->deleted_user_email,
-                        'name' => $deleteReason->deleted_user_name,
-                    ]),
+                fn ($deleteReason) => Mail::to(
+                    (new User())
+                        ->forceFill([
+                            'id' => $deleteReason->deleted_user_id,
+                            'email' => $deleteReason->deleted_user_email,
+                            'name' => $deleteReason->deleted_user_name,
+                        ])
+                )->send(new AccountDeletionNotification(
+                    (new User())
+                                ->forceFill([
+                                    'id' => $deleteReason->deleted_user_id,
+                                    'email' => $deleteReason->deleted_user_email,
+                                    'name' => $deleteReason->deleted_user_name,
+                                ]),
                     $reason
                 ))
             );
         });
+
     }
 
-
-    public function updatePassword(int $id, string $password): void {
+    public function updatePassword(int $id, string $password): void
+    {
         $this->repository->updatePassword($id, Hash::make($password));
     }
 
-    public function registerExternal(RegisterExternalUserDTO $registerExternalUserDTO): void {
+    public function registerExternal(RegisterExternalUserDTO $registerExternalUserDTO): void
+    {
         DB::transaction(function () use ($registerExternalUserDTO) {
             $role = $this->service->getBySlug($registerExternalUserDTO->role);
 
             tap(
                 $this->repository->create(array_merge(['role_id' => [$role->id]], $registerExternalUserDTO->toArray())),
-                fn($user) => Mail::to($user)->queue(new SendVerifyEmail($user))
+                fn ($user) => Mail::to($user)->queue(new SendVerifyEmail($user))
             );
         });
     }
 
-    public function verify(int $id): void {
+    public function verify(int $id): void
+    {
         $this->repository->verify($id);
     }
 }

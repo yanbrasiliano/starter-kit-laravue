@@ -7,9 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Role\{CreateRoleRequest, UpdateRoleRequest};
 use App\Http\Resources\RoleResource;
 use App\Services\Role\RoleService;
+use App\Traits\LogsActivityTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\{JsonResponse, Request};
-use App\Traits\LogsActivityTrait;
 use Symfony\Component\HttpFoundation\Response;
 
 class RoleController extends Controller
@@ -152,7 +152,6 @@ class RoleController extends Controller
     public function listAll(): JsonResource
     {
         $roles = $this->service->listAll();
-
         return RoleResource::collection($roles);
     }
 }

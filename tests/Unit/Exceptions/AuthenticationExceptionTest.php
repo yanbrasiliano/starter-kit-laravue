@@ -3,7 +3,6 @@
 namespace Tests\Unit\Exceptions;
 
 use App\Exceptions\AuthenticationException;
-use Illuminate\Http\Request;
 
 describe('AuthenticationException', function () {
     it('returns the default error message when no parameters are passed', function () {

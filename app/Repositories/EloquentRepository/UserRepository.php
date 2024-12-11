@@ -61,10 +61,9 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     {
         return tap(
             $this->model->create(Arr::only($params, ['name', 'email', 'password', 'cpf', 'active'])),
-            fn(User $user) => $user->syncRoles([$params['role_id']])
+            fn (User $user) => $user->syncRoles([$params['role_id']])
         );
     }
-
 
     /**
      * @param int $id
@@ -77,11 +76,9 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
 
     public function update(int $id, array $params): Model|User
     {
-        return tap($this->model->findOrFail($id), function ($user) use ($params) {
-            $user->update($params);
-            isset($params['role_id']) ? $user->syncRoles([$params['role_id']]) : null;
-        });
+        return tap($this->model->findOrFail($id), fn ($user) => $user->update(array_filter($params, fn ($key) => in_array($key, $user->getFillable()), ARRAY_FILTER_USE_KEY)));
     }
+
     public function delete(int $id, string $reason): DeleteReason
     {
         /** @var \App\Models\User $user */
@@ -113,7 +110,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     {
         tap(
             $this->model::findOrFail($id),
-            fn($user) => $user->hasVerifiedEmail()
+            fn ($user) => $user->hasVerifiedEmail()
             ? throw new Exception('Seu cadastro já foi validado! Por favor, aguarde até que um administrador realize a liberação do seu acesso.', Response::HTTP_CONFLICT)
             : $user->markEmailAsVerified()
         );

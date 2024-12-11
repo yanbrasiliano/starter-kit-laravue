@@ -20,7 +20,8 @@ use Spatie\Permission\Traits\{HasPermissions, HasRoles};
  * @property string $updated_at
  * @property \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
  */
-class User extends Authenticatable implements MustVerifyEmail {
+class User extends Authenticatable implements MustVerifyEmail
+{
     use HasApiTokens;
     use HasFactory;
     use HasPermissions;
@@ -45,7 +46,8 @@ class User extends Authenticatable implements MustVerifyEmail {
         'password' => 'hashed',
     ];
 
-    public function setCpfAttribute($value) {
+    public function setCpfAttribute($value)
+    {
         $this->attributes['cpf'] = preg_replace('/\D/', '', $value); // Remove tudo que não for número
     }
 }

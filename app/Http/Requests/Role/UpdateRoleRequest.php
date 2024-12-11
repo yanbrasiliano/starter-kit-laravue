@@ -75,7 +75,7 @@ class UpdateRoleRequest extends FormRequest
         $permissionsInput = $this->input('permissions', []);
 
         $permissions = array_map(
-            fn(array $permission): string => $permission['value'] ?? '',
+            fn (array $permission): string => $permission['value'] ?? '',
             is_array($permissionsInput) ? $permissionsInput : []
         );
 

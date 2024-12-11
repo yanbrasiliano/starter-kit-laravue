@@ -43,21 +43,22 @@ class RoleResource extends JsonResource
      */
     protected function getPermissionsForSelect(): array
     {
+        $permissions = collect($this->permissions);
+
+        if ($permissions->isEmpty()) {
+            return [];
+        }
+
         /**
          * @var \App\Models\User $user
          */
         $user = Auth::user();
 
-        if ($user->hasRole($this->id) && $this->permissions) {
-            return collect($this->permissions)->map(fn($permission) => [
-                'value' => null,
-                'label' => $permission['description'],
-            ])->toArray();
-        }
-
-        return collect($this->permissions)->map(fn($permission) => [
-            'value' => $permission['id'],
-            'label' => $permission['description'],
-        ])->toArray();
+        return $permissions->map(fn($permission) => [
+            'value' => $user->hasRole($this->id) ? null : ($permission['id'] ?? null),
+            'label' => $permission['description'] ?? '',
+        ])->filter(fn($permission) => $permission['label'] !== '' && $permission['value'] !== null)
+            ->toArray();
     }
+
 }

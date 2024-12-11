@@ -25,13 +25,13 @@ onMounted(async () => {
   <div class="q-pa-md items-start q-gutter-md">
     <q-card>
       <q-card-section>
-        <div class="row text-h5 q-mt-sm q-mb-xs text-weight-bold">Edit Roles</div>
+        <div class="row text-h5 q-mt-sm q-mb-xs text-weight-bold">Editar Perfil</div>
       </q-card-section>
       <q-separator inset />
       <q-card-section>
         <div class="row justify-end">
           <span v-if="roleStore.getRole" class="text-weight-bold">
-            Created on: {{ roleStore.getFormattedDate }}
+            Criado em: {{ roleStore.getFormattedDate }}
           </span>
         </div>
         <FormRole />

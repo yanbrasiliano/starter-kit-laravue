@@ -6,8 +6,10 @@ use App\DTO\Authenticate\{LoginDTO, MyProfileDTO};
 use App\Exceptions\{InvalidCredentialsException, UnactivatedUserException};
 use Illuminate\Support\Facades\{Auth, Session};
 
-class AuthenticateService {
-    public function login(LoginDTO $dto) {
+class AuthenticateService
+{
+    public function login(LoginDTO $dto)
+    {
         $credentials = ['email' => $dto->email, 'password' => $dto->password];
 
         if (!Auth::guard('web')->attempt($credentials)) {
@@ -29,7 +31,8 @@ class AuthenticateService {
         return $this->respondWithToken($token, $user);
     }
 
-    protected function respondWithToken($token, $user) {
+    protected function respondWithToken($token, $user)
+    {
         return response()->json([
             'user' => [
                 'id' => $user->id,
@@ -40,7 +43,8 @@ class AuthenticateService {
         ]);
     }
 
-    public function logout() {
+    public function logout()
+    {
 
         /**
          * @var \App\Models\User $user
@@ -61,7 +65,8 @@ class AuthenticateService {
         return response()->json(['message' => 'Logged out successfully']);
     }
 
-    public function myProfile(): MyProfileDTO {
+    public function myProfile(): MyProfileDTO
+    {
         /**
          * @var \App\Models\User $user
          */
