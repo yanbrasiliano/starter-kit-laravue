@@ -20,3 +20,4 @@ parameters:
         - ./*/*/FileToBeExcluded.php
         - ./app/Providers/AppServiceProvider.php
         - ./app/Http/Middleware/*
+        - ./app/Http/Resources/BaseResource.php

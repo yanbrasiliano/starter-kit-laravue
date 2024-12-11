@@ -67,7 +67,6 @@ class AppServiceProvider extends ServiceProvider
     protected function configureRequest(): void
     {
         $this->app['request']->server->set('HTTPS', $this->app->environment() != 'local');
-        URL::forceScheme('https');
     }
 
     /**

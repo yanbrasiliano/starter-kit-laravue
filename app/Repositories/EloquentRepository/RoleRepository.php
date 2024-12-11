@@ -51,6 +51,7 @@ class RoleRepository extends AbstractRepository implements RoleRepositoryInterfa
             'permissions:id,description',
         ])->findOrFail($id);
     }
+
     public function update(UpdateRoleDTO $roleDTO): Model|Role
     {
         return tap($this->role->findOrFail($roleDTO->id), function ($role) use ($roleDTO) {

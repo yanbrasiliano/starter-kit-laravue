@@ -15,10 +15,15 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 - **Initial Dashboard**: A starter dashboard to kickstart your project.
 - **Side Menu**: A responsive and easily customizable side menu.
 - **Automated Tests**: Pre-written tests to ensure your application functions correctly.
+- **Logging**: Comprehensive logging for monitoring and debugging.
+- **Larastan**: Automated code quality checks to maintain code quality.
+- **Laravel Debugbar**: A powerful debugging tool for your Laravel applications.
+- **Scramble
 
 ## Stack
 
 - **Laravel 11 with directory structure Laravel 10**
+- **PHP 8.4**
 - **Spatie Permission**
 - **Vue 3.4**
 - **Composition API**
