@@ -152,6 +152,7 @@ class RoleController extends Controller
     public function listAll(): JsonResource
     {
         $roles = $this->service->listAll();
+
         return RoleResource::collection($roles);
     }
 }

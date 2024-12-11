@@ -18,7 +18,7 @@ use Dedoc\Scramble\Support\Generator\{
     SecurityScheme
 };
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\{URL, Vite};
+use Illuminate\Support\Facades\{Vite};
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

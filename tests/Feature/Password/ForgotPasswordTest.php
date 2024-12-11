@@ -4,8 +4,8 @@ namespace Tests\Feature\Password;
 
 use App\Enums\RolesEnum;
 use App\Models\User;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\{DB};
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
 beforeEach(function () {
     $this->user = User::factory()->create();
@@ -60,10 +60,25 @@ describe('ForgotPasswordTest', function () {
 
     it('should return status 204', function () {
         $user = User::factory()->create();
+
+        DB::table('roles')->updateOrInsert(
+            ['slug' => RolesEnum::REVIEWER],
+            [
+                'name' => 'Reviewer',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
         $role = DB::table('roles')->where('slug', RolesEnum::REVIEWER)->first();
+
         $user->assignRole([$role->id]);
+
         $payload = ['email' => $user->email];
         $response = $this->postJson(route('forgot-password'), $payload);
+
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     })->group('password');
+
 });

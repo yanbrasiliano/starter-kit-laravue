@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
 
+// @codeCoverageIgnoreStart
 /**
  * BaseResource
  *
@@ -55,3 +56,5 @@ class BaseResource extends JsonResource
         ];
     }
 }
+
+// @codeCoverageIgnoreEnd

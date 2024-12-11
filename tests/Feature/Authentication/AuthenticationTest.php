@@ -4,9 +4,9 @@ namespace Tests\Feature\Authentication;
 
 use App\Enums\RolesEnum;
 use App\Models\User;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Artisan;
 use Spatie\Permission\Models\Role;
+use Symfony\Component\HttpFoundation\Response;
 
 beforeEach(function () {
     Artisan::call('db:seed', ['--class' => 'PermissionSeeder']);
@@ -45,12 +45,26 @@ describe('Authentication', function () {
             ->assertJsonStructure(['message']);
     });
     it('authenticates a user with correct credentials', function () {
-        $payload = ['email' => $this->activeUser->email, 'password' => 'correctpassword'];
+        $payload = [
+            'email' => $this->activeUser->email,
+            'password' => 'correctpassword',
+        ];
 
         $response = $this->postJson(route('login'), $payload);
 
         $response->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(['user', 'access_token']);
+            ->assertJsonPath('original.user.id', $this->activeUser->id)
+            ->assertJsonPath('original.user.email', $this->activeUser->email)
+            ->assertJsonStructure([
+                'original' => [
+                    'user' => [
+                        'id',
+                        'name',
+                        'email',
+                    ],
+                    'access_token',
+                ],
+            ]);
     });
     it('does not authenticate an inactive user', function () {
         $payload = ['email' => $this->inactiveUser->email, 'password' => 'correctpassword'];

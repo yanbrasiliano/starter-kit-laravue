@@ -50,16 +50,14 @@ class RoleResource extends BaseResource
          */
         $user = Auth::user();
 
-        if ($user->hasRole($this->id) && $this->permissions) {
-            return collect($this->permissions)->map(fn($permission) => [
-                'value' => null,
-                'label' => $permission['description'],
-            ])->toArray();
-        }
+        return collect($this->permissions)->map(function ($permission) use ($user) {
+            $value = $user->hasRole($this->id) ? $permission['id'] : null;
 
-        return collect($this->permissions)->map(fn($permission) => [
-            'value' => $permission['id'],
-            'label' => $permission['description'],
-        ])->toArray();
+            return [
+                'value' => $value,
+                'label' => $permission['description'],
+            ];
+        })->toArray();
     }
+
 }

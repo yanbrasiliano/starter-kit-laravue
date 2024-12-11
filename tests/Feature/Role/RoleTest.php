@@ -4,8 +4,8 @@ namespace Tests\Feature\Authentication;
 
 use App\Enums\RolesEnum;
 use App\Models\User;
-use Illuminate\Http\Response;
 use Spatie\Permission\Models\{Permission, Role};
+use Symfony\Component\HttpFoundation\Response;
 
 beforeEach(function () {
     $this->userAuth = User::factory()->create();

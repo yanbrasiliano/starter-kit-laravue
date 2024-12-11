@@ -80,7 +80,8 @@ class RoleRepository extends AbstractRepository implements RoleRepositoryInterfa
 
     public function listAll(): Collection
     {
-        return $this->role->with('permissions')->get(['id', 'name', 'description', 'created_at']);
+        return $this->role->with('permissions')->get(['id', 'name', 'slug', 'description', 'guard_name', 'created_at']);
     }
+
 
 }

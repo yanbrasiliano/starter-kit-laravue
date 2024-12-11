@@ -25,6 +25,7 @@ class Handler extends ExceptionHandler
             $exception instanceof InvalidCredentialsException => (int) ($exception->getCode() ?: Response::HTTP_BAD_REQUEST),
             $exception instanceof AuthenticationException => Response::HTTP_UNAUTHORIZED,
             $exception instanceof UnactivatedUserException => (int) ($exception->getCode() ?: Response::HTTP_FORBIDDEN),
+            $exception instanceof RoleIsAssignedToUserException => (int) ($exception->getCode() ?: Response::HTTP_CONFLICT),
             default => Response::HTTP_INTERNAL_SERVER_ERROR,
         };
 

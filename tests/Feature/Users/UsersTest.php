@@ -4,8 +4,8 @@ namespace Tests\Feature\Users;
 
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\{Config};
+use Illuminate\Support\Facades\Config;
+use Symfony\Component\HttpFoundation\Response;
 
 use function Pest\Laravel\{actingAs, get, post};
 
@@ -22,9 +22,9 @@ describe('Users Management', function () {
             function (array $paginationStructure) {
 
                 actingAs($this->asAdmin)
-                  ->get(route('users.list'))
-                  ->assertStatus(Response::HTTP_OK)
-                  ->assertJsonStructure($paginationStructure);
+                    ->get(route('users.list'))
+                    ->assertStatus(Response::HTTP_OK)
+                    ->assertJsonStructure($paginationStructure);
             }
         )->with('paginationStructure');
     });
@@ -35,16 +35,16 @@ describe('Users Management', function () {
             function (array $paginationStructure) {
 
                 actingAs($this->asAdmin)
-                  ->get(route('users.list', [$this->asAdmin->id]))
-                  ->assertStatus(Response::HTTP_OK)
-                  ->assertJsonStructure($paginationStructure);
+                    ->get(route('users.list', [$this->asAdmin->id]))
+                    ->assertStatus(Response::HTTP_OK)
+                    ->assertJsonStructure($paginationStructure);
             }
         )->with('paginationStructure');
 
         it('should return a 404 status code for invalid user ID', function () {
             actingAs($this->asAdmin)
-              ->get(route('users.view', [111111]))
-              ->assertStatus(Response::HTTP_NOT_FOUND);
+                ->get(route('users.view', [111111]))
+                ->assertStatus(Response::HTTP_NOT_FOUND);
         });
     });
 
@@ -54,43 +54,44 @@ describe('Users Management', function () {
             function (array $registerUser, array $validJsonStructure) {
 
                 actingAs($this->asAdmin)
-                  ->post(route('users.register'), $registerUser)
-                  ->assertStatus(Response::HTTP_OK)
-                  ->assertExactJson(["message" => "Um e-mail de confirmação foi encaminhado. Por favor, realize os procedimentos para ativação da sua conta."]);
+                    ->post(route('users.register'), $registerUser)
+                    ->assertStatus(Response::HTTP_OK)
+                    ->assertExactJson(["message" => "Um e-mail de confirmação foi encaminhado. Por favor, realize os procedimentos para ativação da sua conta."]);
             }
         )
-          ->with('registerUser')
-          ->with('validJsonStructure');
+            ->with('registerUser')
+            ->with('validJsonStructure');
+
 
         it(
             'should return a 422 status code when name is not provided',
             function (array $nameNotProvided) {
 
                 actingAs($this->asAdmin)
-                  ->post(route('users.create'), $nameNotProvided)
-                  ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                  ->assertJson([
-                      'errors' => [
-                          'name' => [
-                              'O campo Nome é obrigatório.',
-                          ],
-                      ],
-                  ]);
+                    ->post(route('users.create'), $nameNotProvided)
+                    ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                    ->assertJson([
+                        'errors' => [
+                            'name' => [
+                                'O campo Nome é obrigatório.',
+                            ],
+                        ],
+                    ]);
             }
         )->with('nameNotProvided');
 
         it('should return a 422 status code when email is invalid', function (array $invalidEmail) {
 
             actingAs($this->asAdmin)
-              ->post(route('users.create'), $invalidEmail)
-              ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-              ->assertJson([
-                  'errors' => [
-                      'email' => [
-                          'O E-mail inserido não é válido.',
-                      ],
-                  ],
-              ]);
+                ->post(route('users.create'), $invalidEmail)
+                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                ->assertJson([
+                    'errors' => [
+                        'email' => [
+                            'O E-mail inserido não é válido.',
+                        ],
+                    ],
+                ]);
         })->with('invalidEmail');
 
         it(
@@ -98,15 +99,15 @@ describe('Users Management', function () {
             function (array $emailAlreadyExists) {
 
                 actingAs($this->asAdmin)
-                  ->post(route('users.create'), $emailAlreadyExists)
-                  ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                  ->assertJson([
-                      'errors' => [
-                          'email' => [
-                              'O e-mail já foi cadastrado.',
-                          ],
-                      ],
-                  ]);
+                    ->post(route('users.create'), $emailAlreadyExists)
+                    ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                    ->assertJson([
+                        'errors' => [
+                            'email' => [
+                                'O e-mail já foi cadastrado.',
+                            ],
+                        ],
+                    ]);
             }
         )->with('emailAlreadyExists');
 
@@ -115,15 +116,15 @@ describe('Users Management', function () {
             function (array $invalidStatus) {
 
                 actingAs($this->asAdmin)
-                  ->post(route('users.create'), $invalidStatus)
-                  ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                  ->assertJson([
-                      'errors' => [
-                          'active' => [
-                              'O Status inserido não é válido.',
-                          ],
-                      ],
-                  ]);
+                    ->post(route('users.create'), $invalidStatus)
+                    ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                    ->assertJson([
+                        'errors' => [
+                            'active' => [
+                                'O Status inserido não é válido.',
+                            ],
+                        ],
+                    ]);
             }
         )->with('invalidStatus');
 
@@ -132,15 +133,15 @@ describe('Users Management', function () {
             function (array $invalidRole) {
 
                 actingAs($this->asAdmin)
-                  ->post(route('users.create'), $invalidRole)
-                  ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                  ->assertJson([
-                      'errors' => [
-                          'role_id' => [
-                              'O Perfil é inválido.',
-                          ],
-                      ],
-                  ]);
+                    ->post(route('users.create'), $invalidRole)
+                    ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                    ->assertJson([
+                        'errors' => [
+                            'role_id' => [
+                                'O Perfil é inválido.',
+                            ],
+                        ],
+                    ]);
             }
         )->with('invalidRole');
     });
@@ -151,28 +152,28 @@ describe('Users Management', function () {
             function (array $updateDataUser, array $userJsonValidStructure) {
 
                 actingAs($this->asAdmin)
-                  ->put(route('users.edit', [$this->asAdmin->id]), $updateDataUser)
-                  ->assertStatus(Response::HTTP_OK)
-                  ->assertJsonStructure($userJsonValidStructure);
+                    ->put(route('users.edit', [$this->asAdmin->id]), $updateDataUser)
+                    ->assertStatus(Response::HTTP_OK)
+                    ->assertJsonStructure($userJsonValidStructure);
             }
         )
-          ->with('updateUserData')
-          ->with('userJsonValidStructure');
+            ->with('updateUserData')
+            ->with('userJsonValidStructure');
 
         it(
             'should return a 422 status code when name is not provided',
             function (array $nameNotProvided) {
 
                 actingAs($this->asAdmin)
-                  ->put(route('users.edit', [$this->asAdmin->id]), $nameNotProvided)
-                  ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                  ->assertJson([
-                      'errors' => [
-                          'name' => [
-                              'O campo Nome é obrigatório.',
-                          ],
-                      ],
-                  ]);
+                    ->put(route('users.edit', [$this->asAdmin->id]), $nameNotProvided)
+                    ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                    ->assertJson([
+                        'errors' => [
+                            'name' => [
+                                'O campo Nome é obrigatório.',
+                            ],
+                        ],
+                    ]);
             }
         )->with('nameNotProvided');
 
@@ -181,15 +182,15 @@ describe('Users Management', function () {
             function (array $invalidEmail) {
 
                 actingAs($this->asAdmin)
-                  ->put(route('users.edit', [$this->asAdmin->id]), $invalidEmail)
-                  ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                  ->assertJson([
-                      'errors' => [
-                          'email' => [
-                              'O E-mail inserido não é válido.',
-                          ],
-                      ],
-                  ]);
+                    ->put(route('users.edit', [$this->asAdmin->id]), $invalidEmail)
+                    ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                    ->assertJson([
+                        'errors' => [
+                            'email' => [
+                                'O E-mail inserido não é válido.',
+                            ],
+                        ],
+                    ]);
             }
         )->with('invalidEmail');
 
@@ -198,15 +199,15 @@ describe('Users Management', function () {
             function (array $emailAlreadyExists) {
 
                 actingAs($this->asAdmin)
-                  ->put(route('users.edit', [$this->asAdmin->id]), $emailAlreadyExists)
-                  ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                  ->assertJson([
-                      'errors' => [
-                          'email' => [
-                              'O e-mail já foi cadastrado.',
-                          ],
-                      ],
-                  ]);
+                    ->put(route('users.edit', [$this->asAdmin->id]), $emailAlreadyExists)
+                    ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                    ->assertJson([
+                        'errors' => [
+                            'email' => [
+                                'O e-mail já foi cadastrado.',
+                            ],
+                        ],
+                    ]);
             }
         )->with('emailAlreadyExists');
 
@@ -215,15 +216,15 @@ describe('Users Management', function () {
             function (array $invalidStatus) {
 
                 actingAs($this->asAdmin)
-                  ->put(route('users.edit', [$this->asAdmin->id]), $invalidStatus)
-                  ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                  ->assertJson([
-                      'errors' => [
-                          'active' => [
-                              'O Status inserido não é válido.',
-                          ],
-                      ],
-                  ]);
+                    ->put(route('users.edit', [$this->asAdmin->id]), $invalidStatus)
+                    ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                    ->assertJson([
+                        'errors' => [
+                            'active' => [
+                                'O Status inserido não é válido.',
+                            ],
+                        ],
+                    ]);
             }
         )->with('invalidStatus');
 
@@ -232,15 +233,15 @@ describe('Users Management', function () {
             function (array $invalidRoleData) {
 
                 actingAs($this->asAdmin)
-                  ->put(route('users.edit', [$this->asAdmin->id]), $invalidRoleData)
-                  ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                  ->assertJson([
-                      'errors' => [
-                          'role_id' => [
-                              'O Perfil é inválido.',
-                          ],
-                      ],
-                  ]);
+                    ->put(route('users.edit', [$this->asAdmin->id]), $invalidRoleData)
+                    ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+                    ->assertJson([
+                        'errors' => [
+                            'role_id' => [
+                                'O Perfil é inválido.',
+                            ],
+                        ],
+                    ]);
             }
         )->with('invalidRoleData');
     });
@@ -250,9 +251,9 @@ describe('Users Management', function () {
             $user = createUser();
 
             actingAs($this->asAdmin)
-              ->delete(route('users.delete', [$user->id]), ['reason' => 'Test deletion reason'])
-              ->assertStatus(Response::HTTP_NO_CONTENT)
-              ->assertNoContent();
+                ->delete(route('users.delete', [$user->id]), ['reason' => 'Test deletion reason'])
+                ->assertStatus(Response::HTTP_NO_CONTENT)
+                ->assertNoContent();
 
             expect(User::find($user->id))->toBeNull();
         });
@@ -260,9 +261,9 @@ describe('Users Management', function () {
         it('should return a 404 status code for invalid user ID', function () {
 
             actingAs($this->asAdmin)
-              ->delete(route('users.delete', [111111]), ['reason' => 'Test deletion reason'])
-              ->assertStatus(Response::HTTP_NOT_FOUND)
-              ->assertJson(['message' => 'No query results for model [App\\Models\\User] ' . '111111']);
+                ->delete(route('users.delete', [111111]), ['reason' => 'Test deletion reason'])
+                ->assertStatus(Response::HTTP_NOT_FOUND)
+                ->assertJson(['message' => 'No query results for model [App\\Models\\User] ' . '111111']);
         });
     });
 
@@ -272,9 +273,9 @@ describe('Users Management', function () {
             $resp = post(route('users.register'), $registerUser);
 
             $resp->assertStatus(Response::HTTP_OK)
-              ->assertJson(['message' => 'Um e-mail de confirmação foi encaminhado. Por favor, realize os procedimentos para ativação da sua conta.']);
+                ->assertJson(['message' => 'Um e-mail de confirmação foi encaminhado. Por favor, realize os procedimentos para ativação da sua conta.']);
         })
-          ->with('registerUser');
+            ->with('registerUser');
 
     });
 
@@ -288,8 +289,8 @@ describe('Users Management', function () {
             $url = createTemporaryUrlForUser($user, Carbon::now()->addHours(Config::get('auth.verification.expire', 48)));
 
             get($url)
-              ->assertStatus(Response::HTTP_OK)
-              ->assertJson(['message' => 'O seu cadastro foi verificado com sucesso!']);
+                ->assertStatus(Response::HTTP_OK)
+                ->assertJson(['message' => 'O seu cadastro foi verificado com sucesso!']);
         });
 
         it('should return that the email is already validated', function () {
@@ -300,7 +301,7 @@ describe('Users Management', function () {
             $url = createTemporaryUrlForUser($user, Carbon::now()->addMinutes(30));
 
             get($url)
-              ->assertJson(['message' => 'Seu cadastro já foi validado! Por favor, aguarde até que um administrador realize a liberação do seu acesso.']);
+                ->assertJson(['message' => 'Seu cadastro já foi validado! Por favor, aguarde até que um administrador realize a liberação do seu acesso.']);
         });
 
         it('should return that the token is invalid', function () {
@@ -312,7 +313,7 @@ describe('Users Management', function () {
             $url = createTemporaryUrlForUser($user, Carbon::now()->subHours(1));
 
             get($url)
-              ->assertJson(['message' => 'Invalid signature.']);
+                ->assertJson(['message' => 'Invalid signature.']);
         });
     });
-});
+})->group('users');
