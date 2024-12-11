@@ -6,6 +6,7 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 
 - **Laravel Backend**: Utilizes Laravel, a modern PHP framework, for robust backend logic.
 - **Vue 3 Frontend**: Leverages Vue 3, a progressive JavaScript framework, for building dynamic user interfaces.
+- **Quasar Framework**: Utilizes Quasar, a UI framework, for a polished and responsive user interface.
 - **Authentication**: Pre-configured user authentication out of the box.
 - **User Management**: Easily manage user roles and permissions.
 - **Permission Management**: Simplified management of user permissions.
@@ -18,11 +19,11 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 - **Logging**: Comprehensive logging for monitoring and debugging.
 - **Larastan**: Automated code quality checks to maintain code quality.
 - **Laravel Debugbar**: A powerful debugging tool for your Laravel applications.
-- **Scramble
-
+- **Scramble Documentation**: A documentation generator for your Laravel application.
+- 
 ## Stack
 
-- **Laravel 11 with directory structure Laravel 10**
+- **Laravel 11**
 - **PHP 8.4**
 - **Spatie Permission**
 - **Vue 3.4**
