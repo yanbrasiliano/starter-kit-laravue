@@ -68,7 +68,7 @@ const useRoleStore = defineStore('roles', {
       try {
         const { data, status } = await roleService.store(params);
         this.isSuccess = String(status).startsWith('2');
-        this.message = this.isSuccess && (data?.message ?? 'Perfil criado com sucesso!');
+        this.message = this.isSuccess && (data?.message ?? 'Perfil criado com sucesso');
       } catch (error) {
         this.isSuccess = false;
         this.errors = error.response.data.errors;
@@ -84,7 +84,7 @@ const useRoleStore = defineStore('roles', {
         const { data, status } = await roleService.update(id, params);
         this.isSuccess = String(status).startsWith('2');
         this.message =
-          this.isSuccess && (data?.message ?? 'Perfil atualizado com sucesso!');
+          this.isSuccess && (data?.message ?? 'Perfil atualizado com sucesso');
       } catch (error) {
         this.isSuccess = false;
         this.errors = error.response.data.errors;

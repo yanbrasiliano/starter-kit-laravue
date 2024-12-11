@@ -90,13 +90,17 @@ describe('RoleTest', function () {
     describe('Updating Role', function () {
         it('should return a 200 status code and proper JSON structure for valid role ID and data', function () {
             $this->actingAs($this->userAuth);
-            $response = $this->put(route('roles.edit', ['id' => $this->roles->first()->id]), [
+
+            $role = $this->roles->where('slug', RolesEnum::REVIEWER->value)->first();
+
+            $response = $this->put(route('roles.edit', ['id' => $role->id]), [
                 'name' => fake('pt_BR')->text(30),
                 'description' => fake('pt_BR')->text(50),
                 'permissions' => [
                     Permission::all()->first()->id,
                 ],
             ]);
+
             $response->assertStatus(Response::HTTP_OK);
             $response->assertJsonStructure([
                 'data' => [
@@ -126,6 +130,7 @@ describe('RoleTest', function () {
     describe('Deleting Roles', function () {
         it('should return a 204 status code for valid role ID', function () {
             $this->actingAs($this->userAuth);
+
             $role = $this->roles->last();
             $role->users()->each(function ($user) use ($role) {
                 $user->removeRole($role->name);
@@ -135,11 +140,11 @@ describe('RoleTest', function () {
             $response->assertStatus(Response::HTTP_NO_CONTENT);
         });
 
-        it('should return 409 when trying to remove roles that have linked users', function () {
+        it('should return 403 when trying to remove roles that have linked users', function () {
             $this->actingAs($this->userAuth);
             $role = $this->roles->first();
             $response = $this->delete(route('roles.delete', ['id' => $role->id]));
-            $response->assertStatus(Response::HTTP_CONFLICT);
+            $response->assertStatus(Response::HTTP_FORBIDDEN);
         });
 
         it('should return a 404 status code for invalid role ID', function () {

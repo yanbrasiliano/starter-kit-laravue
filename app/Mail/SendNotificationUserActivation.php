@@ -27,7 +27,7 @@ class SendNotificationUserActivation extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'User activation in the SP 1.0 System',
+            subject: 'Ativação de usuário',
         );
     }
 

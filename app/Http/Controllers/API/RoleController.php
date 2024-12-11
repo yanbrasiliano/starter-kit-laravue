@@ -106,6 +106,7 @@ class RoleController extends Controller
     public function update(UpdateRoleRequest $request, int $id): JsonResource
     {
         $role = $this->service->getById($id);
+        $this->authorize('update', $role);
         $newData = $request->validated();
         $updatedRole = $this->service->update($newData);
 
@@ -129,6 +130,7 @@ class RoleController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $role = $this->service->getById($id);
+        $this->authorize('delete', $role);
         $deleted = $this->service->delete($id);
 
         if ($deleted) {

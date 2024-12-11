@@ -3,8 +3,10 @@
 namespace Tests\Feature\Password;
 
 use App\Enums\RolesEnum;
+use App\Mail\SendForgetPasswordMail;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\Response;
 
 beforeEach(function () {
@@ -25,6 +27,33 @@ describe('ForgotPasswordTest', function () {
                 ],
             ]);
     })->group('password');
+
+    it('should queue the SendForgetPasswordMail when a valid reviewer requests password reset', function () {
+
+        $user = User::factory()->create();
+
+        DB::table('roles')->updateOrInsert(
+            ['slug' => RolesEnum::REVIEWER->value],
+            [
+                'name' => 'Reviewer',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        $role = DB::table('roles')->where('slug', RolesEnum::REVIEWER->value)->first();
+        $user->assignRole([$role->id]);
+
+        $payload = ['email' => $user->email];
+        $response = $this->postJson(route('forgot-password'), $payload);
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+
+        Mail::assertQueued(SendForgetPasswordMail::class, function ($mail) use ($user) {
+            return $mail->hasTo($user->email);
+        });
+    });
 
     it('should return that the email is invalid', function () {
         $payload = ['email' => fake('pt_BR')->text(20)];

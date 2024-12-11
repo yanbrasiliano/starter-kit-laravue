@@ -25,11 +25,11 @@ class RoleSeeder extends Seeder
         $admin->syncPermissions($permissions);
 
         Role::updateOrCreate(
-            ['slug' => 'visitor'],
+            ['slug' => 'guest'],
             [
                 'name' => 'Visitante',
                 'guard_name' => 'web',
-                'slug' => 'visitor',
+                'slug' => 'guest',
                 'description' => 'Visitante na plataforma com acesso limitado.',
                 'created_at' => now(),
                 'updated_at' => now(),

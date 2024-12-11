@@ -6,5 +6,5 @@ enum RolesEnum: string
 {
     case ADMINISTRATOR = 'administrator';
     case REVIEWER = 'reviewer';
-    case GUEST = 'convidado';
+    case GUEST = 'guest';
 }

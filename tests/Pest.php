@@ -3,17 +3,16 @@
 use Illuminate\Support\Facades\{Event, Http, Mail};
 
 pest()->extend(Tests\TestCase::class)
-  ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-  ->beforeEach(function () {
-      Http::preventStrayRequests();
-
-      Mail::fake();
-      Event::fake();
-  })
-  ->in('Feature');
+    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->beforeEach(function () {
+        Http::preventStrayRequests();
+        Mail::fake();
+        Event::fake();
+    })
+    ->in('Feature');
 
 pest()->extend(Tests\TestCase::class)
-  ->in('Unit');
+    ->in('Unit');
 
 pest()->printer()->compact();
 

@@ -71,7 +71,6 @@ const useRole = () => {
     shouldBlockSelectPermission,
     shouldBlockDeleteRoleUserAuth,
     shouldBlockEditRoleAdmin,
-
     updatePagination,
     onEdit,
     onDelete,
