@@ -16,7 +16,7 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'users.list',
                 'guard_name' => 'web',
-                'description' => 'List users',
+                'description' => 'Listar usuários',
                 'resource' => 'users',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -24,7 +24,7 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'users.create',
                 'guard_name' => 'web',
-                'description' => 'Create users',
+                'description' => 'Criar usuários',
                 'resource' => 'users',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -32,7 +32,7 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'users.edit',
                 'guard_name' => 'web',
-                'description' => 'Edit users',
+                'description' => 'Editar usuários',
                 'resource' => 'users',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -40,7 +40,7 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'users.delete',
                 'guard_name' => 'web',
-                'description' => 'Delete users',
+                'description' => 'Deletar usuários',
                 'resource' => 'users',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -48,7 +48,7 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'roles.list',
                 'guard_name' => 'web',
-                'description' => 'List roles',
+                'description' => 'Listar perfis',
                 'resource' => 'roles',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -56,7 +56,7 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'roles.view',
                 'guard_name' => 'web',
-                'description' => 'View roles',
+                'description' => 'Visualizar perfis',
                 'resource' => 'roles',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -64,7 +64,7 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'roles.create',
                 'guard_name' => 'web',
-                'description' => 'Create roles',
+                'description' => 'Criar perfis',
                 'resource' => 'roles',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -72,7 +72,7 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'roles.edit',
                 'guard_name' => 'web',
-                'description' => 'Edit roles',
+                'description' => 'Editar perfis',
                 'resource' => 'roles',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -80,7 +80,7 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'roles.delete',
                 'guard_name' => 'web',
-                'description' => 'Delete roles',
+                'description' => 'Deletar perfis',
                 'resource' => 'roles',
                 'created_at' => now(),
                 'updated_at' => now(),

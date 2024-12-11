@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Administrador',
                 'email' => self::ADMIN_EMAIL,
-                'cpf' => '32813163015',
+                'cpf' => '88251805007',
                 'password' => Hash::make('@dm!n1234%'),
                 'active' => StatusEnum::ENABLED,
                 'email_verified_at' => now(),

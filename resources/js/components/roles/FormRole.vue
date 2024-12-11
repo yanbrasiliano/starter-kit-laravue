@@ -1,4 +1,5 @@
 <script setup>
+import useRole from '@/composables/Roles/useRole';
 import usePermissionStore from '@/store/usePermissionStore';
 import useRoleStore from '@/store/useRoleStore';
 import ErrorInput from '@components/shared/ErrorInput.vue';
@@ -6,9 +7,8 @@ import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { onBeforeMount, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import useRole from '@/composables/Roles/useRole';
 
-const { blockSelectPermission } = useRole();
+const { shouldBlockSelectPermission } = useRole();
 const $q = useQuasar();
 const permissionStore = usePermissionStore();
 const { role, errors, loading, message, isSuccess } = storeToRefs(useRoleStore());
@@ -81,7 +81,7 @@ function getParams() {
         </template>
       </q-input>
     </div>
-    <div v-if="!blockSelectPermission()">
+    <div v-if="!shouldBlockSelectPermission">
       <label for="permission" class="text-weight-bold">Permissões</label>
       <q-select
         v-model="role.permissions"

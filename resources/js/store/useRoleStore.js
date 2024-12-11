@@ -1,13 +1,6 @@
-import { defineStore, storeToRefs } from 'pinia';
 import roleService from '@/services/RoleService';
 import { format } from 'date-fns';
-import useUserStore from '@/store/useUserStore';
-import useAuthStore from '@/store/useAuthStore';
-import { ref } from 'vue';
-
-const { user } = storeToRefs(useAuthStore());
-const store = useUserStore();
-const userAuth = ref();
+import { defineStore } from 'pinia';
 
 const useRoleStore = defineStore('roles', {
   state: () => ({
@@ -68,17 +61,6 @@ const useRoleStore = defineStore('roles', {
       }
     },
 
-    async shouldBlockEditRoleAdmin(idRoleRow) {
-      userAuth.value =
-        userAuth.value ?? (await store.consult(user.value.id), store.getUser);
-      return idRoleRow == 1 ? !userAuth.value?.roles.some(({ id }) => id == 1) : true;
-    },
-
-    async shouldBlockDeleteRoleUserAuth(idRoleRow) {
-      userAuth.value =
-        userAuth.value ?? (await store.consult(user.value.id), store.getUser);
-      return userAuth.value?.roles.some(({ id }) => id === idRoleRow) ? false : true;
-    },
     async store(params) {
       this.loading = true;
       this.message = null;

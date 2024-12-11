@@ -1,8 +1,9 @@
 import useAuthStore from '@/store/useAuthStore';
-import { storeToRefs } from 'pinia';
 import useRoleStore from '@/store/useRoleStore';
-import { useQuasar } from 'quasar';
 import notify from '@/utils/notify';
+import { storeToRefs } from 'pinia';
+import { useQuasar } from 'quasar';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const useRole = () => {
@@ -10,23 +11,16 @@ const useRole = () => {
   const router = useRouter();
   const { role, roles, pagination, loading } = storeToRefs(useRoleStore());
   const store = useRoleStore();
-
   const authStore = useAuthStore();
 
-  const blockEditRoleAdmin = (idRoleRow) => {
-    return (
-      (idRoleRow == 1 && authStore.getRoles.find(({ id }) => id == 1)) || idRoleRow !== 1
-    );
-  };
-  const blockDeleteRoleUserAuth = (idRoleRow) => {
-    return !authStore.getRoles.find(({ id }) => id == idRoleRow);
-  };
-  const blockSelectPermission = () => {
-    const hasNoPermissions = role.value?.permissions === null;
-    const isPermissionsValueNull = role.value?.permissions?.[0]?.value === null;
-    return hasNoPermissions || isPermissionsValueNull;
-  };
+  const shouldBlockDeleteRoleUserAuth = computed(() => {
+    return (idRoleRow) => !authStore.getRoles.find(({ id }) => id == idRoleRow);
+  });
+  const shouldBlockSelectPermission = computed(() => role.value?.id === 1);
 
+  const shouldBlockEditRoleAdmin = (idRoleRow) => {
+    return idRoleRow === 1;
+  };
   async function updatePagination(event) {
     try {
       $q.loading.show();
@@ -74,9 +68,10 @@ const useRole = () => {
     roles,
     pagination,
     loading,
-    blockEditRoleAdmin,
-    blockDeleteRoleUserAuth,
-    blockSelectPermission,
+    shouldBlockSelectPermission,
+    shouldBlockDeleteRoleUserAuth,
+    shouldBlockEditRoleAdmin,
+
     updatePagination,
     onEdit,
     onDelete,
