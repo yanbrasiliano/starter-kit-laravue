@@ -6,8 +6,8 @@ use App\DTO\Password\{ForgotPasswordDTO, ResetPasswordDTO};
 use App\Enums\RolesEnum;
 use App\Mail\SendForgetPasswordMail;
 use App\Services\User\UserService;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\{DB, Mail, Password};
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class PasswordService
@@ -16,32 +16,22 @@ class PasswordService
         private UserService $userService
     ) {
     }
-
     public function forgotPassword(ForgotPasswordDTO $forgotPasswordDTO): void
     {
-        DB::beginTransaction();
-
-        try {
+        DB::transaction(function () use ($forgotPasswordDTO) {
             $status = Password::sendResetLink(
                 $forgotPasswordDTO->toArray(),
                 $this->handleResetLinkSent()
             );
 
-            if ($status !== Password::RESET_LINK_SENT) {
-                throw new \Exception(
+            $status === Password::RESET_LINK_SENT
+                ? null
+                : throw new \Exception(
                     'Não foi possível realizar a solicitação de redefinição de senha, verifique se os dados informados são válidos.',
                     Response::HTTP_BAD_REQUEST
                 );
-            }
-
-            DB::commit();
-        } catch (Throwable $throwable) {
-            DB::rollBack();
-
-            throw $throwable;
-        }
+        });
     }
-
     protected function handleResetLinkSent(): \Closure
     {
         return function ($user, string $token) {
