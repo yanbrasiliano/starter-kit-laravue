@@ -36,3 +36,10 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 - [ ] Create policies for roles, users and permissions(revisit what exists today with regard to permissions.js)
 - [ ] Add more tests for roles, users and permissions.
 - [ ] Create screen to display application logs
+- [ ] Arrumar os testes unitários
+
+## Arquitetura 
+
+Para minimizar as camadas e melhorar a quantidade de boilerplate adotamos o Action Patern já embutido no Laravel.
+
+![Arquitetura da Aplicação](./arquitetura.svg)
