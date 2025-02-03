@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Role;
 
-use App\DTO\Role\CreateRoleDTO;
 use App\Traits\FailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -16,7 +15,16 @@ class CreateRoleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return auth()->check();
+    }
+
+    public function prepareForValidation(): void
+    {
+        $permissions = collect($this->permissions)->pluck('value')->toArray();
+
+        $this->merge([
+            'permissions' => $permissions,
+        ]);
     }
 
     /**
@@ -51,16 +59,5 @@ class CreateRoleRequest extends FormRequest
             'description.max' => 'A :attribute inserida excede o limite de caracteres.',
             'permissions.array' => 'O :attribute deve ser uma lista',
         ];
-    }
-
-    public function validated($key = null, $default = null): CreateRoleDTO|array
-    {
-        $permissions = collect($this->permissions)->pluck('value')->toArray();
-
-        $this->merge([
-            'permissions' => $permissions,
-        ]);
-
-        return new CreateRoleDTO(...$this->toArray());
     }
 }

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
-use App\DTO\Paginate\PaginateParamsDTO;
+use App\Actions\Role\{CreateRoleAction, ListRoleAction};
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Role\IndexRoleRequest;
 use App\Http\Requests\Role\{CreateRoleRequest, UpdateRoleRequest};
 use App\Http\Resources\RoleResource;
 use App\Services\Role\RoleService;
 use App\Traits\LogsActivityTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\{JsonResponse, Request};
+use Illuminate\Http\{JsonResponse};
 use Symfony\Component\HttpFoundation\Response;
 
 class RoleController extends Controller
@@ -37,11 +38,9 @@ class RoleController extends Controller
      * @response 403 Usuário não tem permissão de acesso
      * @security bearerAuth
      */
-    public function index(Request $request): JsonResource
+    public function index(IndexRoleRequest $request, ListRoleAction $action): JsonResource
     {
-        $roles = $this->service->index(
-            new PaginateParamsDTO(...$request->toArray())
-        );
+        $roles = $action->execute($request->fluent()->validated());
 
         return RoleResource::collection($roles);
     }
@@ -59,11 +58,10 @@ class RoleController extends Controller
      * @response 403 Usuário não tem permissão de acesso
      * @security bearerAuth
      */
-    public function store(CreateRoleRequest $request): JsonResource
+    public function store(CreateRoleRequest $request, CreateRoleAction $action): JsonResource
     {
-        $role = $this->service->create($request->validated());
 
-        $this->logGeneralActivity('Gestão de Perfis', $role, 'Criou um novo perfil');
+        $role = $action->execute($request->fluent()->validated());
 
         return new RoleResource($role);
     }
