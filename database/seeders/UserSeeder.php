@@ -9,8 +9,17 @@ use Illuminate\Support\Facades\{DB, Hash};
 
 class UserSeeder extends Seeder
 {
-    private const ADMIN_EMAIL = 'admin@admin.com';
-    private const ADMIN_ROLE = 'Administrador';
+    private $adminPassword;
+
+    private $adminEmail;
+
+    private $adminRole;
+    public function __construct()
+    {
+        $this->adminPassword = config('starterkit.admin_password');
+        $this->adminEmail = config('starterkit.admin_email');
+        $this->adminRole = config('starterkit.admin_role');
+    }
 
     public function run()
     {
@@ -22,12 +31,12 @@ class UserSeeder extends Seeder
     private function createAdminUser()
     {
         DB::table('users')->updateOrInsert(
-            ['email' => self::ADMIN_EMAIL],
+            ['email' => $this->adminEmail],
             [
                 'name' => 'Administrador',
-                'email' => self::ADMIN_EMAIL,
+                'email' => $this->adminEmail,
                 'cpf' => '88251805007',
-                'password' => Hash::make('@dm!n1234%'),
+                'password' => Hash::make($this->adminPassword),
                 'active' => StatusEnum::ENABLED,
                 'email_verified_at' => now(),
                 'created_at' => now(),
@@ -37,9 +46,9 @@ class UserSeeder extends Seeder
     }
     private function assignAdminRole()
     {
-        $user = User::where('email', self::ADMIN_EMAIL)->first();
+        $user = User::where('email', $this->adminEmail)->first();
         $roleId = DB::table('roles')
-            ->where('name', self::ADMIN_ROLE)
+            ->where('name', $this->adminRole)
             ->value('id');
 
         if ($user && $roleId) {
