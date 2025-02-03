@@ -40,6 +40,6 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 
 ## Arquitetura 
 
-Para minimizar as camadas e melhorar a quantidade de boilerplate adotamos o Action Patern já embutido no Laravel.
+Para minimizar as camadas e melhorar a testabilidade da aplicação adotamos o Action Patern já embutido no Laravel.
 
 ![Arquitetura da Aplicação](./arquitetura.svg)
