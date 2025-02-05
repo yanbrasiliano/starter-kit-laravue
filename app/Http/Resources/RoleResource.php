@@ -48,14 +48,12 @@ class RoleResource extends BaseResource
         /**
          * @var \App\Models\User $user
          */
-        $user = Auth::user();
+        //$user = Auth::user();
 
-        return collect($this->permissions)->map(function ($permission) use ($user) {
-            $value = $user->hasRole($this->id) ? $permission['id'] : null;
-
+        return collect($this->permissions)->map(function ($permission) {
             return [
-                'value' => $value,
-                'label' => $permission['description'],
+                'value' => $permission->id,
+                'label' => $permission->description,
             ];
         })->toArray();
     }

@@ -158,10 +158,12 @@ describe('RoleTest', function () {
         it('should return a 200 status code and proper JSON structure', function () {
             $this->actingAs($this->userAuth);
             $response = $this->get(route('roles.listAll'));
+            expect($response)->dd()->toBe(Response::HTTP_OK);
+
             $response->assertStatus(Response::HTTP_OK);
             $response->assertJsonStructure([
                 'data',
             ]);
-        });
+        })->only();
     });
 })->group('roles');

@@ -9,7 +9,7 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        $admin = Role::updateOrCreate(
+        $adminRole = Role::updateOrCreate(
             ['slug' => 'administrator'],
             [
                 'name' => 'Administrador',
@@ -22,7 +22,7 @@ class RoleSeeder extends Seeder
         );
 
         $permissions = Permission::all()->pluck('id')->toArray();
-        $admin->syncPermissions($permissions);
+        $adminRole->syncPermissions($permissions);
 
         Role::updateOrCreate(
             ['slug' => 'guest'],
