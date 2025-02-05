@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Actions\Role\{CreateRoleAction, ListRoleAction};
+use App\Actions\Role\{CreateRoleAction, ListRoleAction, ShowRoleAction, UpdateRoleAction};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Role\IndexRoleRequest;
 use App\Http\Requests\Role\{CreateRoleRequest, UpdateRoleRequest};
@@ -11,6 +11,7 @@ use App\Services\Role\RoleService;
 use App\Traits\LogsActivityTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\{JsonResponse};
+use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\Response;
 
 class RoleController extends Controller
@@ -60,7 +61,6 @@ class RoleController extends Controller
      */
     public function store(CreateRoleRequest $request, CreateRoleAction $action): JsonResource
     {
-
         $role = $action->execute($request->fluent()->validated());
 
         return new RoleResource($role);
@@ -78,13 +78,13 @@ class RoleController extends Controller
      * @response 404 Perfil não encontrado
      * @security bearerAuth
      */
-    public function show(int $id): JsonResource
+    public function show(Role $role): JsonResource
     {
-        $role = $this->service->getById($id);
 
+        $roleWithPermissions = (new ShowRoleAction())->execute($role);
         $this->logGeneralActivity('Gestão de Perfis', $role, 'Visualizou os detalhes do perfil');
 
-        return new RoleResource($role);
+        return new RoleResource($roleWithPermissions);
     }
 
     /**
@@ -101,14 +101,11 @@ class RoleController extends Controller
      * @response 404 Perfil não encontrado
      * @security bearerAuth
      */
-    public function update(UpdateRoleRequest $request, int $id): JsonResource
+    public function update(UpdateRoleRequest $request, Role $role, UpdateRoleAction $action): JsonResource
     {
-        $role = $this->service->getById($id);
         $this->authorize('update', $role);
-        $newData = $request->validated();
-        $updatedRole = $this->service->update($newData);
 
-        $this->logUpdateActivity('Gestão de Perfis', $role, (array) $newData, 'Atualizou um perfil');
+        $updatedRole = $action->execute($role, $request->fluent()->validated());
 
         return new RoleResource($updatedRole);
     }
@@ -125,10 +122,10 @@ class RoleController extends Controller
      * @response 404 Perfil não encontrado
      * @security bearerAuth
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(Role $role): JsonResponse
     {
-        $role = $this->service->getById($id);
         $this->authorize('delete', $role);
+
         $deleted = $this->service->delete($id);
 
         if ($deleted) {
