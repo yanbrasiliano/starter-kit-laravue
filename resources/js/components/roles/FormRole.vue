@@ -86,6 +86,7 @@ function getParams() {
       <q-select
         v-model="role.permissions"
         multiple
+        use-chips
         :options="permissionStore.getPermissions"
         label="Selecione as permissões"
         filled />
