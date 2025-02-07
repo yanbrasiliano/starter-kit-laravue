@@ -65,6 +65,7 @@ mv $(pwd)/dist $(pwd)/public
 O Diagrama de Entidade/Relação ficará disponível na rota `/der?key=chave_de_acesso`, é preciso preencher a variável de ambiente `APP_DER_KEY`.
 
 Comandos disponíveis com a extensão do php-intl
+
 - `php artisan db:show`
 - `php artisan db:table users`
 - `php artisan db:monitor`
