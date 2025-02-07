@@ -11,8 +11,12 @@ return [
     |
     */
 
-    'admin_email' => env('APP_ADMIN_EMAIL'),
-    'admin_password' => env('APP_ADMIN_PASSWORD'),
-    'admin_role' => env('APP_ADMIN_ROLE'),
-
+    'admin' => [
+        'email' => env('APP_ADMIN_EMAIL'),
+        'password' => env('APP_ADMIN_PASSWORD'),
+        'role' => env('APP_ADMIN_ROLE'),
+    ],
+    'der' => [
+        'key' => env('APP_DER_KEY'),
+    ],
 ];
