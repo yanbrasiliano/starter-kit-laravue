@@ -1,6 +1,6 @@
 FROM composer:latest AS composer
 
-FROM node:18 AS node
+FROM node:22 AS node
 
 FROM php:8.4.1-fpm AS base
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libzip-dev \
     htop \
     vim \
+    nano \
     cron \
     supervisor \
     git \
@@ -24,6 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libmcrypt-dev \
+    libicu-dev \
     libgd-dev \
     jpegoptim \
     optipng \
@@ -31,11 +33,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     gifsicle \
     libxml2-dev \
+    gnupg2 \
+    wget \
+    lsb-release \
     && pecl install -o -f redis xdebug \
     && docker-php-ext-enable redis xdebug \
     && docker-php-ext-configure zip \
     && docker-php-ext-configure gd --enable-gd --with-webp --with-jpeg --with-freetype \
-    && docker-php-ext-install -j$(nproc) exif gd zip pdo pdo_pgsql ftp bcmath xml \
+    && docker-php-ext-install -j$(nproc) exif gd zip pdo pdo_pgsql ftp bcmath xml intl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && mkdir -p /var/log/supervisor
@@ -50,6 +55,12 @@ RUN { \
     } > /usr/local/etc/php/conf.d/custom.ini \
     && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+RUN echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg \
+    && apt-get update && apt-get install -y --no-install-recommends postgresql-client && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
@@ -70,6 +81,6 @@ RUN chmod +x ./permissions.sh \
 RUN composer install --no-dev --no-interaction --no-progress --no-suggest --optimize-autoloader \
     && composer clear-cache \
     && npm i \
-    && npm i -g npm@latest npx gulp-cli cross-env sass postcss-cli autoprefixer
+    && npm i -g npm@latest npx gulp-cli cross-env postcss-cli autoprefixer
 
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
