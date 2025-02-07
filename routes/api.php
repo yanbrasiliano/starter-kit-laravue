@@ -10,5 +10,5 @@ Route::prefix('v1')->group(function () {
         ]);
     });
 
-    collect(glob(__DIR__ . '/api/*.php'))->each(fn($routeFile) => require $routeFile);
+    collect(glob(__DIR__ . '/api/*.php'))->each(fn ($routeFile) => require $routeFile);
 });
