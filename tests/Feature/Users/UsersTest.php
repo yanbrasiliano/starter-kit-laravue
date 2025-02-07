@@ -5,9 +5,10 @@ namespace Tests\Feature\Users;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
-use Symfony\Component\HttpFoundation\Response;
 
 use function Pest\Laravel\{actingAs, get, post};
+
+use Symfony\Component\HttpFoundation\Response;
 
 beforeEach(function () {
     createRoles();
@@ -61,7 +62,6 @@ describe('Users Management', function () {
         )
             ->with('registerUser')
             ->with('validJsonStructure');
-
 
         it(
             'should return a 422 status code when name is not provided',
