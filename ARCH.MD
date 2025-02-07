@@ -1,4 +1,4 @@
-## Documentation
+## Architecture
 
 Para minimizar a quantidade de camadas e melhorar a testabilidade da aplicação utilizaremos o `Action Pattern`
 
