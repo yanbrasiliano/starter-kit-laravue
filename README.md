@@ -38,8 +38,33 @@ Starter Kit Laravue is a powerful project template designed to jumpstart your de
 - [ ] Create screen to display application logs
 - [ ] Arrumar os testes unitários
 
+
 ## Arquitetura 
 
-Para minimizar as camadas e melhorar a testabilidade da aplicação adotamos o Action Patern já embutido no Laravel.
+Para minimizar as camadas e melhorar a testabilidade da aplicação adotamos o Action Patern já embutido no Laravel sem necessidade de adicionar no service provider.
 
-![Arquitetura da Aplicação](./arquitetura.svg)
+![Arquitetura base da Aplicação](./arquitetura.svg)
+
+## DUMP do schema e DER do projeto
+
+Esta instalado o postgresql client que permite o comando pg_dump para exportar o schema do projeto
+
+```bash
+pg_dump --schema-only --file=schema.sql "postgres://$(grep DB_USERNAME .env | cut -d '=' -f2):$(grep DB_PASSWORD .env | cut -d '=' -f2)@$(grep DB_HOST .env | cut -d '=' -f2):$(grep DB_PORT .env | cut -d '=' -f2)/$(grep DB_DATABASE .env | cut -d '=' -f2)"
+```
+
+Comando npm que gera uma pasta dist com o DER
+```bash
+npx @liam-hq/cli erd build --input $(pwd)/schema.sql --format=postgres
+
+```
+Move os arquivos gerados para a pasta public
+```bash
+mv $(pwd)/dist $(pwd)/public
+```
+O Diagrama de Entidade/Relação ficará disponível na rota `/der?key=chave_de_acesso`, é preciso preencher a variável de ambiente `APP_DER_KEY`.
+
+Comandos disponíveis com a extensão do php-intl
+- `php artisan db:show`
+- `php artisan db:table users`
+- `php artisan db:monitor`
