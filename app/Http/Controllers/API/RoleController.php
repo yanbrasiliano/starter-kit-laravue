@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Actions\Role\DeleteRoleAction;
 use App\Actions\Role\{CreateRoleAction, ListRoleAction, ShowRoleAction, UpdateRoleAction};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Role\IndexRoleRequest;
 use App\Http\Requests\Role\{CreateRoleRequest, UpdateRoleRequest};
 use App\Http\Resources\RoleResource;
 use App\Services\Role\RoleService;
-use App\Traits\LogsActivityTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\{JsonResponse};
 use Spatie\Permission\Models\Role;
@@ -16,8 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleController extends Controller
 {
-    use LogsActivityTrait;
-
     public function __construct(
         private RoleService $service
     ) {
@@ -80,9 +78,7 @@ class RoleController extends Controller
      */
     public function show(Role $role): JsonResource
     {
-
         $roleWithPermissions = (new ShowRoleAction())->execute($role);
-        $this->logGeneralActivity('Gestão de Perfis', $role, 'Visualizou os detalhes do perfil');
 
         return new RoleResource($roleWithPermissions);
     }
@@ -122,15 +118,11 @@ class RoleController extends Controller
      * @response 404 Perfil não encontrado
      * @security bearerAuth
      */
-    public function destroy(Role $role): JsonResponse
+    public function destroy(Role $role, DeleteRoleAction $action): JsonResponse
     {
         $this->authorize('delete', $role);
 
-        $deleted = $this->service->delete($id);
-
-        if ($deleted) {
-            $this->logDeleteActivity('Gestão de Perfis', $role, 'Excluiu um perfil');
-
+        if ($action->execute($role)) {
             return response()->json([], Response::HTTP_NO_CONTENT);
         }
 
