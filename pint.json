@@ -1,5 +1,12 @@
 {
   "preset": "psr12",
+  "exclude": [
+    "vendor/*",
+    "storage/*",
+    "tests/*",
+    "resources/js/*",
+    "node_modules/*"
+  ],
   "rules": {
     "group_import": true,
     "single_import_per_statement": false,
@@ -67,7 +74,10 @@
       ]
     },
     "visibility_required": {
-      "elements": ["method", "property"]
+      "elements": [
+        "method",
+        "property"
+      ]
     }
   }
 }

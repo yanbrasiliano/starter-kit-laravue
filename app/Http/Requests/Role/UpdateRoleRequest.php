@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Role;
 
-use App\DTO\Role\UpdateRoleDTO;
 use App\Traits\FailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Fluent;
 use Illuminate\Validation\Rule;
 
 class UpdateRoleRequest extends FormRequest
@@ -16,7 +16,7 @@ class UpdateRoleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return auth()->check();
     }
 
     /**
@@ -27,7 +27,7 @@ class UpdateRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', Rule::unique('roles', 'name')->ignore($this->id)],
+            'name' => ['required', 'string', Rule::unique('roles', 'name')->ignore($this->role->id)],
             'description' => ['max:258'],
             'permissions' => ['array'],
         ];
@@ -53,15 +53,13 @@ class UpdateRoleRequest extends FormRequest
         ];
     }
 
-    public function validated($key = null, $default = null): UpdateRoleDTO|array
+    public function fluent($key = null): Fluent
     {
-        $permissions = collect($this->permissions)->pluck('value')->toArray();
-
-        $this->merge([
-            'permissions' => $permissions,
-            'id' => $this->route('id'),
+        return new Fluent([
+            ...parent::validated($key, $default = null),
+            'guard_name' => 'web',
+            'slug' => str()->slug($this->name),
         ]);
-
-        return new UpdateRoleDTO(...$this->toArray());
     }
+
 }

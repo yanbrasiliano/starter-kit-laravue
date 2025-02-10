@@ -43,7 +43,7 @@ class RoleRepository extends AbstractRepository implements RoleRepositoryInterfa
             'guard_name' => 'web',
             'slug' => str()->slug($roleDTO->name),
             'description' => $roleDTO->description,
-        ]), fn($role) => $role->syncPermissions($roleDTO->permissions));
+        ]), fn ($role) => $role->syncPermissions($roleDTO->permissions));
     }
     public function getById(int $id): Model|Role
     {
@@ -82,6 +82,5 @@ class RoleRepository extends AbstractRepository implements RoleRepositoryInterfa
     {
         return $this->role->with('permissions')->get(['id', 'name', 'slug', 'description', 'guard_name', 'created_at']);
     }
-
 
 }

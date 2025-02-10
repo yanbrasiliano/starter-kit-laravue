@@ -5,8 +5,7 @@ namespace Tests\Feature\Password;
 use App\Enums\RolesEnum;
 use App\Mail\SendForgetPasswordMail;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\{DB, Mail};
 use Symfony\Component\HttpFoundation\Response;
 
 beforeEach(function () {

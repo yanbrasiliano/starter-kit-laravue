@@ -16,9 +16,9 @@ class UserSeeder extends Seeder
     private $adminRole;
     public function __construct()
     {
-        $this->adminPassword = config('starterkit.admin_password');
-        $this->adminEmail = config('starterkit.admin_email');
-        $this->adminRole = config('starterkit.admin_role');
+        $this->adminPassword = config('starterkit.admin.password');
+        $this->adminEmail = config('starterkit.admin.email');
+        $this->adminRole = config('starterkit.admin.role');
     }
 
     public function run()

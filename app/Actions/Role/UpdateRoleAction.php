@@ -4,26 +4,31 @@ declare(strict_types = 1);
 
 namespace App\Actions\Role;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use App\Traits\LogsActivityTrait;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Fluent;
 use Spatie\Permission\Models\Role;
 
 final class UpdateRoleAction
 {
-    public function execute(Fluent $params): LengthAwarePaginator|Collection
-    {
+    use LogsActivityTrait;
 
-        return Role::query()
-            ->with('permissions')
-            ->when($params->order, function ($query) use ($params) {
-                $column = $params->column ?? 'id';
-                $query->orderBy($column, $params->order);
-            })
-            ->when($params->paginated, function ($query) use ($params) {
-                return $query->paginate($params->limit ?? 10);
-            }, function ($query) {
-                return $query->get();
-            });
+    public function execute(Role $role, Fluent $params): ?Role
+    {
+        return DB::transaction(function () use ($role, $params) {
+
+            $role->update([
+                'name' => $params->name,
+                'description' => $params->description,
+                'guard_name' => 'web',
+            ]);
+
+            (new SyncRolePermissionAction($role, $params->permissions))->execute();
+
+            $this->logUpdateActivity('Gestão de Perfis', $role, $role->getDirty(), 'Atualizou um perfil');
+
+            return $role;
+        });
     }
+
 }

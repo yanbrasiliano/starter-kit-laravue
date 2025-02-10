@@ -13,7 +13,7 @@ final class CreateRoleAction
 {
     use LogsActivityTrait;
 
-    public function execute(Fluent $params): Role
+    public function execute(Fluent $params): ?Role
     {
         return DB::transaction(function () use ($params) {
             $role = Role::create([
@@ -25,7 +25,7 @@ final class CreateRoleAction
 
             $role->syncPermissions($params->permissions);
 
-            $this->writeOnLog($role);
+            $this->writeOnLog($role); // TODO: Move to Event or Log
 
             return $role;
         });

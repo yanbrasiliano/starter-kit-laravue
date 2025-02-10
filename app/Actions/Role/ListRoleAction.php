@@ -15,15 +15,18 @@ final class ListRoleAction
     {
 
         return Role::query()
-            ->with('permissions')
-            ->when($params->order, function ($query) use ($params) {
-                $column = $params->column ?? 'id';
-                $query->orderBy($column, $params->order);
-            })
-            ->when($params->paginated, function ($query) use ($params) {
-                return $query->paginate($params->limit ?? 10);
-            }, function ($query) {
-                return $query->get();
-            });
+        ->with(['permissions' => function ($query) {
+            $query->select(['id', 'description']);
+        }])
+        ->when($params->order, function ($query) use ($params) {
+            $column = $params->column ?? 'id';
+
+            return $query->orderBy($column, $params->order);
+        })
+        ->when($params->paginated, function ($query) use ($params) {
+            return $query->paginate($params->limit ?? 10);
+        }, function ($query) {
+            return $query->get();
+        });
     }
 }
