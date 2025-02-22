@@ -55,4 +55,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->attributes['cpf'] = $value !== null ? preg_replace('/\D/', '', $value) : null;
     }
+
+    public function setPasswordAttribute(?string $value): void
+    {
+        $this->attributes['password'] = $value !== null ? bcrypt($value) : null;
+    }
 }
