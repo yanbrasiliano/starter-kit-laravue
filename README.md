@@ -69,3 +69,33 @@ Comandos disponíveis com a extensão do php-intl
 - `php artisan db:show`
 - `php artisan db:table users`
 - `php artisan db:monitor`
+
+## Conveções sobre commits
+
+Usamos conventional commits para descrever os commits com um maior contexto e servirá para adicionar em um futuro **Semantic Version**.
+
+- **feat**: Adds a new feature or capability
+- **fix**: Fixes a bug
+- **docs**: Changes documentation, like the README
+- **refactor**: Rewrites or restructures code without changing functionality
+- **test**: Adds or fixes tests
+- **perf**: Improves performance
+- **build**: Affects the build system or external dependencies
+- **ci**: Changes to CI configuration files and scripts
+- **ops**: Affects operational components like infrastructure, deployment, backup, and recovery
+- **chore**: Other changes that don't modify src or test files
+- **revert**: Reverts a previous commit
+
+
+## Convenções sobre código
+
+* Variáveis em camelCase e evitar abreviações: 
+    - Exemplo: `$camelCase`
+    - Exemplo: `$q` => `$query` 
+    
+* Nomes de rotas devem seguir o nome do recurso seguidos de um ponto e a ação: 
+    - Exemplo: `name('roles.index')`
+    - Exemplo `name(roles.listAll)`
+
+* Nomes de métodos breves que sejam descritivos que não supere as 5 palavras: 
+    - Exemplo: `descriptiveMethodForSelect` 
