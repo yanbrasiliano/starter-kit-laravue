@@ -14,9 +14,7 @@ final readonly class DeleteRoleAction
     {
         return DB::transaction(function () use ($role): bool {
 
-            if ($role->users()->exists()) {
-                throw new RoleIsAssignedToUserException();
-            }
+            throw_if($role->users()->exists(), RoleIsAssignedToUserException::class);
 
             $role->users()->detach();
             $role->permissions()->detach();
