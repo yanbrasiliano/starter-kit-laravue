@@ -19,7 +19,7 @@ class RoleIsAssignedToUserException extends Exception
      */
     public function __construct(
         string $message = 'Existem usuário(s) vinculado(s) ao perfil. Exclusão não permitida!',
-        int $code = Response::HTTP_CONFLICT,
+        int $code = Response::HTTP_UNPROCESSABLE_ENTITY,
         ?\Throwable $previous = null
     ) {
         parent::__construct($message, $code, $previous);
