@@ -19,6 +19,15 @@ class UpdateRoleRequest extends FormRequest
         return auth()->check();
     }
 
+    public function prepareForValidation(): void
+    {
+        $permissions = collect($this->permissions);
+
+        $this->merge([
+            'permissions' => $permissions->has('value') ? $permissions->pluck('value')->toArray() : $permissions->toArray(),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
