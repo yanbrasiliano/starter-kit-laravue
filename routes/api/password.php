@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\API\PasswordController;
+use App\Http\Controllers\Api\PasswordController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(PasswordController::class)->group(function () {
