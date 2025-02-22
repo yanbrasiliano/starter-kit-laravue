@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Fluent;
 use Spatie\Permission\Models\Role;
 
-final class CreateRoleAction
+final readonly class CreateRoleAction
 {
     use LogsActivityTrait;
 

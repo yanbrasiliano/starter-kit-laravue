@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Fluent;
 use Spatie\Permission\Models\Role;
 
-final class UpdateRoleAction
+final readonly class UpdateRoleAction
 {
     use LogsActivityTrait;
 
@@ -23,7 +23,7 @@ final class UpdateRoleAction
                 'guard_name' => 'web',
             ]);
 
-            (new SyncRolePermissionAction($role, $params->permissions))->execute();
+            $role->syncPermissions($params->permissions);
 
             $this->logUpdateActivity('Gestão de Perfis', $role, $role->getDirty(), 'Atualizou um perfil');
 

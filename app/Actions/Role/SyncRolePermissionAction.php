@@ -6,7 +6,7 @@ namespace App\Actions\Role;
 
 use Spatie\Permission\Models\Role;
 
-final class SyncRolePermissionAction
+final readonly class SyncRolePermissionAction
 {
     public function __construct(private Role $role, private mixed $permissions)
     {

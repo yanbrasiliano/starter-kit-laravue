@@ -6,7 +6,7 @@ namespace App\Actions\Role;
 
 use Spatie\Permission\Models\Role;
 
-final class ShowRoleAction
+final readonly class ShowRoleAction
 {
     public function execute(Role $role): Role
     {

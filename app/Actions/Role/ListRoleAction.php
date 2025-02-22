@@ -9,11 +9,10 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Fluent;
 use Spatie\Permission\Models\Role;
 
-final class ListRoleAction
+final readonly class ListRoleAction
 {
     public function execute(Fluent $params): LengthAwarePaginator|Collection
     {
-
         return Role::query()
         ->with(['permissions' => function ($query) {
             $query->select(['id', 'description']);
