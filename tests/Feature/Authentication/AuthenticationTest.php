@@ -14,11 +14,11 @@ beforeEach(function () {
 
     $this->inactiveUser = User::factory()->create([
         'active' => false,
-        'password' => bcrypt('correctpassword'),
+        'password' => 'correctpassword',
     ]);
     $this->activeUser = User::factory()->create([
         'active' => true,
-        'password' => bcrypt('correctpassword'),
+        'password' => 'correctpassword',
     ]);
     $this->userAuth = User::factory()->create();
 

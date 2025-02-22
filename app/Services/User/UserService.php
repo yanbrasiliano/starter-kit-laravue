@@ -7,7 +7,6 @@ use App\DTO\User\{CreateUserDTO, RegisterExternalUserDTO, UpdateUserDTO, UserDTO
 use App\Mail\{AccountDeletionNotification, SendRandomPassword, SendVerifyEmail};
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
-use App\Services\Role\RoleService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\{DB, Hash, Mail};
@@ -17,8 +16,7 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 class UserService
 {
     public function __construct(
-        private UserRepositoryInterface $repository,
-        private RoleService $service
+        private UserRepositoryInterface $repository
     ) {
     }
 
