@@ -12,7 +12,16 @@ use Spatie\Permission\Models\Role;
 final readonly class CreateRoleAction
 {
     use LogsActivityTrait;
-
+    /**
+     * @param \Illuminate\Support\Fluent&object{
+     *     name: string,
+     *     guard: string,
+     *     description: string,
+     *     slug: string,
+     *     permissions: array
+     * } $params
+     * @return \App\Models\Role|null
+     */
     public function execute(Fluent $params): ?Role
     {
         return DB::transaction(function () use ($params) {

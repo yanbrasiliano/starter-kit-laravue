@@ -14,10 +14,20 @@ use Illuminate\Support\Fluent;
 final readonly class CreateExternalUserAction
 {
     use LogsActivityTrait;
-
+    /**
+     * @param \Illuminate\Support\Fluent&object{
+     *     name: string,
+     *     email: string,
+     *     password: string,
+     *     cpf: string,
+     *     active: bool,
+     *     role: string
+     * } $params
+     * @return \App\Models\User
+     */
     public function execute(Fluent $params): ?User
     {
-        return DB::transaction(function () use ($params): ?User {
+        return DB::transaction(function () use ($params) {
             $user = User::create([
                 'name' => $params->name,
                 'email' => $params->email,

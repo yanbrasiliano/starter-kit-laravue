@@ -4,6 +4,7 @@ namespace App\Http\Requests\Role;
 
 use App\Traits\FailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 
 class CreateRoleRequest extends FormRequest
@@ -20,7 +21,7 @@ class CreateRoleRequest extends FormRequest
 
     public function prepareForValidation(): void
     {
-        $permissions = collect($this->permissions)->pluck('value')->toArray();
+        $permissions = (new Collection($this->permissions))->pluck('value')->toArray();
 
         $this->merge([
             'permissions' => $permissions,
@@ -40,7 +41,9 @@ class CreateRoleRequest extends FormRequest
             'permissions' => ['array'],
         ];
     }
-
+    /**
+     * @return array<string, string>
+     */
     public function attributes(): array
     {
         return [
@@ -49,7 +52,9 @@ class CreateRoleRequest extends FormRequest
             'permissions' => 'Permissões',
         ];
     }
-
+    /**
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [

@@ -74,7 +74,9 @@ class IndexRoleRequest extends FormRequest
             ],
         ];
     }
-
+    /**
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
@@ -91,7 +93,9 @@ class IndexRoleRequest extends FormRequest
             'search.string' => 'O :attribute deve ser uma string.',
         ];
     }
-
+    /**
+     * @return array<string, string>
+     */
     public function attributes(): array
     {
         return [
