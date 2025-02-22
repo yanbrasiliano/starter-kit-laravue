@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\API\PermissionController;
+use App\Http\Controllers\Api\PermissionController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('permissions')->controller(PermissionController::class)->group(function () {

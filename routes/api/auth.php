@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\API\AuthenticateController;
+use App\Http\Controllers\Api\AuthenticateController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(AuthenticateController::class)->group(function () {
