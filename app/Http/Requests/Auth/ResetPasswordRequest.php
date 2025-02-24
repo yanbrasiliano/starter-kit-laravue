@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Password;
+namespace App\Http\Requests\Auth;
 
 use App\DTO\Password\ResetPasswordDTO;
 use Illuminate\Foundation\Http\FormRequest;

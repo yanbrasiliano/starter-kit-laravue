@@ -98,4 +98,10 @@ Usamos conventional commits para descrever os commits com um maior contexto e se
     - Exemplo `name(roles.listAll)`
 
 * Nomes de métodos breves que sejam descritivos que não supere as 5 palavras: 
-    - Exemplo: `descriptiveMethodForSelect` 
+    - Exemplo: `descriptiveMethodForSelect`
+
+* Executar a análise estática de código para melhorar a tipagem do código
+    - `./vendor/bin/phpstan analyse`
+
+* Documentação da API
+    - `php artisan scramble:export`

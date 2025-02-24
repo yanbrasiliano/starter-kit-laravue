@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
-use App\DTO\Authenticate\LoginDTO;
+use App\DTO\Password\ForgotPasswordDTO;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+class ForgotPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +23,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|string',
+            'email' => 'required|email|exists:users,email',
         ];
     }
 
@@ -38,8 +37,7 @@ class LoginRequest extends FormRequest
         return [
             'email.required' => 'O campo e-mail é obrigatório.',
             'email.email' => 'O campo e-mail deve ser um endereço de e-mail válido.',
-            'password.required' => 'O campo senha é obrigatório.',
-            'password.string' => 'O campo senha deve ser uma string.',
+            'email.exists' => 'Nenhum cadastro encontrado com o e-mail informado.',
         ];
     }
 
@@ -48,10 +46,10 @@ class LoginRequest extends FormRequest
      *
      * @param string|null $key
      * @param mixed|null $default
-     * @return LoginDTO
+     * @return ForgotPasswordDTO
      */
-    public function validated($key = null, $default = null): LoginDTO
+    public function validated($key = null, $default = null): ForgotPasswordDTO
     {
-        return new LoginDTO(...parent::validated($key, $default));
+        return new ForgotPasswordDTO(...parent::validated($key, $default));
     }
 }
