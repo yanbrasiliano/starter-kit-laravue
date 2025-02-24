@@ -52,5 +52,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "resolutions": {
+    "esbuild": "^0.25.0"
   }
 }
