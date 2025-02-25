@@ -30,6 +30,21 @@ dataset('userJsonValidStructure', [
     ],
 ]);
 
+dataset('createUserJsonValidStructure', [
+    fn () => [
+        'data' => [
+            'id',
+            'name',
+            'email',
+            'cpf',
+            'active',
+            'created_at',
+            'updated_at',
+            'roles',
+        ],
+    ],
+]);
+
 dataset('validJsonStructure', [
     fn () => [
         'data' => [

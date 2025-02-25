@@ -60,8 +60,19 @@ describe('Users Management', function () {
                     ->assertExactJson(["message" => "Um e-mail de confirmação foi encaminhado para {$registerUser['email']}. Por favor, realize os procedimentos para ativação da sua conta."]);
             }
         )->with('registerUser')
-        ->with('validJsonStructure')
-        ;
+        ->with('validJsonStructure');
+
+        it(
+            'should return a 201 status when create a new user',
+            function (array $validUser, array $createUserJsonValidStructure) {
+
+                actingAs($this->asAdmin)
+                    ->post(route('users.create'), $validUser)
+                    ->assertStatus(Response::HTTP_CREATED)
+                    ->assertJsonStructure($createUserJsonValidStructure);
+            }
+        )->with('validUser')
+        ->with('createUserJsonValidStructure');
 
         it(
             'should return a 422 status code when name is not provided',

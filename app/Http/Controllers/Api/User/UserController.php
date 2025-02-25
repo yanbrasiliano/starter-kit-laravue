@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use App\Actions\User\{CreateExternalUserAction};
-use App\DTO\Paginate\PaginateParamsDTO;
-use App\DTO\User\{CreateUserDTO};
+use App\Actions\User\{CreateExternalUserAction, CreateUserAction, ListUserAction};
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\{CreateUserRequest, RegisterExternalUserRequest, UpdateUserRequest};
+use App\Http\Requests\User\{CreateUserRequest, IndexUserRequest, RegisterExternalUserRequest, UpdateUserRequest};
 use App\Http\Resources\UserResource;
 use App\Services\User\UserService;
 use App\Traits\LogsActivityTrait;
@@ -23,24 +21,18 @@ class UserController extends Controller
     ) {
     }
 
-    public function index(Request $request): JsonResource
+    public function index(IndexUserRequest $request, ListUserAction $action): JsonResource
     {
-        $users = $this->service->index(
-            new PaginateParamsDTO(...$request->toArray())
-        );
+        $users = $action->execute($request->fluent()->validated());
 
         return new UserResource($users);
     }
 
-    public function store(CreateUserRequest $request): JsonResource
+    public function store(CreateUserRequest $request, CreateUserAction $action): JsonResource
     {
-        [$user, $userDTO] = $this->service->getModelAndDTOById(
-            $this->service->create(new CreateUserDTO(...$request->toArray()))->id
-        );
+        $user = $action->execute($request->fluent()->validated());
 
-        $this->logGeneralActivity('Gestão de Usuários', $user, 'Criou um novo usuário');
-
-        return new UserResource($userDTO);
+        return new UserResource($user);
     }
 
     public function show(int $id): JsonResource

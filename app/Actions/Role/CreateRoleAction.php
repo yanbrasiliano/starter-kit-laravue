@@ -20,7 +20,7 @@ final readonly class CreateRoleAction
      *     slug: string,
      *     permissions: array
      * } $params
-     * @return \App\Models\Role|null
+     * @return Spatie\Permission\Models\Role|null
      */
     public function execute(Fluent $params): ?Role
     {

@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\User;
 
-use App\DTO\User\CreateUserDTO;
 use App\Enums\{RolesEnum, StatusEnum};
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\{Fluent, Str};
 use Illuminate\Validation\Rule;
 
 class CreateUserRequest extends FormRequest
@@ -85,19 +85,11 @@ class CreateUserRequest extends FormRequest
         ];
     }
 
-    /**
-     * Get the validated data from the request as a DTO or an array.
-     *
-     * @param string|null $key
-     * @param mixed|null $default
-     * @return CreateUserDTO
-     */
-    public function validated($key = null, $default = null): CreateUserDTO
+    public function fluent($key = null): Fluent
     {
-        $validated = parent::validated($key, $default);
-
-        return new CreateUserDTO(
-            ...$validated
-        );
+        return new Fluent([
+            ...$this->validated($key),
+            'password' => $this->has('send_random_password') ? Str::password(8) : $this->password,
+        ]);
     }
 }
