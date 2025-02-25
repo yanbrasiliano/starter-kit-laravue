@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\User;
 
-use App\DTO\User\UpdateUserDTO;
 use App\Enums\StatusEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Fluent;
 use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
@@ -118,18 +118,10 @@ class UpdateUserRequest extends FormRequest
         ];
     }
 
-    /**
-     * @param string|null $key
-     * @param mixed|null $default
-     * @return array<string, mixed>
-     */
-    public function validated($key = null, $default = null): array
+    public function fluent($key = null): Fluent
     {
-        return parent::validated($key, $default);
-    }
-
-    public function toDTO(): UpdateUserDTO
-    {
-        return new UpdateUserDTO(...$this->validated());
+        return new Fluent([
+            ...$this->validated($key),
+        ]);
     }
 }

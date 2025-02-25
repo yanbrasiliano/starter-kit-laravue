@@ -76,7 +76,10 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
 
     public function update(int $id, array $params): Model|User
     {
-        return tap($this->model->findOrFail($id), fn ($user) => $user->update(array_filter($params, fn ($key) => in_array($key, $user->getFillable()), ARRAY_FILTER_USE_KEY)));
+        return tap(
+            $this->model->findOrFail($id),
+            fn ($user) => $user->update(array_filter($params, fn ($key) => in_array($key, $user->getFillable()), ARRAY_FILTER_USE_KEY))
+        );
     }
 
     public function delete(int $id, string $reason): DeleteReason

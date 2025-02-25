@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use App\Actions\User\{CreateExternalUserAction, CreateUserAction, ListUserAction};
+use App\Actions\User\{CreateExternalUserAction, CreateUserAction, ListUserAction, ShowUserAction, UpdateUserAction};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\{CreateUserRequest, IndexUserRequest, RegisterExternalUserRequest, UpdateUserRequest};
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Services\User\UserService;
 use App\Traits\LogsActivityTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -23,36 +24,31 @@ class UserController extends Controller
 
     public function index(IndexUserRequest $request, ListUserAction $action): JsonResource
     {
-        $users = $action->execute($request->fluent()->validated());
+        $users = $action->execute($request->fluent());
 
         return new UserResource($users);
     }
 
     public function store(CreateUserRequest $request, CreateUserAction $action): JsonResource
     {
-        $user = $action->execute($request->fluent()->validated());
+        $user = $action->execute($request->fluent());
 
         return new UserResource($user);
     }
 
-    public function show(int $id): JsonResource
+    public function show(User $user, ShowUserAction $action): JsonResource
     {
-        $user = $this->service->getById($id);
+        $showUser = $action->execute($user);
 
-        return new UserResource($user);
+        return new UserResource($showUser);
     }
 
-    public function update(UpdateUserRequest $request, int $id): JsonResource
+    public function update(UpdateUserRequest $request, User $user, UpdateUserAction $action): JsonResource
     {
-        [$user] = $this->service->getModelAndDTOById($id);
 
-        $updateUserDTO = $request->toDTO();
+        $updatedUser = $action->execute(params: $request->fluent(), user: $user);
 
-        $updatedUserDTO = $this->service->update($id, $updateUserDTO);
-
-        $this->logUpdateActivity('Gestão de Usuários', $user, $request->validated(), 'Atualizou um usuário');
-
-        return new UserResource($updatedUserDTO);
+        return new UserResource($updatedUser);
     }
 
     public function destroy(int $id, Request $request): Response
