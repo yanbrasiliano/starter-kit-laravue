@@ -14,6 +14,7 @@ beforeEach(function () {
     createRoles();
     $this->users = createUsers();
     $this->asAdmin = asAdmin();
+    $this->invalidId = 111111;
 });
 
 describe('Users Management', function () {
@@ -44,7 +45,7 @@ describe('Users Management', function () {
 
         it('should return a 404 status code for invalid user ID', function () {
             actingAs($this->asAdmin)
-                ->get(route('users.view', [111111]))
+                ->get(route('users.view', $this->invalidId))
                 ->assertStatus(Response::HTTP_NOT_FOUND);
         });
     });
@@ -259,10 +260,9 @@ describe('Users Management', function () {
 
     describe('Deleting Users', function () {
         it('should delete a user and return a 204 status code for valid user ID', function () {
-            $user = createUser();
-
+            $user = asReviewer();
             actingAs($this->asAdmin)
-                ->delete(route('users.delete', [$user->id]), ['reason' => 'Test deletion reason'])
+                ->delete(route('users.delete', $user->id), ['reason' => 'Test deletion reason'])
                 ->assertStatus(Response::HTTP_NO_CONTENT)
                 ->assertNoContent();
 
@@ -272,9 +272,9 @@ describe('Users Management', function () {
         it('should return a 404 status code for invalid user ID', function () {
 
             actingAs($this->asAdmin)
-                ->delete(route('users.delete', [111111]), ['reason' => 'Test deletion reason'])
+                ->delete(route('users.delete', $this->invalidId), ['reason' => 'Test deletion reason'])
                 ->assertStatus(Response::HTTP_NOT_FOUND)
-                ->assertJson(['message' => 'No query results for model [App\\Models\\User] ' . '111111']);
+                ->assertJson(['message' => "No query results for model [App\\Models\\User] {$this->invalidId}"]);
         });
     });
 

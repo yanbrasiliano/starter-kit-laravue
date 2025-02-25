@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use App\Actions\User\{CreateExternalUserAction, CreateUserAction, ListUserAction, ShowUserAction, UpdateUserAction};
+use App\Actions\User\{CreateExternalUserAction, CreateUserAction, DeleteUserAction, ListUserAction, ShowUserAction, UpdateUserAction};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\{CreateUserRequest, IndexUserRequest, RegisterExternalUserRequest, UpdateUserRequest};
 use App\Http\Resources\UserResource;
@@ -45,15 +45,27 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user, UpdateUserAction $action): JsonResource
     {
-
         $updatedUser = $action->execute(params: $request->fluent(), user: $user);
 
         return new UserResource($updatedUser);
     }
 
-    public function destroy(int $id, Request $request): Response
+    public function destroy(Request $request, User $user, DeleteUserAction $action): Response
     {
-        [$user] = $this->service->getModelAndDTOById($id);
+
+        try {
+            $response = $action->execute(params: $request->fluent(), user: $user);
+
+            if ($response) {
+                return response()->json([
+                    'message' => 'Usuário deletado com sucesso!',
+                ], Response::HTTP_NO_CONTENT);
+            }
+        } catch (\Throwable $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], $exception->getCode());
+        }
         $reason = $request->input('reason');
 
         $this->logDeleteActivity('Gestão de Usuários', $user, 'Excluiu um usuário');
@@ -65,7 +77,7 @@ class UserController extends Controller
 
     public function register(RegisterExternalUserRequest $request, CreateExternalUserAction $action): JsonResponse
     {
-        $user = $action->execute($request->fluent()->validated());
+        $user = $action->execute($request->fluent());
 
         return response()->json([
             'message' => "Um e-mail de confirmação foi encaminhado para {$user->email}. Por favor, realize os procedimentos para ativação da sua conta.",
