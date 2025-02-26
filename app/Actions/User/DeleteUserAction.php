@@ -30,9 +30,9 @@ final readonly class DeleteUserAction
                 'Não é possível realizar essa ação.'
             );
 
-            AddReason::make()->execute($user, $params->reason);
+            app(AddReason::class)->execute($user, $params->reason);
 
-            RemoveRole::make()->execute($user);
+            app(RemoveRole::class)->execute($user);
 
             $this->logDeleteActivity('Gestão de Usuários', $user, 'Excluiu um usuário');
 

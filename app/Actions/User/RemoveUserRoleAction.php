@@ -18,9 +18,4 @@ final readonly class RemoveUserRoleAction
             $user->getRoleNames()->each(fn ($role) => $user->removeRole($role));
         }
     }
-
-    public static function make(): self
-    {
-        return new self();
-    }
 }

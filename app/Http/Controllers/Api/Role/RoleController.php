@@ -14,48 +14,48 @@ use Throwable;
 
 class RoleController extends Controller
 {
-    public function index(IndexRoleRequest $request, ListRoleAction $action): JsonResource
+    public function index(IndexRoleRequest $request): JsonResource
     {
         $this->authorize('index', Role::class);
 
-        $roles = $action->execute($request->fluent()->validated());
+        $roles = app(ListRoleAction::class)->execute($request->fluent()->validated());
 
         return RoleResource::collection($roles);
     }
 
-    public function store(CreateRoleRequest $request, CreateRoleAction $action): JsonResource
+    public function store(CreateRoleRequest $request): JsonResource
     {
         $this->authorize('store', Role::class);
 
-        $role = $action->execute($request->fluent()->validated());
+        $role = app(CreateRoleAction::class)->execute($request->fluent()->validated());
 
         return new RoleResource($role);
     }
 
-    public function show(Role $role, ShowRoleAction $action): JsonResource
+    public function show(Role $role): JsonResource
     {
         $this->authorize('show', $role);
 
-        $roleWithPermissions = $action->execute($role);
+        $roleWithPermissions = app(ShowRoleAction::class)->execute($role);
 
         return new RoleResource($roleWithPermissions);
     }
 
-    public function update(UpdateRoleRequest $request, Role $role, UpdateRoleAction $action): JsonResource
+    public function update(UpdateRoleRequest $request, Role $role): JsonResource
     {
         $this->authorize('update', $role);
 
-        $updatedRole = $action->execute($role, $request->fluent()->validated());
+        $updatedRole = app(UpdateRoleAction::class)->execute($role, $request->fluent()->validated());
 
         return new RoleResource($updatedRole);
     }
 
-    public function destroy(Role $role, DeleteRoleAction $action): JsonResponse
+    public function destroy(Role $role): JsonResponse
     {
         try {
             $this->authorize('delete', $role);
 
-            $deleted = $action->execute($role);
+            $deleted = app(DeleteRoleAction::class)->execute($role);
 
             if ($deleted) {
                 return response()->json(
@@ -74,7 +74,7 @@ class RoleController extends Controller
 
     public function listAll(): JsonResource
     {
-        $roles = (new ListAllRoleAction())->execute();
+        $roles = app(ListAllRoleAction::class)->execute();
 
         return RoleResource::collection($roles);
     }
