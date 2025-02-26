@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\Actions\Auth\LoginAction;
+use App\Actions\Auth\{LoginAction, LogoutAction, MyProfileAction};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Services\Authenticate\AuthenticateService;
@@ -36,13 +36,15 @@ class AuthenticateController extends Controller
 
     public function logout(): JsonResponse
     {
-        return response()->json([
-            'message' => $this->service->logout(),
-        ]);
+        $data = app(LogoutAction::class)->execute();
+
+        return response()->json($data);
     }
 
     public function myProfile(): JsonResponse
     {
-        return response()->json($this->service->myProfile());
+        $data = app(MyProfileAction::class)->execute();
+
+        return response()->json($data);
     }
 }
