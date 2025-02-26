@@ -11,6 +11,16 @@ use Illuminate\Support\Fluent;
 
 final readonly class ListUserAction
 {
+    /**
+     * @param \Illuminate\Support\Fluent&object{
+     *     search: string,
+     *     order: string,
+     *     column: string,
+     *     page: int,
+     *     perPage: int
+     * } $params
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Collection
+     */
     public function execute(Fluent $params): LengthAwarePaginator|Collection
     {
         $query = User::query();

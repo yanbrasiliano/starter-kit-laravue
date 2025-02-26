@@ -292,6 +292,8 @@ describe('Users Management', function () {
         it('should return that the users email has been verified', function () {
 
             $user = createUser([
+                'name' => 'John Doe',
+                'email' => 'B0KpM@example.com',
                 'email_verified_at' => null,
             ]);
 
@@ -304,6 +306,8 @@ describe('Users Management', function () {
 
         it('should return that the email is already validated', function () {
             $user = createUser([
+                'name' => 'John Doe',
+                'email' => 'B0KpM@example.com',
                 'email_verified_at' => now(),
             ]);
 

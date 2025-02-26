@@ -6,7 +6,7 @@ use App\Models\User;
 
 describe('UserModel Test', function () {
     it('has correct fillable attributes', function () {
-        $fillable = ['name', 'email', 'password', 'cpf', 'active'];
+        $fillable = ['name', 'email', 'password', 'cpf', 'active', 'email_verified_at'];
         $user = new User();
 
         expect($user->getFillable())->toEqual($fillable);
