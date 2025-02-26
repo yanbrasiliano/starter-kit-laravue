@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
+use App\Actions\Auth\LoginAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Services\Authenticate\AuthenticateService;
@@ -22,7 +23,15 @@ class AuthenticateController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        return response()->json($this->service->login($request->validated()));
+        try {
+            $data = app(LoginAction::class)->execute($request->fluent());
+
+            return response()->json($data);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], $exception->getCode());
+        }
     }
 
     public function logout(): JsonResponse

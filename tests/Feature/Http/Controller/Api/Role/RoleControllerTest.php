@@ -100,7 +100,8 @@ describe('RoleTest', function () {
                 'permissions' => [
                     Permission::all()->first()->id,
                 ],
-            ])->assertStatus(Response::HTTP_OK);
+            ])
+            ->assertStatus(Response::HTTP_OK);
 
             $response->assertJsonStructure([
                 'data' => [

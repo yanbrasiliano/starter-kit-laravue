@@ -23,9 +23,12 @@ class UpdateRoleRequest extends FormRequest
     {
         /** @var \Illuminate\Support\Collection<int, mixed> $permissions */
         $permissions = new Collection($this->permissions);
+        $isInteger = $permissions->contains(function ($item) {
+            return is_int($item);
+        });
 
         $this->merge([
-            'permissions' => $permissions->has('value') ? $permissions->pluck('value')->toArray() : $permissions->toArray(),
+            'permissions' => $isInteger ? $permissions->toArray() : $permissions->pluck('value')->toArray(),
         ]);
     }
 
@@ -74,6 +77,7 @@ class UpdateRoleRequest extends FormRequest
      */
     public function fluent($key = null): Fluent
     {
+
         return new Fluent([
             ...$this->validated($key),
             'guard_name' => 'web',

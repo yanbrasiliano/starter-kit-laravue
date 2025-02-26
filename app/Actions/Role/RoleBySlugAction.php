@@ -23,9 +23,4 @@ final readonly class RoleBySlugAction
 
         return $role;
     }
-
-    public static function make(): self
-    {
-        return new self();
-    }
 }

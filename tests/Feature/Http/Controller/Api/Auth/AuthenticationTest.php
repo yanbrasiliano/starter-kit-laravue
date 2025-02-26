@@ -50,21 +50,18 @@ describe('Authentication', function () {
             'password' => 'correctpassword',
         ];
 
-        $response = $this->postJson(route('login'), $payload);
-
-        $response->assertStatus(Response::HTTP_OK)
-            ->assertJsonPath('original.user.id', $this->activeUser->id)
-            ->assertJsonPath('original.user.email', $this->activeUser->email)
+        $this->postJson(route('login'), $payload)
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJsonPath('user.id', $this->activeUser->id)
+            ->assertJsonPath('user.email', $this->activeUser->email)
             ->assertJsonStructure([
-                'original' => [
-                    'user' => [
-                        'id',
-                        'name',
-                        'email',
-                    ],
-                    'access_token',
+                'user' => [
+                    'id',
+                    'name',
+                    'email',
                 ],
-            ]);
+                'access_token',
+            ], );
     });
     it('does not authenticate an inactive user', function () {
         $payload = ['email' => $this->inactiveUser->email, 'password' => 'correctpassword'];

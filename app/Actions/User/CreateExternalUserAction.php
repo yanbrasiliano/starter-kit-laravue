@@ -36,7 +36,7 @@ final readonly class CreateExternalUserAction
                 'active' => $params->active ? 'true' : 'false',
             ]);
 
-            $role = RoleBySlugAction::make()->execute($params->role);
+            $role = app(RoleBySlugAction::class)->execute($params->role);
 
             $user->syncRoles([$role->id]);
 

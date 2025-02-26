@@ -12,13 +12,9 @@ class AuthenticateService
     {
         $credentials = ['email' => $dto->email, 'password' => $dto->password];
 
-        if (!Auth::guard('web')->attempt($credentials)) {
-            throw new InvalidCredentialsException();
-        }
+        throw_unless(!Auth::guard('web')->attempt($credentials), InvalidCredentialsException::class);
+        throw_unless(!Auth::user()->active, UnactivatedUserException::class);
 
-        if (!Auth::user()->active) {
-            throw new UnactivatedUserException();
-        }
         /**
          * @var \App\Models\User $user
          */
