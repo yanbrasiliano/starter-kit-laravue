@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\DTO\Password\ResetPasswordDTO;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Fluent;
 
 class ResetPasswordRequest extends FormRequest
 {
@@ -50,13 +50,13 @@ class ResetPasswordRequest extends FormRequest
     }
 
     /**
-     * Get the validated data and transform it into a DTO.
+     * Get the validated data and transform it into a Fluent object.
      *
      * @param string|null $key
      * @param mixed|null $default
-     * @return ResetPasswordDTO
+     * @return Fluent
      */
-    public function validated($key = null, $default = null): ResetPasswordDTO
+    public function fluent($key = null, $default = null): Fluent
     {
         $validated = parent::validated($key, $default);
 
@@ -64,11 +64,6 @@ class ResetPasswordRequest extends FormRequest
             $validated['password_confirmation'] = $this->input('password_confirmation');
         }
 
-        return new ResetPasswordDTO(
-            $validated['email'],
-            $validated['token'],
-            $validated['password'],
-            $validated['password_confirmation']
-        );
+        return new Fluent($validated);
     }
 }
