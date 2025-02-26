@@ -2,16 +2,6 @@
 
 namespace App\Providers;
 
-use App\Repositories\Contracts\{
-    PermissionRepositoryInterface,
-    RoleRepositoryInterface,
-    UserRepositoryInterface
-};
-use App\Repositories\EloquentRepository\{
-    PermissionRepository,
-    RoleRepository,
-    UserRepository
-};
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\{
     OpenApi,
@@ -28,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->bindRepositories();
+        //
     }
 
     /**
@@ -40,16 +30,6 @@ class AppServiceProvider extends ServiceProvider
         $this->configureRequest();
         $this->configureScramble();
         $this->configureVite();
-    }
-
-    /**
-     * Bind repositories to their interfaces.
-     */
-    protected function bindRepositories(): void
-    {
-        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
-        $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
-        $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
     }
 
     /**
