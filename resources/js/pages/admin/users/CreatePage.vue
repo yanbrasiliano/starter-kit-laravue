@@ -30,7 +30,10 @@ const loadRoles = async () => {
   }
 };
 
-onMounted(loadRoles);
+onMounted(()=>{
+  userStore.clearStore();
+  loadRoles();
+});
 
 const send = async (payload) => {
   try {

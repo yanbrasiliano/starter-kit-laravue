@@ -8,8 +8,8 @@ use App\Models\User;
 
 final readonly class ShowUserAction
 {
-    public function execute(User $user): User
+    public function execute(mixed $id): ?User
     {
-        return $user->with(['roles.permissions']);
+        return User::with(['roles.permissions'])->findOrFail($id);
     }
 }

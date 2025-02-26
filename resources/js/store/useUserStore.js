@@ -65,6 +65,11 @@ const useUserStore = defineStore('users', {
     async verifyEmail(params) {
       return await service.verifyEmail(params);
     },
+    clearStore(){
+      this.users = [];
+      this.user = null;
+      this.errors = null;
+    }
   },
 });
 

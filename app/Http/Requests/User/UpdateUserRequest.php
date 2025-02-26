@@ -20,7 +20,14 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        return array_merge($this->baseRules(), $this->cpfRule(), $this->passwordRule(), $this->roleSlugRule());
+        $rules = array_merge(
+            $this->baseRules(),
+            $this->cpfRule(),
+            $this->passwordRule(),
+            $this->roleSlugRule()
+        );
+
+        return $rules;
     }
 
     /**
@@ -30,7 +37,7 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->id)],
+            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->route('id'))],
             'active' => ['required', Rule::in(StatusEnum::ENABLED, StatusEnum::DISABLED)],
             'role_id' => ['required', 'exists:roles,id'],
             'notify_status' => ['boolean'],
@@ -60,7 +67,7 @@ class UpdateUserRequest extends FormRequest
                                 ->where('role_user.role_id', $this->role_id);
                         });
                     })
-                    ->ignore($this->id),
+                    ->ignore($this->route('id')),
             ],
         ];
     }
@@ -104,8 +111,10 @@ class UpdateUserRequest extends FormRequest
      */
     public function messages(): array
     {
+        $appName = config('app.name');
+
         return [
-            'cpf.unique' => 'CPF já cadastrado no SISTEX, realize o login com suas credenciais.',
+            'cpf.unique' => "CPF já cadastrado no {$appName}, realize o login com suas credenciais.",
             'email.unique' => 'O e-mail já foi cadastrado.',
             'email.email' => 'O :attribute inserido não é válido.',
             'boolean' => 'O campo :attribute não é booleano.',
@@ -123,5 +132,16 @@ class UpdateUserRequest extends FormRequest
         return new Fluent([
             ...$this->validated($key),
         ]);
+    }
+
+    public function prepareForValidation()
+    {
+        \Log::info('Route parameters:', $this->route()->parameters());
+        \Log::info('Route name:', [$this->route()->getName()]);
+
+        // If you want to see what user object might be available
+        if ($this->route('user')) {
+            \Log::info('User object:', [$this->route('user')]);
+        }
     }
 }

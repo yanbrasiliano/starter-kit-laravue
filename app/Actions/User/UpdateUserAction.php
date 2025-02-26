@@ -13,16 +13,17 @@ final readonly class UpdateUserAction
 {
     use LogsActivityTrait;
 
-    public function execute(Fluent $params, User $user): ?User
+    public function execute(Fluent $params, mixed $id): ?User
     {
-        return DB::transaction(function () use ($user, $params) {
+        return DB::transaction(function () use ($id, $params) {
+            $user = User::findOrFail($id);
+
             $fillableParams = array_intersect_key(
                 $params->toArray(),
                 array_flip($user->getFillable())
             );
 
-            $user->fill($fillableParams);
-            $user->save();
+            $user->update($fillableParams);
             $user->syncRoles([$params->role_id]);
 
             $this->logUpdateActivity('Gestão de Perfis', $user, $user->getDirty(), 'Atualizou um perfil');

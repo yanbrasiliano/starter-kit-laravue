@@ -27,16 +27,16 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
-    public function show(User $user): JsonResource
+    public function show(): JsonResource
     {
-        $showUser = app(ShowUserAction::class)->execute($user);
+        $showUser = app(ShowUserAction::class)->execute(request()->route('id'));
 
         return new UserResource($showUser);
     }
 
-    public function update(UpdateUserRequest $request, User $user): JsonResource
+    public function update(UpdateUserRequest $request): JsonResource
     {
-        $updatedUser = app(UpdateUserAction::class)->execute(params: $request->fluent(), user: $user);
+        $updatedUser = app(UpdateUserAction::class)->execute(params: $request->fluent(), id: request()->route('id'));
 
         return new UserResource($updatedUser);
     }
