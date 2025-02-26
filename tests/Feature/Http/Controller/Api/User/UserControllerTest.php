@@ -194,7 +194,7 @@ describe('Users Management', function () {
             function (array $invalidEmail) {
 
                 actingAs($this->asAdmin)
-                    ->put(route('users.edit', [$this->asAdmin->id]), $invalidEmail)
+                    ->put(route('users.edit', $this->asAdmin->id), $invalidEmail)
                     ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
                     ->assertJson([
                         'errors' => [
