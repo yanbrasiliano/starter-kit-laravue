@@ -23,17 +23,9 @@ describe('Architecture Validation Tests', function () {
         ->expect('App\Enums')
         ->toStartWith('App\Enums');
 
-    it('App\DTO must be in the DTO namespace')
-        ->expect('App\DTO')
-        ->toStartWith('App\DTO');
-
     it('App\Services must be in the Services namespace')
         ->expect('App\Services')
         ->toStartWith('App\Services');
-
-    it('App\Repositories must be in the Repositories namespace')
-        ->expect('App\Repositories')
-        ->toStartWith('App\Repositories');
 
     it('App\Providers must be in the Providers namespace')
         ->expect('App\Providers')

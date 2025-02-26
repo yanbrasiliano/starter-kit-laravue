@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Password;
+namespace Tests\Feature\Http\Controller\Api\Auth;
 
 use App\Models\User;
 use Illuminate\Http\Response;
