@@ -133,7 +133,7 @@ class UpdateUserRequest extends FormRequest
      * @param string|null $key
      * @return Fluent<string, mixed>
      */
-    public function toFluent(?string $key = null): Fluent
+    public function fluentParams(?string $key = null): Fluent
     {
         return new Fluent($this->validated($key));
     }

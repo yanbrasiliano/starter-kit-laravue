@@ -56,7 +56,7 @@ class ResetPasswordRequest extends FormRequest
      * @param mixed|null $default
      * @return Fluent<string, mixed>
      */
-    public function toFluent(?string $key = null, mixed $default = null): Fluent
+    public function fluentParams(?string $key = null, mixed $default = null): Fluent
     {
         $validated = parent::validated($key, $default);
 

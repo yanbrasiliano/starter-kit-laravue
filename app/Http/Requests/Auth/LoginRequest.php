@@ -50,7 +50,7 @@ class LoginRequest extends FormRequest
      * @param mixed|null $default
      * @return Fluent<string, mixed>
      */
-    public function toFluent(?string $key = null, mixed $default = null): Fluent
+    public function fluentParams(?string $key = null, mixed $default = null): Fluent
     {
         return new Fluent($this->validated($key, $default));
     }
