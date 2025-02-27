@@ -8,6 +8,10 @@ use Illuminate\Support\Fluent;
 class LoginRequest extends FormRequest
 {
     /**
+     * @phpstan-type ParamsArray array{email: string, password: string}
+     */
+
+    /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
@@ -46,12 +50,10 @@ class LoginRequest extends FormRequest
     /**
      * Retorna os dados validados encapsulados em um objeto Fluent.
      *
-     * @param string|null $key
-     * @param mixed|null $default
      * @return Fluent<string, mixed>
      */
-    public function fluentParams(?string $key = null, mixed $default = null): Fluent
+    public function fluentParams(): Fluent
     {
-        return new Fluent($this->validated($key, $default));
+        return new Fluent($this->validated());
     }
 }

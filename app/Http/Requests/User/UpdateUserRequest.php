@@ -128,7 +128,7 @@ class UpdateUserRequest extends FormRequest
     }
 
     /**
-     * Retorna os dados validados como um DTO usando Fluent, com opção de filtrar por chave.
+     * Retorna os dados validados usando Fluent, com opção de filtrar por chave.
      *
      * @param string|null $key
      * @return Fluent<string, mixed>
