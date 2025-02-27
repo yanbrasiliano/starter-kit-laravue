@@ -14,24 +14,26 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 final readonly class DeleteUserAction
 {
     use LogsActivityTrait;
+
     /**
-     * @param \Illuminate\Support\Fluent&object{
-     *     reason: string,
-     * } $params
-     * @param \App\Models\User $user
+     * @phpstan-type ParamsArray array{reason: string}
+     *
+     * @param Fluent<string, mixed> $params
+     * @param User $user
      */
     public function execute(Fluent $params, User $user): bool
     {
         return DB::transaction(function () use ($params, $user) {
-
             throw_if(
                 auth()->id() === $user->id,
                 BadRequestException::class,
                 'Não é possível realizar essa ação.'
             );
 
-            app(AddReason::class)->execute($user, $params->reason);
+            // @phpstan-ignore-next-line
+            $reason = $params->reason;
 
+            app(AddReason::class)->execute($user, $reason);
             app(RemoveRole::class)->execute($user);
 
             $this->logDeleteActivity('Gestão de Usuários', $user, 'Excluiu um usuário');
