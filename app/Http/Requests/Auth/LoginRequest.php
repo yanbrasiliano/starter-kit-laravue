@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\DTO\Authenticate\LoginDTO;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Fluent;
 
 class LoginRequest extends FormRequest
 {
@@ -44,14 +44,14 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get the validated data and transform it into a DTO.
+     * Retorna os dados validados encapsulados em um objeto Fluent.
      *
      * @param string|null $key
      * @param mixed|null $default
-     * @return LoginDTO
+     * @return Fluent<string, mixed>
      */
-    public function validated($key = null, $default = null): LoginDTO
+    public function toFluent(?string $key = null, mixed $default = null): Fluent
     {
-        return new LoginDTO(...parent::validated($key, $default));
+        return new Fluent($this->validated($key, $default));
     }
 }

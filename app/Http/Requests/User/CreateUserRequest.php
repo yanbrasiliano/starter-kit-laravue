@@ -85,7 +85,13 @@ class CreateUserRequest extends FormRequest
         ];
     }
 
-    public function fluent($key = null): Fluent
+    /**
+     * Retorna os dados validados encapsulados em um objeto Fluent.
+     *
+     * @param string|null $key
+     * @return Fluent<string, mixed>
+     */
+    public function toFluent(?string $key = null): Fluent
     {
         return new Fluent([
             ...$this->validated($key),

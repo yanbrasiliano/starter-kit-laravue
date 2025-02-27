@@ -42,7 +42,7 @@ class ResetPasswordRequest extends FormRequest
             'email.email' => 'O campo e-mail deve ser um endereço de e-mail válido.',
             'email.exists' => 'Nenhum cadastro encontrado com o e-mail informado.',
             'password.required' => 'O campo senha é obrigatório.',
-            'password.min' => 'O campo senha deve conter no minimo 8 caracteres.',
+            'password.min' => 'O campo senha deve conter no mínimo 8 caracteres.',
             'password.confirmed' => 'As senhas não conferem.',
             'token.required' => 'O token não foi fornecido.',
             'token.string' => 'O token contém o tipo inválido.',
@@ -50,13 +50,13 @@ class ResetPasswordRequest extends FormRequest
     }
 
     /**
-     * Get the validated data and transform it into a Fluent object.
+     * Retorna os dados validados encapsulados em um objeto Fluent.
      *
      * @param string|null $key
      * @param mixed|null $default
-     * @return Fluent
+     * @return Fluent<string, mixed>
      */
-    public function fluent($key = null, $default = null): Fluent
+    public function toFluent(?string $key = null, mixed $default = null): Fluent
     {
         $validated = parent::validated($key, $default);
 

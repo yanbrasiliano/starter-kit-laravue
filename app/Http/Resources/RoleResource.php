@@ -3,15 +3,14 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Support\{Collection, Str};
 
 /**
  * @property int $id
  * @property string $name
  * @property string $description
  * @property string $slug
- * @property array<array{id: int, description: string}> $permissions
+ * @property Collection<int, array{id: int, description: string}> $permissions
  * @property \Illuminate\Support\Carbon $created_at
  * @property string $guard_name
  *
@@ -45,17 +44,11 @@ class RoleResource extends BaseResource
      */
     protected function getPermissionsForSelect(): array
     {
-        /**
-         * @var \App\Models\User $user
-         */
-        //$user = Auth::user();
-
-        return collect($this->permissions)->map(function ($permission) {
-            return [
-                'value' => $permission->id,
-                'label' => $permission->description,
-            ];
-        })->toArray();
+        return collect($this->permissions)
+            ->map(fn (array $permission) => [
+                'value' => $permission['id'],
+                'label' => $permission['description'],
+            ])
+            ->toArray();
     }
-
 }

@@ -127,21 +127,15 @@ class UpdateUserRequest extends FormRequest
         ];
     }
 
-    public function fluent($key = null): Fluent
+    /**
+     * Retorna os dados validados como um DTO usando Fluent, com opção de filtrar por chave.
+     *
+     * @param string|null $key
+     * @return Fluent<string, mixed>
+     */
+    public function toFluent(?string $key = null): Fluent
     {
-        return new Fluent([
-            ...$this->validated($key),
-        ]);
+        return new Fluent($this->validated($key));
     }
 
-    public function prepareForValidation()
-    {
-        \Log::info('Route parameters:', $this->route()->parameters());
-        \Log::info('Route name:', [$this->route()->getName()]);
-
-        // If you want to see what user object might be available
-        if ($this->route('user')) {
-            \Log::info('User object:', [$this->route('user')]);
-        }
-    }
 }

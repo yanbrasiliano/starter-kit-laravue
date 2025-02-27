@@ -13,7 +13,9 @@ class ForgotPasswordAction
     /**
      * Send the password reset link to the user.
      *
-     * @param  \Illuminate\Support\Fluent  $params
+     * @template TKey of array-key
+     * @template TValue
+     * @param  Fluent<TKey, TValue>  $params
      * @return void
      */
     public function execute(Fluent $params): void
@@ -43,5 +45,4 @@ class ForgotPasswordAction
             );
         });
     }
-
 }
