@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Authentication;
+namespace Tests\Feature\Api\Role;
 
 use App\Enums\RolesEnum;
 use App\Models\User;

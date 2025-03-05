@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Authentication;
+namespace Tests\Feature\Api\Permission;
 
 use App\Models\User;
 use Illuminate\Http\Response;
