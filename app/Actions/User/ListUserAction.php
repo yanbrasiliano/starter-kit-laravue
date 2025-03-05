@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Actions\User;
 
@@ -17,35 +17,32 @@ final readonly class ListUserAction
      */
     public function execute(Fluent $params): LengthAwarePaginator|Collection
     {
-        $query = User::query();
+        $query = User::query()->with('roles');
 
         $query->select([
             'users.*',
             'roles.name as role',
-            'role_user.role_id as role_id',
         ])
             ->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
             ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id');
 
-        $query->when($params->get('search'), function ($query, $search) {
-            $query->where(function ($query) use ($search) {
-                $query->where('users.id', 'ilike', "%$search%")
-                    ->orWhere('users.name', 'ilike', "%$search%")
-                    ->orWhere('users.email', 'ilike', "%$search%")
-                    ->orWhere('roles.name', 'ilike', "%$search%");
-            });
-        });
+        $query->when($params->get('search'), fn($query, $search) => $query->where(function ($query) use ($search) {
+            $query->where('users.id', 'ilike', "%$search%")
+                ->orWhere('users.name', 'ilike', "%$search%")
+                ->orWhere('users.email', 'ilike', "%$search%")
+                ->orWhere('roles.name', 'ilike', "%$search%");
+        }));
 
-        $query->when($params->get('order'), function ($query, $order) use ($params) {
-            $column = match ($params->get('column', 'id')) {
+        $query->when($params->get('order'), fn($query, $order) => $query->orderBy(
+            match ($params->get('column', 'id')) {
                 'name' => 'users.name',
                 'email' => 'users.email',
                 'role' => 'roles.name',
                 'setSituation' => 'users.active',
                 default => 'users.id',
-            };
-            $query->orderBy($column, $order);
-        });
+            },
+            $order
+        ));
 
         return $params->get('paginated', false)
             ? $query->paginate($params->get('limit', 10))

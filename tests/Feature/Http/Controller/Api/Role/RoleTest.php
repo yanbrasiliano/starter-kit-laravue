@@ -143,7 +143,7 @@ describe('RoleTest', function () {
 
         });
 
-        it('should return 409 when trying to remove roles that have linked users', function () {
+        it('should return 422 when trying to remove roles that have linked users', function () {
             $this->actingAs($this->userAuth);
             $role = $this->roles->first();
             $response = $this->delete(route('roles.delete', $role->id));
