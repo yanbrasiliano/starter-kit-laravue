@@ -4,13 +4,14 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\{Collection, Str};
+use Spatie\Permission\Models\Permission;
 
 /**
  * @property int $id
  * @property string $name
  * @property string $description
  * @property string $slug
- * @property Collection<int, array{id: int, description: string}> $permissions
+ * @property Collection<int, Permission>|null $permissions
  * @property \Illuminate\Support\Carbon $created_at
  * @property string $guard_name
  *
@@ -44,11 +45,11 @@ class RoleResource extends BaseResource
      */
     protected function getPermissionsForSelect(): array
     {
-        return collect($this->permissions)
-            ->map(fn (array $permission) => [
-                'value' => $permission['id'],
-                'label' => $permission['description'],
-            ])
-            ->toArray();
+        return ($this->permissions ?? collect())->map(
+            fn(Permission $permission): array => [
+                'value' => $permission->id,
+                'label' => $permission->description ?? '',
+            ]
+        )->toArray();
     }
 }

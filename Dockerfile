@@ -83,4 +83,5 @@ RUN composer install --no-dev --no-interaction --no-progress --no-suggest --opti
     && npm i \
     && npm i -g npm@latest npx gulp-cli cross-env postcss-cli autoprefixer
 
+RUN git config --global --add safe.directory /var/www/html
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
