@@ -18,7 +18,7 @@ class RoleController extends Controller
     {
         $this->authorize('index', Role::class);
 
-        $roles = app(ListRoleAction::class)->execute($request->fluent()->validated());
+        $roles = app(ListRoleAction::class)->execute($request->fluent());
 
         return RoleResource::collection($roles);
     }
@@ -27,7 +27,7 @@ class RoleController extends Controller
     {
         $this->authorize('store', Role::class);
 
-        $role = app(CreateRoleAction::class)->execute($request->fluent()->validated());
+        $role = app(CreateRoleAction::class)->execute($request->fluent());
 
         return new RoleResource($role);
     }
@@ -45,7 +45,7 @@ class RoleController extends Controller
     {
         $this->authorize('update', $role);
 
-        $updatedRole = app(UpdateRoleAction::class)->execute($role, $request->fluent()->validated());
+        $updatedRole = app(UpdateRoleAction::class)->execute($role, $request->fluent());
 
         return new RoleResource($updatedRole);
     }
@@ -59,19 +59,23 @@ class RoleController extends Controller
 
             if ($deleted) {
                 return response()->json(
-                    ['message' => 'Perfil excluido com sucesso'],
+                    ['message' => 'Perfil excluído com sucesso'],
                     Response::HTTP_NO_CONTENT
                 );
             }
+
+            return response()->json(
+                ['message' => 'Erro ao excluir o perfil.'],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+
         } catch (Throwable $exception) {
             return response()->json(
                 ['message' => $exception->getMessage()],
-                $exception->getCode()
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
-
     }
-
     public function listAll(): JsonResource
     {
         $roles = app(ListAllRoleAction::class)->execute();

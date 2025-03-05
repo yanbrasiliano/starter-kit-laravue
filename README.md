@@ -1,107 +1,96 @@
-# Starter Kit LaraVue
+# LaraVue Starter Kit
 
-Starter Kit Laravue is a powerful project template designed to jumpstart your development process. Combining Laravel and Vue 3, it provides a robust backend and a reactive front end. This kit includes pre-configured authentication, user and permission management, an initial dashboard, and a responsive side menu. With integrated automated testing, this starter kit ensures a solid foundation for building scalable and maintainable web applications.
+The **LaraVue Starter Kit** is an advanced project template that combines **Laravel 12** on the backend and **Vue 3** with **Quasar Framework** on the frontend, providing a solid foundation for scalable and modern web applications. This kit includes pre-configured authentication, user and permission management, an initial dashboard and a responsive side menu. It also supports automated testing and tools for monitoring and debugging.
 
-## Features
+## 📌 **Key Features**
 
-- **Laravel Backend**: Utilizes Laravel, a modern PHP framework, for robust backend logic.
-- **Vue 3 Frontend**: Leverages Vue 3, a progressive JavaScript framework, for building dynamic user interfaces.
-- **Quasar Framework**: Utilizes Quasar, a UI framework, for a polished and responsive user interface.
-- **Authentication**: Pre-configured user authentication out of the box.
-- **User Management**: Easily manage user roles and permissions.
-- **Permission Management**: Simplified management of user permissions.
-- **Role Management**: Streamlined user role management.
-- **Profile Management**: Manage user profiles efficiently.
-- **Password Management**: Securely manage user passwords.
-- **Initial Dashboard**: A starter dashboard to kickstart your project.
-- **Side Menu**: A responsive and easily customizable side menu.
-- **Automated Tests**: Pre-written tests to ensure your application functions correctly.
-- **Logging**: Comprehensive logging for monitoring and debugging.
-- **Larastan**: Automated code quality checks to maintain code quality.
-- **Laravel Debugbar**: A powerful debugging tool for your Laravel applications.
-- **Scramble Documentation**: A documentation generator for your Laravel application.
-- 
-## Stack
+- Laravel 12 - Robust and modern backend with RESTful API support.
+- **⚡ Vue 3 + Quasar** - Progressive and reactive UI for dynamic interfaces.
+- **🔑 Authentication** - Complete and ready-to-use login system.
+- **👤 User Management** - Full control over users, roles and permissions.
+- **Logs and Debugging**- Structured logs with Laravel Debugbar and auditing with Spatie Activity Log.
+- **✅ Automated Testing** - Test coverage using **PestPHP** and **PHPUnit**.
+- **🔍 Larastan** - Advanced static analysis to maintain code quality.
+- **🗂️ Automatic Documentation** - Automatic generation of documentation with **Scramble**.
 
-- **Laravel 11**
-- **PHP 8.4**
-- **Spatie Permission**
-- **Vue 3.4**
-- **Composition API**
-- **Pinia**
+---
 
-## To Do
+## ⚙️ **Technology Stack**
 
-- [ ] Fix errors larastan.
-- [ ] Create policies for roles, users and permissions(revisit what exists today with regard to permissions.js)
-- [ ] Add more tests for roles, users and permissions.
-- [ ] Create screen to display application logs
-- [ ] Arrumar os testes unitários
+- **Laravel 12** | **PHP 8.4**
+- **Vue 3.5** | **Quasar Framework**
+- **Pinia (State Management)**
+- **Spatial Permission**
+- **PestPHP and PHPUnit**
+- **Larastan (PHPStan for Laravel)**
 
+---
 
-## Arquitetura 
+## 🚀 **Project Architecture**
 
-Para minimizar as camadas e melhorar a testabilidade da aplicação adotamos o Action Patern já embutido no Laravel sem necessidade de adicionar no service provider.
+The architecture adopted minimizes complexity and improves testability. Laravel's native **Action Pattern** was used, eliminating the need for custom `Service Providers'.
 
-![Arquitetura base da Aplicação](./arquitetura.svg)
+📌 **Architecture Diagram**  
+Application Architecture](./architecture.svg)
 
-## DUMP do schema e DER do projeto
+---
 
-Esta instalado o postgresql client que permite o comando pg_dump para exportar o schema do projeto
+## 📊 **Database Schema Dump & ER Diagram**
+
+The schema can be exported using the command:
 
 ```bash
-pg_dump --schema-only --file=schema.sql "postgres://$(grep DB_USERNAME .env | cut -d '=' -f2):$(grep DB_PASSWORD .env | cut -d '=' -f2)@$(grep DB_HOST .env | cut -d '=' -f2):$(grep DB_PORT .env | cut -d '=' -f2)/$(grep DB_DATABASE .env | cut -d '=' -f2)"
+pg_dump --schema-only --file=schema.sql “postgres://$(grep DB_USERNAME .env | cut -d ‘=’ -f2):$(grep DB_PASSWORD . env | cut -d '=' -f2)@$(grep DB_HOST .env | cut -d '=' -f2):$(grep DB_PORT .env | cut -d '=' -f2)/$(grep DB_DATABASE .env | cut -d '=' -f2)”
 ```
 
-Comando npm que gera uma pasta dist com o DER
+DER generation:
+
 ```bash
 npx @liam-hq/cli erd build --input $(pwd)/schema.sql --format=postgres
-
-```
-Move os arquivos gerados para a pasta public
-```bash
 mv $(pwd)/dist $(pwd)/public
 ```
-O Diagrama de Entidade/Relação ficará disponível na rota `/der?key=chave_de_acesso`, é preciso preencher a variável de ambiente `APP_DER_KEY`.
 
-Comandos disponíveis com a extensão do php-intl
+The diagram will be accessible at `/der?key=access_key`. To do this, set `APP_DER_KEY` in `.env`.
 
-- `php artisan db:show`
-- `php artisan db:table users`
-- `php artisan db:monitor`
+---
 
-## Conveções sobre commits
+## 🔄 **Commit Conventions**
 
-Usamos conventional commits para descrever os commits com um maior contexto e servirá para adicionar em um futuro **Semantic Version**.
+We use **Conventional Commits** to keep a clean history and facilitate semantic versioning:
 
-- **feat**: Adds a new feature or capability
-- **fix**: Fixes a bug
-- **docs**: Changes documentation, like the README
-- **refactor**: Rewrites or restructures code without changing functionality
-- **test**: Adds or fixes tests
-- **perf**: Improves performance
-- **build**: Affects the build system or external dependencies
-- **ci**: Changes to CI configuration files and scripts
-- **ops**: Affects operational components like infrastructure, deployment, backup, and recovery
-- **chore**: Other changes that don't modify src or test files
-- **revert**: Reverts a previous commit
+- **feat**: Adds a new feature
+- **fix**: Fix a bug
+- **docs**: Updates documentation
+- **refactor**: Refactoring without changing behavior
+- **test**: Addition or correction of tests
+- **perf**: Performance improvements
+- **build**: Changes to the build system
+- **ci**: Changes to the CI/CD configuration
+- **ops**: Infrastructure or deployment changes
+- **chore**: Other changes not related to source code
+- **revert**: Reversal of a previous commit
 
+---
 
-## Convenções sobre código
+## 📝 **Code Standards**
 
-* Variáveis em camelCase e evitar abreviações: 
-    - Exemplo: `$camelCase`
-    - Exemplo: `$q` => `$query` 
-    
-* Nomes de rotas devem seguir o nome do recurso seguidos de um ponto e a ação: 
-    - Exemplo: `name('roles.index')`
-    - Exemplo `name(roles.listAll)`
+- Variables in `camelCase`, no short abbreviations (`$q` → `$query`).
+- Routes follow `{resource}.{action}` (example: `roles.index`).
+- Methods must be descriptive and contain up to 5 words (`getUserProfile()`).
+- Run **PHPStan** for static validation:
+  ```bash
+  ./vendor/bin/phpstan analyze
+  ```
+- Generate API documentation:
+  ```bash
+  php artisan scramble:export
+  ```
 
-* Nomes de métodos breves que sejam descritivos que não supere as 5 palavras: 
-    - Exemplo: `descriptiveMethodForSelect`
+---
 
-* Executar a análise estática de código para melhorar a tipagem do código
-    - `./vendor/bin/phpstan analyse`
+## 📌 **To-Do List**
 
-* Documentação da API
-    - `php artisan scramble:export`
+- [ ] Set phpstan max level(10), currently level is 8.
+- [ ] Create **policies** for users and permissions.
+- [ ] Create screen to display **application logs**.
+- [ ] Fix **unit tests**.

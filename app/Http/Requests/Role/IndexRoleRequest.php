@@ -108,4 +108,5 @@ class IndexRoleRequest extends FormRequest
             'paginated' => 'Paginado',
         ];
     }
+
 }

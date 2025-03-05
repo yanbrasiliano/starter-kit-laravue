@@ -12,14 +12,8 @@ use Illuminate\Support\Fluent;
 final readonly class ListUserAction
 {
     /**
-     * @param \Illuminate\Support\Fluent&object{
-     *     search: string,
-     *     order: string,
-     *     column: string,
-     *     page: int,
-     *     perPage: int
-     * } $params
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Collection
+     * @param Fluent<string, mixed> $params
+     * @return LengthAwarePaginator<User>|Collection<int, User>
      */
     public function execute(Fluent $params): LengthAwarePaginator|Collection
     {
@@ -33,7 +27,7 @@ final readonly class ListUserAction
             ->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
             ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id');
 
-        $query->when($params->search, function ($query, $search) {
+        $query->when($params->get('search'), function ($query, $search) {
             $query->where(function ($query) use ($search) {
                 $query->where('users.id', 'ilike', "%$search%")
                     ->orWhere('users.name', 'ilike', "%$search%")
@@ -42,8 +36,8 @@ final readonly class ListUserAction
             });
         });
 
-        $query->when($params->order, function ($query, $order) use ($params) {
-            $column = match ($params->column) {
+        $query->when($params->get('order'), function ($query, $order) use ($params) {
+            $column = match ($params->get('column', 'id')) {
                 'name' => 'users.name',
                 'email' => 'users.email',
                 'role' => 'roles.name',
@@ -53,6 +47,8 @@ final readonly class ListUserAction
             $query->orderBy($column, $order);
         });
 
-        return $params->paginated ? $query->paginate($params->limit ?? 10) : $query->get();
+        return $params->get('paginated', false)
+            ? $query->paginate($params->get('limit', 10))
+            : $query->get();
     }
 }

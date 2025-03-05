@@ -5,38 +5,32 @@ declare(strict_types = 1);
 namespace App\Actions\User;
 
 use App\Actions\Role\RoleBySlugAction;
-use App\Mail\{SendVerifyEmail};
+use App\Mail\SendVerifyEmail;
 use App\Models\User;
 use App\Traits\LogsActivityTrait;
 use Illuminate\Support\Facades\{DB, Mail};
 use Illuminate\Support\Fluent;
+use Spatie\Permission\Models\Role;
 
 final readonly class CreateExternalUserAction
 {
     use LogsActivityTrait;
+
     /**
-     * @param \Illuminate\Support\Fluent&object{
-     *     name: string,
-     *     email: string,
-     *     password: string,
-     *     cpf: string,
-     *     active: bool,
-     *     role: string
-     * } $params
-     * @return \App\Models\User
+     * @param Fluent<string, mixed> $params
      */
-    public function execute(Fluent $params): ?User
+    public function execute(Fluent $params): User
     {
-        return DB::transaction(function () use ($params) {
+        return DB::transaction(function () use ($params): User {
             $user = User::create([
-                'name' => $params->name,
-                'email' => $params->email,
-                'password' => $params->password,
-                'cpf' => $params->cpf,
-                'active' => $params->active ? 'true' : 'false',
+                'name' => $params->get('name'),
+                'email' => $params->get('email'),
+                'password' => $params->get('password'),
+                'cpf' => $params->get('cpf'),
+                'active' => $params->get('active', false) ? 'true' : 'false',
             ]);
 
-            $role = app(RoleBySlugAction::class)->execute($params->role);
+            $role = app(RoleBySlugAction::class)->execute($params->get('role'));
 
             $user->syncRoles([$role->id]);
 
@@ -50,13 +44,16 @@ final readonly class CreateExternalUserAction
 
     private function writeOnLog(User $user): void
     {
+        /** @var Role|null $role */
+        $role = $user->roles()->first();
+
         $this->logGeneralActivity(
             activityName: 'Gestão de Usuários',
             model: $user,
             description: sprintf(
                 'Criou um novo usuário "%s" com %d permissões',
                 $user->email,
-                $user->roles()->first()->permissions()->count()
+                $role?->permissions()->count() ?? 0
             ),
             event: 'create'
         );

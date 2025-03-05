@@ -12,27 +12,23 @@ use Spatie\Permission\Models\Role;
 final readonly class CreateRoleAction
 {
     use LogsActivityTrait;
+
     /**
-     * @param \Illuminate\Support\Fluent&object{
-     *     name: string,
-     *     guard: string,
-     *     description: string,
-     *     slug: string,
-     *     permissions: array
-     * } $params
-     * @return Spatie\Permission\Models\Role|null
+     * @param Fluent<string, mixed> $params
+     * @return Role
      */
-    public function execute(Fluent $params): ?Role
+    public function execute(Fluent $params): Role
     {
-        return DB::transaction(function () use ($params) {
+        return DB::transaction(function () use ($params): Role {
+            /** @var Role $role */
             $role = Role::create([
-                'name' => $params->name,
+                'name' => $params->get('name'),
                 'guard_name' => 'web',
-                'slug' => str()->slug($params->name),
-                'description' => $params->description,
+                'slug' => str()->slug($params->get('name')),
+                'description' => $params->get('description'),
             ]);
 
-            $role->syncPermissions($params->permissions);
+            $role->syncPermissions($params->get('permissions', []));
 
             $this->writeOnLog($role); // TODO: Move to Event or Log
 

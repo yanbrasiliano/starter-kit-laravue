@@ -9,36 +9,30 @@ use App\Models\User;
 use App\Traits\LogsActivityTrait;
 use Illuminate\Support\Facades\{DB, Mail};
 use Illuminate\Support\Fluent;
+use Spatie\Permission\Models\Role;
 
 final readonly class CreateUserAction
 {
     use LogsActivityTrait;
-    /**
-     * @param \Illuminate\Support\Fluent&object{
-     *     name: string,
-     *     guard: string,
-     *     description: string,
-     *     slug: string,
-     *     permissions: array
-     * } $params
-     * @return \App\Models\User|null
-     */
-    public function execute(Fluent $params): ?User
-    {
-        return DB::transaction(function () use ($params) {
 
+    /**
+     * @param Fluent<string, mixed> $params
+     */
+    public function execute(Fluent $params): User
+    {
+        return DB::transaction(function () use ($params): User {
             $user = User::create([
-                'name' => $params->name,
-                'email' => $params->email,
-                'password' => $params->password,
-                'cpf' => $params->cpf,
-                'active' => $params->active ? 'true' : 'false',
+                'name' => $params->get('name'),
+                'email' => $params->get('email'),
+                'password' => $params->get('password'),
+                'cpf' => $params->get('cpf'),
+                'active' => $params->get('active', false) ? 'true' : 'false',
             ]);
 
-            $user->syncRoles([$params->role_id]);
+            $user->syncRoles([$params->get('role_id')]);
 
-            if ($params->send_random_password) {
-                Mail::to($user)->queue(new SendRandomPassword($user, $params->password));
+            if ($params->get('send_random_password', false)) {
+                Mail::to($user)->queue(new SendRandomPassword($user, $params->get('password')));
             }
 
             $this->writeOnLog($user); // TODO: Move to Event or Log
@@ -49,10 +43,13 @@ final readonly class CreateUserAction
 
     private function writeOnLog(User $user): void
     {
+        /** @var Role|null $role */
+        $role = $user->roles()->first();
+
         $description = sprintf(
-            'Criou um novo usuário "%s" com perfil %d',
+            'Criou um novo usuário "%s" com perfil %s',
             $user->name,
-            $user->roles->first()->name
+            $role->name ?? 'Nenhum perfil associado'
         );
 
         $this->logGeneralActivity(
@@ -62,4 +59,5 @@ final readonly class CreateUserAction
             event: 'create'
         );
     }
+
 }

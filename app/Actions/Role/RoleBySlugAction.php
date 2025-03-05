@@ -4,7 +4,8 @@ declare(strict_types = 1);
 
 namespace App\Actions\Role;
 
-use Spatie\Permission\Models\Role;
+use Illuminate\Database\Eloquent\Collection;
+use Spatie\Permission\Models\{Permission, Role};
 
 final readonly class RoleBySlugAction
 {
@@ -15,10 +16,16 @@ final readonly class RoleBySlugAction
         if ($withPermissions) {
             $role->load('permissions');
 
-            $role->setAttribute('mapped_permissions', $role->permissions->map(fn ($permission) => [
-                'value' => $permission->id,
-                'label' => $permission->description,
-            ]));
+            /** @var Collection<int, Permission> $permissions */
+            $permissions = $role->permissions;
+
+            $role->setAttribute(
+                'mapped_permissions',
+                $permissions->map(fn (Permission $permission): array => [
+                    'value' => $permission->id,
+                    'label' => $permission->getAttribute('description'),
+                ])->all()
+            );
         }
 
         return $role;

@@ -13,9 +13,13 @@ final readonly class UpdateUserAction
 {
     use LogsActivityTrait;
 
-    public function execute(Fluent $params, mixed $id): ?User
+    /**
+     * @param Fluent<string, mixed> $params
+     */
+    public function execute(Fluent $params, int|string $id): User
     {
-        return DB::transaction(function () use ($id, $params) {
+        return DB::transaction(function () use ($id, $params): User {
+            /** @var User $user */
             $user = User::findOrFail($id);
 
             $fillableParams = array_intersect_key(
@@ -24,12 +28,11 @@ final readonly class UpdateUserAction
             );
 
             $user->update($fillableParams);
-            $user->syncRoles([$params->role_id]);
+            $user->syncRoles([$params->get('role_id')]);
 
             $this->logUpdateActivity('Gestão de Perfis', $user, $user->getDirty(), 'Atualizou um perfil');
 
             return $user->load('roles');
         });
     }
-
 }

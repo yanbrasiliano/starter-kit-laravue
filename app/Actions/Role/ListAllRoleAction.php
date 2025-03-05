@@ -9,6 +9,9 @@ use Spatie\Permission\Models\Role;
 
 final readonly class ListAllRoleAction
 {
+    /**
+     * @return Collection<int, Role>
+     */
     public function execute(): Collection
     {
         return Role::with('permissions')->get();
