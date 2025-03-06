@@ -54,22 +54,40 @@ The diagram will be accessible at `/der?key=access_key`. To do this, set `APP_DE
 
 ---
 
+
 ## 🔄 **Commit Conventions**
 
-We use **Conventional Commits** to keep a clean history and facilitate semantic versioning:
+We follow the **Conventional Commits** specification to maintain a clean commit history and facilitate semantic versioning. Every commit message should follow the structure:
 
-- **feat**: Adds a new feature
-- **fix**: Fix a bug
-- **docs**: Updates documentation
-- **refactor**: Refactoring without changing behavior
-- **test**: Addition or correction of tests
-- **perf**: Performance improvements
-- **build**: Changes to the build system
-- **ci**: Changes to the CI/CD configuration
-- **ops**: Infrastructure or deployment changes
-- **chore**: Other changes not related to source code
-- **revert**: Reversal of a previous commit
+```
+<type>: <Jira task ID> - <description of what was done>
+```
 
+Where:
+- **type**: Represents the type of change made. Examples include adding a feature, fixing a bug, etc.
+- **Jira task ID**: The unique ID associated with the Jira task or activity related to the commit. This allows you to track which task the commit is addressing.
+- **description of what was done**: A concise, clear explanation of what was changed, added, or fixed in the code.
+
+### Commit Types:
+
+- **feat**: Introduces a new feature to the application.
+- **fix**: Fixes an issue or bug in the code.
+- **docs**: Updates or adds documentation.
+- **refactor**: Code changes that do not alter the functionality but improve the structure or readability.
+- **test**: Adds or fixes tests to ensure the correctness of the code.
+- **perf**: Performance improvements that make the application run more efficiently.
+- **build**: Changes that affect the build process or tooling (e.g., npm, Docker).
+- **ci**: Changes to the Continuous Integration or Continuous Deployment setup.
+- **ops**: Modifications related to infrastructure, deployment, or operations.
+- **chore**: Miscellaneous changes that don't fit into any of the above categories (e.g., updating dependencies).
+- **revert**: Reverts a previous commit or set of changes.
+
+### Benefits of Following This Convention:
+- **Consistency**: The use of a standard format makes it easier for developers to understand commit history.
+- **Traceability**: Linking each commit to a Jira task ID allows for better tracking and traceability.
+- **Automation**: Enables the use of tools like semantic versioning and automatic changelog generation.
+
+Following this convention will help ensure that commits are clear, well-documented, and directly tied to specific tasks, making it easier to understand the context of each change.
 ---
 
 ## 📝 **Code Standards**
