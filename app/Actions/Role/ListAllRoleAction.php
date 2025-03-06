@@ -10,7 +10,7 @@ use Spatie\Permission\Models\Role;
 final readonly class ListAllRoleAction
 {
     /**
-     * @phpstan-return Collection<int, Role>
+     * @return Collection<int, Role>
      */
     public function execute(): Collection
     {

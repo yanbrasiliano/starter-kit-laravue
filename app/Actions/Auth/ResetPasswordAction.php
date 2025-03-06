@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Actions\Auth;
 
 use App\Models\User;
-use Illuminate\Support\Facades\{Password};
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Fluent;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -12,25 +14,25 @@ class ResetPasswordAction
     /**
      * Send the password reset link to the user.
      *
-     * @param  \Illuminate\Support\Fluent  $params
-     * @return void
+     * @param  Fluent<string, mixed> $params
      */
     public function execute(Fluent $params): void
     {
         try {
             $status = Password::reset(
                 $params->toArray(),
-                function ($user, string $password) {
-                    User::findOrFail($user->id)->update(['password' => $password]);
+                function (User $user, string $password): void {
+                    $user->update(['password' => $password]);
                 }
             );
 
-            if ($status != Password::PASSWORD_RESET) {
-                throw new \Exception(
+            throw_if(
+                $status !== Password::PASSWORD_RESET,
+                new \Exception(
                     'Não foi possível realizar a troca de senha, por favor tente novamente mais tarde.',
                     Response::HTTP_BAD_REQUEST
-                );
-            }
+                )
+            );
         } catch (\Throwable $throwable) {
             throw $throwable;
         }

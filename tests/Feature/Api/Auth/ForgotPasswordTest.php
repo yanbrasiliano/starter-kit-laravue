@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Http\Controller\Api\Auth;
+namespace Tests\Feature\Api\Auth;
 
 use App\Enums\RolesEnum;
 use App\Mail\SendForgetPasswordMail;

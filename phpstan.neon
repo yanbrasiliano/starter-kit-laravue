@@ -5,7 +5,7 @@ parameters:
     treatPhpDocTypesAsCertain: false
     paths:
         - app/
-    level: 7
+    level: 8
     ignoreErrors:
         - '#Class App\\Models\\User uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types: TFactory#'
         - '#Class App\\Models\\DeleteReason uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types: TFactory#'

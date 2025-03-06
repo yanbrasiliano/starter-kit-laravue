@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Authentication;
+namespace Tests\Feature\Api\Role;
 
 use App\Enums\RolesEnum;
 use App\Models\User;
@@ -19,7 +19,6 @@ describe('RoleTest', function () {
         it('should return a 200 status code and proper JSON structure', function () {
             $this->actingAs($this->userAuth);
             $response = $this->get(route('roles.list'));
-
             $response->assertStatus(Response::HTTP_OK);
             $response->assertJsonStructure([
                 'data',
@@ -101,7 +100,7 @@ describe('RoleTest', function () {
                     Permission::all()->first()->id,
                 ],
             ])
-            ->assertStatus(Response::HTTP_OK);
+                ->assertStatus(Response::HTTP_OK);
 
             $response->assertJsonStructure([
                 'data' => [
@@ -144,7 +143,7 @@ describe('RoleTest', function () {
 
         });
 
-        it('should return 409 when trying to remove roles that have linked users', function () {
+        it('should return 422 when trying to remove roles that have linked users', function () {
             $this->actingAs($this->userAuth);
             $role = $this->roles->first();
             $response = $this->delete(route('roles.delete', $role->id));

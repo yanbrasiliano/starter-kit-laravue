@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Actions\Auth;
 
+use App\Models\User;
 use Illuminate\Support\Facades\{Auth, Session};
 
 final readonly class LogoutAction
@@ -13,10 +14,8 @@ final readonly class LogoutAction
      */
     public function execute(): array
     {
-        /**
-         * @var \App\Models\User $user
-         */
-        $user = auth()->user();
+        /** @var User|null $user */
+        $user = Auth::guard('web')->user();
 
         if (Auth::guard('web')->check()) {
             Auth::guard('web')->logout();

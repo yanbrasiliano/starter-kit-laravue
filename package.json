@@ -21,7 +21,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-vue": "^9.21.1",
     "husky": "^9.0.11",
-    "laravel-vite-plugin": "^1.0.1",
+    "laravel-vite-plugin": "^0.1.0",
     "sass-embedded": "^1.83.4",
     "vite": "^5.1.3",
     "vite-plugin-eslint": "^1.8.1"
@@ -52,5 +52,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "resolutions": {
+    "esbuild": "^0.25.0"
   }
 }

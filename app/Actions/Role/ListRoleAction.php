@@ -11,21 +11,17 @@ use Spatie\Permission\Models\Role;
 
 final readonly class ListRoleAction
 {
+    /**
+     * @param Fluent<string, mixed> $params
+     * @return LengthAwarePaginator<Role>|Collection<int, Role>
+     */
     public function execute(Fluent $params): LengthAwarePaginator|Collection
     {
         return Role::query()
-        ->with(['permissions' => function ($query) {
-            $query->select(['id', 'description']);
-        }])
-        ->when($params->order, function ($query) use ($params) {
-            $column = $params->column ?? 'id';
-
-            return $query->orderBy($column, $params->order);
-        })
-        ->when($params->paginated, function ($query) use ($params) {
-            return $query->paginate($params->limit ?? 10);
-        }, function ($query) {
-            return $query->get();
-        });
+            ->with(['permissions' => fn ($query) => $query->select(['id', 'description'])])
+            ->when($params->get('order'), function ($query) use ($params) {
+                return $query->orderBy($params->get('column', 'id'), $params->get('order', 'asc'));
+            })
+            ->when($params->get('paginated', false), fn ($query) => $query->paginate($params->get('limit', 10)), fn ($query) => $query->get());
     }
 }

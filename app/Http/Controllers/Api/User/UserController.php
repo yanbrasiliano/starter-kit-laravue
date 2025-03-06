@@ -36,7 +36,13 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request): JsonResource
     {
-        $updatedUser = app(UpdateUserAction::class)->execute(params: $request->fluent(), id: request()->route('id'));
+        /** @var int|string $id */
+        $id = request()->route('id');
+
+        $updatedUser = app(UpdateUserAction::class)->execute(
+            params: $request->fluent(),
+            id: (int) $id
+        );
 
         return new UserResource($updatedUser);
     }
@@ -46,15 +52,21 @@ class UserController extends Controller
         try {
             $response = app(DeleteUserAction::class)->execute(params: $request->fluent(), user: $user);
 
-            if ($response) {
+            if (!$response) {
                 return response()->json([
-                    'message' => 'Usuário deletado com sucesso!',
-                ], Response::HTTP_NO_CONTENT);
+                    'message' => 'Erro ao deletar usuário. Ação não concluída.',
+                ], Response::HTTP_BAD_REQUEST);
             }
+
+            return response()->json([
+                'message' => 'Usuário deletado com sucesso!',
+            ], Response::HTTP_NO_CONTENT);
+
         } catch (\Throwable $exception) {
             return response()->json([
-                'message' => $exception->getMessage(),
-            ], $exception->getCode());
+                'message' => 'Erro ao deletar usuário.',
+                'error' => $exception->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
