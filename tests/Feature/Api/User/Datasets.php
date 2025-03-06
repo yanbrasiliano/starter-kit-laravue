@@ -40,7 +40,6 @@ dataset('createUserJsonValidStructure', [
             'active',
             'created_at',
             'updated_at',
-            'roles',
         ],
     ],
 ]);

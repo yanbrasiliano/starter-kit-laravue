@@ -16,14 +16,14 @@ final readonly class MyProfileAction
         /** @var User|null $user */
         $user = auth()->user();
 
-        return $user
-            ? array_merge(
-                $user->only(['name', 'email']),
-                [
-                    'permissions' => $user->getAllPermissions()->toArray(),
-                    'roles' => $user->roles()->get(['id', 'name'])->toArray(),
-                ]
-            )
-            : [];
+        $userData = $user ? [
+            ...$user->only(['name', 'email']),
+
+            'permissions' => $user->getAllPermissions()->toArray(),
+            'roles' => $user->roles()->get(['id', 'name'])->toArray(),
+        ]
+        : [];
+
+        return $userData;
     }
 }
