@@ -6,6 +6,9 @@ namespace App\Actions\Auth;
 
 final readonly class MyProfileAction
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function execute(): array
     {
         /**
@@ -13,13 +16,11 @@ final readonly class MyProfileAction
          */
         $user = auth()->user();
 
-        return array_merge(
-            $user->only('name', 'email'),
-            [
-                'permissions' => $user->getAllPermissions()->toArray(),
-                'roles' => $user->roles()->get(['id', 'name'])->toArray(),
-
-            ]
-        );
+        return [
+            'name' => $user->name,
+            'email' => $user->email,
+            'permissions' => $user->getAllPermissions()->toArray(),
+            'roles' => $user->roles()->get(['id', 'name'])->toArray(),
+        ];
     }
 }

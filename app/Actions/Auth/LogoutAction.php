@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\{Auth, Session};
 
 final readonly class LogoutAction
 {
+    /**
+     * @return array<string, string>
+     */
     public function execute(): array
     {
         /**
