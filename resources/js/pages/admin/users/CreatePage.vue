@@ -30,7 +30,7 @@ const loadRoles = async () => {
   }
 };
 
-onMounted(()=>{
+onMounted(() => {
   userStore.clearStore();
   loadRoles();
 });

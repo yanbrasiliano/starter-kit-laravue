@@ -10,7 +10,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 class RoleController extends Controller
 {

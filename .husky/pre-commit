@@ -49,6 +49,7 @@ run_tests() {
     }
 }
 
+# Ajuste para rodar o formatter somente nos arquivos staged
 for file in $staged_files; do
     if [ ! -f "$file" ]; then
         echo "⚠️ Arquivo $file não encontrado. Pulando."
@@ -56,8 +57,12 @@ for file in $staged_files; do
     fi
 
     case "$file" in
-    *.php) run_formatter "./vendor/bin/pint" "$file" ;;
-    *.js | *.vue) run_formatter "npm run lint" "$file" ;;
+    *.php)
+        run_formatter "./vendor/bin/pint" "$file"
+        ;;
+    *.js | *.vue)
+        run_formatter "npm run lint" "$file"
+        ;;
     esac
 done
 

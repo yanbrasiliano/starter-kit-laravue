@@ -1,5 +1,5 @@
 <script setup>
-import { useRouter } from "vue-router";
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
@@ -19,15 +19,11 @@ defineProps({
           Voltar
         </q-btn>
       </q-card-section>
-      <q-img
-        class="card__image q-mt-md"
-        :src="errorImage"
-        fit="contain"
-      />
+      <q-img class="card__image q-mt-md" :src="errorImage" fit="contain" />
     </q-card>
   </div>
 </template>
 
 <style lang="css">
-@import "@css/errors/errors-style.css";
+@import '@css/errors/errors-style.css';
 </style>

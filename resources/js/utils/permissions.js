@@ -14,7 +14,4 @@ const USER_PERMISSION = {
   DELETE: 'users.delete',
 };
 
-export {
-  USER_PERMISSION,
-  ROLE_PERMISSION,
-};
+export { USER_PERMISSION, ROLE_PERMISSION };

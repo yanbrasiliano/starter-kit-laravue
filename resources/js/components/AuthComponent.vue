@@ -38,7 +38,9 @@ const { textPage } = useAuthenticateConfigPage();
 
           <div class="q-mt-xs">
             <slot></slot>
-            <FooterAuth :text-page="textPage[typePage]" :copyright="textPage['copyright']" />
+            <FooterAuth
+              :text-page="textPage[typePage]"
+              :copyright="textPage['copyright']" />
           </div>
         </div>
       </div>
