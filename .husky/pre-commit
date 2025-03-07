@@ -49,7 +49,6 @@ run_tests() {
     }
 }
 
-# Ajuste para rodar o formatter somente nos arquivos staged
 for file in $staged_files; do
     if [ ! -f "$file" ]; then
         echo "⚠️ Arquivo $file não encontrado. Pulando."
