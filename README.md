@@ -35,6 +35,13 @@ Application Architecture](./architecture.svg)
 
 ---
 
+## GETTING STARTING UP THE APP
+
+`docker compose up -d --build` or add `--force-recreate` to recreate the container 
+
+`docker exec -it starterkit-app bash` => `npm run dev` or `php artisan test`
+
+
 ## 📊 **Database Schema Dump & ER Diagram**
 
 The schema can be exported using the command:

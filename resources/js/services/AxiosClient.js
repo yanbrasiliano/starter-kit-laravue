@@ -9,7 +9,7 @@ axios.defaults.withXSRFToken = true;
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  timeout: 1000000,
+  timeout: 10000,
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
     'Content-Type': 'application/json',
