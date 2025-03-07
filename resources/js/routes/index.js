@@ -1,8 +1,8 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import routes from './routes';
-import axios from 'axios';
 import useAuthStore from '@/store/useAuthStore';
 import { hasPermission } from '@utils/hasPermission';
+import axios from 'axios';
+import { createRouter, createWebHistory } from 'vue-router';
+import routes from './routes';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -17,24 +17,31 @@ const handleRouteProtection = (to, from, next) => {
   const authStore = useAuthStore();
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const isUserLoggedIn = authStore.isUserLoggedIn;
-  const hasPermissionUser = to.matched.some(
-    (record) =>
+
+  const hasPermissionUser = to.matched.some((record) => {
+    const roles = record.meta?.roles;
+    return (
       (record.meta.requiresAuth &&
-        record.meta.roles &&
-        hasPermission(record.meta.roles)) ||
-      (record.meta.requiresAuth && !record?.meta?.roles),
-  );
+        roles &&
+        Array.isArray(roles) &&
+        hasPermission(roles)) ||
+      (record.meta.requiresAuth && !roles)
+    );
+  });
 
-  const routeActions = {
-    true_false_false: () => next({ name: 'login' }),
-    false_true: () => next({ name: 'notFound' }),
-    true_true_false: () => next({ name: 'accessDenied' }),
-    default: () => next(),
-  };
+  if (requiresAuth && !isUserLoggedIn && !hasPermissionUser) {
+    return next({ name: 'login' }); // Usuário não logado e sem permissão
+  }
 
-  const actionKey = `${requiresAuth}_${isUserLoggedIn}_${hasPermissionUser}`;
-  const action = routeActions[actionKey] || routeActions['default'];
-  action();
+  if (!requiresAuth && isUserLoggedIn) {
+    return next({ name: 'notFound' }); // Usuário logado, mas não precisa de autenticação
+  }
+
+  if (requiresAuth && isUserLoggedIn && !hasPermissionUser) {
+    return next({ name: 'accessDenied' }); // Usuário logado, mas não tem permissão
+  }
+
+  return next();
 };
 
 router.beforeEach(async (to, from, next) => {

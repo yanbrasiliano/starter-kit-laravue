@@ -1,7 +1,5 @@
 import { ref, watch } from 'vue';
-import {
-  ldapRegister,
-} from '@/services/LdapLoginService';
+import { ldapRegister } from '@/services/LdapLoginService';
 import { Notify } from 'quasar';
 import { useRouter } from 'vue-router';
 
@@ -43,7 +41,6 @@ export function useRegisterForm(props, emit) {
   };
 
   const onSubmit = async () => {
-
     isLoading.value = true;
     try {
       const payload = { ...formData.value };
@@ -87,7 +84,7 @@ export function useRegisterForm(props, emit) {
   watch(
     () => formData.value.registration,
     () => {
-       return;
+      return;
     },
   );
 

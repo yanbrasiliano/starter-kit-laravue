@@ -9,14 +9,8 @@ const props = defineProps({
 
 const emit = defineEmits(['send']);
 
-const {
-  formData,
-  showFields,
-  show,
-  isLoading,
-  isParecerista,
-  onSubmit,
-} = useRegisterForm(props, emit);
+const { formData, showFields, show, isLoading, isParecerista, onSubmit } =
+  useRegisterForm(props, emit);
 </script>
 <template>
   <q-form class="form-register--padding" @submit.prevent="onSubmit">

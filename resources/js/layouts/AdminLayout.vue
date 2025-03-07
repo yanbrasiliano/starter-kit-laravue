@@ -24,7 +24,6 @@ function handleDrawer() {
   icon.value = drawer.value ? 'chevron_left' : 'chevron_right';
   offset.value = drawer.value ? [-8, 2] : [10, 2];
 }
-
 </script>
 
 <template>
@@ -36,7 +35,7 @@ function handleDrawer() {
           {{ route?.meta?.module }}
         </span>
       </div>
-      
+
       <q-toolbar-title></q-toolbar-title>
     </AdminHeaderLayout>
 
@@ -58,20 +57,9 @@ function handleDrawer() {
       <q-page padding class="q-mt-md">
         <router-view></router-view>
       </q-page>
-      
     </q-page-container>
-    <q-page-sticky 
-    v-show="miniState"
-    position="top-left" 
-    :offset="offset"
-    class="z-max">
-      <q-btn
-        color="secondary"
-        round
-        dense
-        size="sm"
-        :icon="icon"
-        @click="handleDrawer" />
+    <q-page-sticky v-show="miniState" position="top-left" :offset="offset" class="z-max">
+      <q-btn color="secondary" round dense size="sm" :icon="icon" @click="handleDrawer" />
     </q-page-sticky>
   </q-layout>
 </template>
