@@ -8,7 +8,7 @@ use App\Mail\AccountDeletionNotification;
 use App\Models\{DeleteReason, User};
 use Illuminate\Support\Facades\{DB, Mail};
 
-class AddDeleteReasonAction
+final readonly class AddDeleteReasonAction
 {
     public function execute(User $user, string $reason): void
     {

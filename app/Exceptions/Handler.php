@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Exceptions;
 
 use Illuminate\Auth\AuthenticationException;
@@ -19,7 +21,7 @@ class Handler extends ExceptionHandler
     {
     }
 
-    public function render($request, Throwable $exception)
+    public function render($request, Throwable $exception): mixed
     {
         $status = match (true) {
             $exception instanceof InvalidCredentialsException => (int) ($exception->getCode() ?: Response::HTTP_UNAUTHORIZED),

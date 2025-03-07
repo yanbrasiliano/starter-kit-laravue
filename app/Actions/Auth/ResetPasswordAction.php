@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Fluent;
 use Symfony\Component\HttpFoundation\Response;
 
-class ResetPasswordAction
+final readonly class ResetPasswordAction
 {
     /**
      * Send the password reset link to the user.

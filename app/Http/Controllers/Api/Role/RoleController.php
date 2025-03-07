@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Http\Controllers\Api\Role;
 
 use App\Actions\Role\{CreateRoleAction, DeleteRoleAction, ListAllRoleAction, ListRoleAction, ShowRoleAction, UpdateRoleAction};
@@ -10,7 +12,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 class RoleController extends Controller
 {

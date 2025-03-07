@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Http\Requests\User;
 
 use App\Enums\StatusEnum;
@@ -39,7 +41,7 @@ class UpdateUserRequest extends FormRequest
             'name' => ['required', 'string'],
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->route('id'))],
             'active' => ['required', Rule::in(StatusEnum::ENABLED, StatusEnum::DISABLED)],
-            'role_id' => ['required', 'exists:roles,id'],
+            'role_id' => ['sometimes', 'required', 'exists:roles,id'],
             'notify_status' => ['boolean'],
         ];
     }

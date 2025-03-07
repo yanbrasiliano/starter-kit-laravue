@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Mail;
 
 use App\Models\User;
@@ -37,7 +39,7 @@ class SendForgetPasswordMail extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): mixed
     {
         return $this->markdown('emails.password', [
             'name' => $this->user->name,

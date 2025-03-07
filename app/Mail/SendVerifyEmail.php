@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Mail;
 
 use App\Models\User;
@@ -38,7 +40,7 @@ class SendVerifyEmail extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): mixed
     {
         return $this->markdown('emails.sendVerifyEmail', [
             'user' => $this->user,

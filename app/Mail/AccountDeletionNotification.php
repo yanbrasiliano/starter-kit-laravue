@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Mail;
 
 use App\Models\User;
@@ -39,7 +41,7 @@ class AccountDeletionNotification extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): mixed
     {
         return $this->subject('Account deletion in the SP 1.0 System')
             ->view('emails.accountDeletion');

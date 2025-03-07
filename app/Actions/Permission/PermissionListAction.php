@@ -7,7 +7,7 @@ namespace App\Actions\Permission;
 use Illuminate\Database\Eloquent\Collection;
 use Spatie\Permission\Models\Permission;
 
-class PermissionListAction
+final readonly class PermissionListAction
 {
     /**
      * @return Collection<int, Permission>

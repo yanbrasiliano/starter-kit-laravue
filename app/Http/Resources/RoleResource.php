@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -46,7 +48,7 @@ class RoleResource extends BaseResource
     protected function getPermissionsForSelect(): array
     {
         return ($this->permissions ?? collect())->map(
-            fn(Permission $permission): array => [
+            fn (Permission $permission): array => [
                 'value' => $permission->id,
                 'label' => $permission->description ?? '',
             ]

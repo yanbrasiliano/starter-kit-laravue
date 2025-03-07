@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Actions\Auth;
 
 use App\Enums\RolesEnum;
@@ -8,7 +10,7 @@ use Illuminate\Support\Facades\{DB, Mail, Password};
 use Illuminate\Support\Fluent;
 use Symfony\Component\HttpFoundation\Response;
 
-class ForgotPasswordAction
+final readonly class ForgotPasswordAction
 {
     /**
      * Send the password reset link to the user.
