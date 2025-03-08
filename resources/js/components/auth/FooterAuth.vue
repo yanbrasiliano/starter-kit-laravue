@@ -7,7 +7,7 @@ const urlSiteUefs = 'https://www.uefs.br';
 
 defineProps({
   textPage: Object,
-  copyright: String
+  copyright: String,
 });
 </script>
 

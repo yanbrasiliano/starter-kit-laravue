@@ -32,11 +32,14 @@ function createUsers(int $quantity = 20): User | Collection
     return User::factory($quantity)->create();
 }
 
-function createUser(array $attrs = [])
+function createUser(array $attributes = [])
 {
-    return count($attrs) >= 1 ?
-      User::factory()->create($attrs) :
-      User::factory()->create();
+    $user = User::factory()->create(array_merge([
+        'name' => fake()->name(),
+        'email' => fake()->email(),
+    ], $attributes));
+
+    return $user;
 }
 
 function createRoles()

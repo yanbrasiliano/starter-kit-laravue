@@ -56,8 +56,12 @@ for file in $staged_files; do
     fi
 
     case "$file" in
-    *.php) run_formatter "./vendor/bin/pint" "$file" ;;
-    *.js | *.vue) run_formatter "npm run lint" "$file" ;;
+    *.php)
+        run_formatter "./vendor/bin/pint" "$file"
+        ;;
+    *.js | *.vue)
+        run_formatter "npm run lint" "$file"
+        ;;
     esac
 done
 
@@ -65,14 +69,16 @@ if [ "$current_branch" != "main" ]; then
     run_phpstan
 fi
 
-if [ "$current_branch" = "hml" ]; then
+case "$current_branch" in
+hml)
     run_tests ""
+    ;;
+main)
     exit 0
-fi
-
-if [ "$current_branch" = "dev" ]; then
+    ;;
+*)
     run_tests "--coverage"
-    exit 0
-fi
+    ;;
+esac
 
 echo "✅ Pre-commit hook finalizado com sucesso!"

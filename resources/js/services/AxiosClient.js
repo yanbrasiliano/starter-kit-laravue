@@ -1,15 +1,15 @@
+import router from '@/routes';
+import useAuthStore from '@/store/useAuthStore';
+import notify from '@/utils/notify';
 import axios from 'axios';
 import { Loading } from 'quasar';
-import useAuthStore from '@/store/useAuthStore';
-import router from '@/routes';
-import notify from '@/utils/notify';
 
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  timeout: 1000000,
+  timeout: 10000,
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
     'Content-Type': 'application/json',
@@ -34,13 +34,11 @@ http.interceptors.response.use(
     }
 
     let { status, data } = error.response;
-    if (data instanceof Blob) {
-      data = JSON.parse(await data.text());
-    }
 
-    const message = data?.message || 'Erro inesperado';
+    const isValidData = data && typeof data === 'object' && !(data instanceof Blob);
+    const message = isValidData ? data?.message || 'Erro inesperado' : 'Erro inesperado';
 
-    handleErrorResponse(status, message, data, error.config);
+    handleErrorResponse(status, message, isValidData ? data : {}, error.config);
 
     return Promise.reject(error);
   },
@@ -58,80 +56,82 @@ function handleErrorResponse(status, message, data, config) {
     router.push({ name: 'login' });
   };
 
-  const errorHandlers = {
-    401: () => {
+  // Trata cada status de erro explicitamente aqui e redirecionar conforme necessário.
+  switch (status) {
+    case 401:
       notify(message, 'negative');
-
-      const actions = {
-        true: () => {},
-        false: () => logoutAndRedirect(),
-      };
-
-      actions[
+      const isInvalidCredentials =
         isAuthRoute ||
-          message === 'Usuário ou senha inválidos' ||
-          message ===
-            'O domínio não é válido. Os domínios válidos são @uefs.br, @uefs.local e @discente.uefs.br.'
-      ]();
-    },
-    403: () => {
+        message === 'Usuário ou senha inválidos' ||
+        message ===
+          'O domínio não é válido. Os domínios válidos são @uefs.br, @uefs.local e @discente.uefs.br.';
+      if (!isInvalidCredentials) logoutAndRedirect();
+      break;
+
+    case 403:
       const errors = [
         'Usuário não ativado',
         'Usuário inativo',
         'Usuário não é servidor UEFS',
       ];
-      const errorMessage = data.error || data.errors;
-      return errors.includes(errorMessage) ? notify(message, 'negative') : router.go(-1);
-    },
-    404: () => {
-      const errorMessage = data?.message.includes('No query results for model')
+      const errorMessage = data?.error || data?.errors;
+      if (errors.includes(errorMessage)) {
+        notify(message, 'negative');
+      }
+      router.go(-1);
+
+      break;
+
+    case 404:
+      const errorMessage404 = data?.message.includes('No query results for model')
         ? 'Nenhum registro foi encontrado'
         : data?.message;
-      notify(errorMessage, 'negative');
-    },
-    408: () => {
+      notify(errorMessage404, 'negative');
+      break;
+
+    case 408:
       notify('Tempo de solicitação esgotado', 'negative');
       window.location.reload();
-    },
-    419: () => {
+      break;
+
+    case 419:
       notify(
         'Sessão expirada. Por favor, atualize a página e tente novamente.',
         'negative',
       );
       router.replace('/');
-    },
-    422: () => {
-      const errors = data?.errors || {};
-      const messagesErrors = Object.values(errors);
-      for (const index in messagesErrors) {
-        if (index < 8) notify(messagesErrors[index].toString(), 'negative');
-        break;
-      }
-    },
-    429: () => {
+      break;
+
+    case 422:
+      const errors422 = data?.errors || {};
+      const messagesErrors = Object.values(errors422);
+      messagesErrors.slice(0, 8).forEach((msg) => notify(msg.toString(), 'negative'));
+      break;
+
+    case 429:
       notify(message, 'negative');
       logoutAndRedirect();
-    },
-    500: () => {
+      break;
+
+    case 500:
       notify(
         'Erro interno do servidor. Por favor, contate a administração do sistema para mais informações.',
         'negative',
       );
-    },
-    default: () => {
-      notify(
+      break;
+
+    default:
+      const customMessage =
         message === 'This action is unauthorized.'
           ? 'Você não tem permissão para acessar este recurso'
-          : message,
-        'negative',
-      );
+          : message;
 
-      message === 'Unauthorized.' && router.replace('/admin/inicio');
-      message === 'This action is unauthorized.' && router.replace('/admin/inicio');
-    },
-  };
-
-  (errorHandlers[status] || errorHandlers.default)();
+      notify(customMessage, 'negative');
+      if (message === 'Unauthorized.' || message === 'This action is unauthorized.') {
+        router.replace('/admin/inicio');
+      }
+      break;
+  }
 }
 
 export default http;

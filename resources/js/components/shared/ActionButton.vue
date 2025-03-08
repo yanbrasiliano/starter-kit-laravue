@@ -1,5 +1,5 @@
 <script setup>
-const emit = defineEmits(["clickAction"]);
+const emit = defineEmits(['clickAction']);
 defineProps({
   icon: String,
   label: String,

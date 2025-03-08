@@ -4,28 +4,22 @@ declare(strict_types = 1);
 
 namespace App\Actions\Role;
 
-use App\Traits\LogsActivityTrait;
+use App\Exceptions\RoleIsAssignedToUserException;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
-final class DeleteRoleAction
+final readonly class DeleteRoleAction
 {
-    use LogsActivityTrait;
-
     public function execute(Role $role): bool
     {
-        try {
-            $role->load('permissions');
+        return DB::transaction(function () use ($role): bool {
+
+            throw_if($role->users()->exists(), RoleIsAssignedToUserException::class);
+
+            $role->users()->detach();
             $role->permissions()->detach();
-            $clonedRole = $role->replicate();
-            $role->deleteOrFail();
 
-            $this->logDeleteActivity('Gestão de Perfis', $clonedRole, 'Excluiu um perfil');
-
-            return true;
-        } catch (\Exception $e) {
-            \Log::error('Failed to delete role: ' . $e->getMessage());
-
-            return false;
-        }
+            return (bool) $role->delete();
+        });
     }
 }

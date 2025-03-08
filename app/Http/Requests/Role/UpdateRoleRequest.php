@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Http\Requests\Role;
 
 use App\Traits\FailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Fluent;
+use Illuminate\Support\{Collection, Fluent};
 use Illuminate\Validation\Rule;
 
 class UpdateRoleRequest extends FormRequest
@@ -17,6 +19,19 @@ class UpdateRoleRequest extends FormRequest
     public function authorize(): bool
     {
         return auth()->check();
+    }
+
+    public function prepareForValidation(): void
+    {
+        /** @var \Illuminate\Support\Collection<int, mixed> $permissions */
+        $permissions = new Collection($this->permissions);
+        $isInteger = $permissions->contains(function ($item) {
+            return is_int($item);
+        });
+
+        $this->merge([
+            'permissions' => $isInteger ? $permissions->toArray() : $permissions->pluck('value')->toArray(),
+        ]);
     }
 
     /**
@@ -32,7 +47,9 @@ class UpdateRoleRequest extends FormRequest
             'permissions' => ['array'],
         ];
     }
-
+    /**
+     * @return array<string, string>
+     */
     public function attributes(): array
     {
         return [
@@ -41,7 +58,9 @@ class UpdateRoleRequest extends FormRequest
             'permissions' => 'Permissões',
         ];
     }
-
+    /**
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
@@ -52,11 +71,17 @@ class UpdateRoleRequest extends FormRequest
             'permissions.array' => 'O :attribute deve ser uma lista',
         ];
     }
-
+    /**
+     * Retorna instância Fluent com os dados validados acrescentando atributos adicionais.
+     *
+     * @param mixed|null $key
+     * @return Fluent<string, mixed>
+     */
     public function fluent($key = null): Fluent
     {
+
         return new Fluent([
-            ...parent::validated($key, $default = null),
+            ...$this->validated($key),
             'guard_name' => 'web',
             'slug' => str()->slug($this->name),
         ]);

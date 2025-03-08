@@ -9,21 +9,26 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Fluent;
 use Spatie\Permission\Models\Role;
 
-final class CreateRoleAction
+final readonly class CreateRoleAction
 {
     use LogsActivityTrait;
 
-    public function execute(Fluent $params): ?Role
+    /**
+     * @param Fluent<string, mixed> $params
+     * @return Role
+     */
+    public function execute(Fluent $params): Role
     {
-        return DB::transaction(function () use ($params) {
+        return DB::transaction(function () use ($params): Role {
+            /** @var Role $role */
             $role = Role::create([
-                'name' => $params->name,
+                'name' => $params->get('name'),
                 'guard_name' => 'web',
-                'slug' => str()->slug($params->name),
-                'description' => $params->description,
+                'slug' => str()->slug($params->get('name')),
+                'description' => $params->get('description'),
             ]);
 
-            $role->syncPermissions($params->permissions);
+            $role->syncPermissions($params->get('permissions', []));
 
             $this->writeOnLog($role); // TODO: Move to Event or Log
 

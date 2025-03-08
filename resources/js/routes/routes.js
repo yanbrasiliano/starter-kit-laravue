@@ -10,6 +10,7 @@ import AccessDeniedPage from '@/pages/errors/AccessDeniedPage.vue';
 const routes = [
   {
     path: '/',
+    name: 'main',
     component: MainLayout,
     children: publicRoutes,
   },

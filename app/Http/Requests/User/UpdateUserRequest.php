@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Http\Requests\User;
 
-use App\DTO\User\UpdateUserDTO;
 use App\Enums\StatusEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Fluent;
 use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
@@ -20,7 +22,14 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        return array_merge($this->baseRules(), $this->cpfRule(), $this->passwordRule(), $this->roleSlugRule());
+        $rules = array_merge(
+            $this->baseRules(),
+            $this->cpfRule(),
+            $this->passwordRule(),
+            $this->roleSlugRule()
+        );
+
+        return $rules;
     }
 
     /**
@@ -30,9 +39,9 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->id)],
+            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->route('id'))],
             'active' => ['required', Rule::in(StatusEnum::ENABLED, StatusEnum::DISABLED)],
-            'role_id' => ['required', 'exists:roles,id'],
+            'role_id' => ['sometimes', 'required', 'exists:roles,id'],
             'notify_status' => ['boolean'],
         ];
     }
@@ -60,7 +69,7 @@ class UpdateUserRequest extends FormRequest
                                 ->where('role_user.role_id', $this->role_id);
                         });
                     })
-                    ->ignore($this->id),
+                    ->ignore($this->route('id')),
             ],
         ];
     }
@@ -104,8 +113,10 @@ class UpdateUserRequest extends FormRequest
      */
     public function messages(): array
     {
+        $appName = config('app.name');
+
         return [
-            'cpf.unique' => 'CPF já cadastrado no SISTEX, realize o login com suas credenciais.',
+            'cpf.unique' => "CPF já cadastrado no {$appName}, realize o login com suas credenciais.",
             'email.unique' => 'O e-mail já foi cadastrado.',
             'email.email' => 'O :attribute inserido não é válido.',
             'boolean' => 'O campo :attribute não é booleano.',
@@ -119,17 +130,14 @@ class UpdateUserRequest extends FormRequest
     }
 
     /**
+     * Retorna os dados validados usando Fluent, com opção de filtrar por chave.
+     *
      * @param string|null $key
-     * @param mixed|null $default
-     * @return array<string, mixed>
+     * @return Fluent<string, mixed>
      */
-    public function validated($key = null, $default = null): array
+    public function fluentParams(?string $key = null): Fluent
     {
-        return parent::validated($key, $default);
+        return new Fluent($this->validated($key));
     }
 
-    public function toDTO(): UpdateUserDTO
-    {
-        return new UpdateUserDTO(...$this->validated());
-    }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -10,7 +12,7 @@ class ForceJsonResponse
 {
     protected $defaultAcceptHeader = 'application/json';
 
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         if ($request->header('Accept') !== $this->defaultAcceptHeader) {
             $request->headers->set('Accept', $this->defaultAcceptHeader);

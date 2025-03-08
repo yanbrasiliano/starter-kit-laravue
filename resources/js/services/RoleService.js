@@ -29,7 +29,7 @@ const destroy = async (id) => {
 };
 
 const listAll = async () => {
-  const { data } = await http.get(`${route}/list-all`);
+  const { data } = await http.get(`${route}/all`);
   return data?.data;
 };
 export default {

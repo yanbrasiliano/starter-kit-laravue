@@ -1,5 +1,5 @@
 <script setup>
-import FormRole from "@/components/roles/FormRole.vue";
+import FormRole from '@/components/roles/FormRole.vue';
 </script>
 <template>
   <div class="q-pa-md items-start q-gutter-md">
@@ -11,7 +11,7 @@ import FormRole from "@/components/roles/FormRole.vue";
       </q-card-section>
       <q-separator inset />
       <q-card-section>
-        <FormRole :block-select-permission = "false"/>
+        <FormRole :block-select-permission="false" />
       </q-card-section>
     </q-card>
   </div>

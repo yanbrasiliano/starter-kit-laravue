@@ -6,7 +6,7 @@ const useAuthenticate = () => {
   const authStore = useAuthStore();
   const login = async (credentials) => {
     const response = await authenticate(credentials);
-    const { user, access_token: token } = response.data.original;
+    const { user, access_token: token } = response.data;
     authStore.setCredentials({ user, token });
     return response;
   };

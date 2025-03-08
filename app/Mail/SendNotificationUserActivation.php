@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Mail;
 
 use App\Models\User;
@@ -36,7 +38,7 @@ class SendNotificationUserActivation extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): mixed
     {
         return $this->markdown('emails.sendNotificationUserActivation', [
             'user' => $this->user,

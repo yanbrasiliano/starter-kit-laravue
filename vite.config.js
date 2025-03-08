@@ -1,9 +1,9 @@
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
-import vue from '@vitejs/plugin-vue';
 import { quasar } from '@quasar/vite-plugin';
-import eslintPlugin from 'vite-plugin-eslint';
+import vue from '@vitejs/plugin-vue';
+import laravel from 'laravel-vite-plugin';
 import { fileURLToPath, URL } from 'url';
+import { defineConfig } from 'vite';
+import eslintPlugin from 'vite-plugin-eslint';
 
 export default defineConfig({
   server: {
@@ -57,7 +57,17 @@ export default defineConfig({
     ],
   },
   plugins: [
-    eslintPlugin(),
+    laravel({
+      input: ['resources/css/app.sass', 'resources/js/app.js'],
+      refresh: true,
+    }),
+    eslintPlugin({
+      exclude: ['/node_modules/**'],
+      failOnError: false,
+      emitWarning: true,
+      emitError: true,
+      lintOnStart: false,
+    }),
     vue({
       template: {
         transformAssetUrls: {
@@ -68,10 +78,6 @@ export default defineConfig({
     }),
     quasar({
       sassVariables: '@css/quasar-variables.sass',
-    }),
-    laravel({
-      input: ['resources/css/app.sass', 'resources/js/app.js'],
-      refresh: true,
     }),
   ],
 });

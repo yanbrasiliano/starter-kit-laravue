@@ -5,13 +5,8 @@ parameters:
     treatPhpDocTypesAsCertain: false
     paths:
         - app/
-    level: 5
+    level: 8
     ignoreErrors:
-        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Model::syncRoles\(\)#'
-        - '#Access to an undefined property Illuminate\\Database\\Eloquent\\Model::\$roles#'
-        - '#Method App\\Repositories\\EloquentRepository\\RoleRepository::create\(\) should return Illuminate\\Database\\Eloquent\\Model but returns Spatie\\Permission\\Contracts\\Role#'
-        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Model::hasVerifiedEmail\(\)#'
-        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Model::markEmailAsVerified\(\)#'
         - '#Class App\\Models\\User uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types: TFactory#'
         - '#Class App\\Models\\DeleteReason uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types: TFactory#'
         - '#Method App\\Models\\DeleteReason::deletedByUser\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types: TRelatedModel, TDeclaringModel#'

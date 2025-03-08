@@ -9,7 +9,6 @@ import { ROLE_PERMISSION } from '@utils/permissions';
 const router = useRouter();
 const { loading, roles, pagination, updatePagination, onEdit, onDelete } = useRole();
 const { columns } = useRoleConfigListPage();
-
 </script>
 <template>
   <div>

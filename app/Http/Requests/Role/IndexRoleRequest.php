@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Http\Requests\Role;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -74,7 +76,9 @@ class IndexRoleRequest extends FormRequest
             ],
         ];
     }
-
+    /**
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
@@ -91,7 +95,9 @@ class IndexRoleRequest extends FormRequest
             'search.string' => 'O :attribute deve ser uma string.',
         ];
     }
-
+    /**
+     * @return array<string, string>
+     */
     public function attributes(): array
     {
         return [
@@ -104,4 +110,5 @@ class IndexRoleRequest extends FormRequest
             'paginated' => 'Paginado',
         ];
     }
+
 }

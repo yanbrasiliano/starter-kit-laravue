@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -34,6 +36,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'cpf',
         'active',
+        'email_verified_at',
     ];
 
     protected $hidden = [
@@ -54,5 +57,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function setCpfAttribute(?string $value): void
     {
         $this->attributes['cpf'] = $value !== null ? preg_replace('/\D/', '', $value) : null;
+    }
+
+    public function setPasswordAttribute(?string $value): void
+    {
+        $this->attributes['password'] = $value !== null ? bcrypt($value) : null;
     }
 }

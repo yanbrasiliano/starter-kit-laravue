@@ -17,7 +17,7 @@ describe('RoleIsAssignedToUserException', function () {
         $exception = new RoleIsAssignedToUserException();
 
         expect($exception->getCode())
-          ->toBe(Response::HTTP_CONFLICT);
+          ->toBe(Response::HTTP_UNPROCESSABLE_ENTITY);
     })->group('exceptions');
 
     it('should return the correct error type', function () {

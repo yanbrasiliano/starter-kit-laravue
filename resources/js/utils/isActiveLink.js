@@ -1,11 +1,8 @@
-import { useRoute } from 'vue-router'
+import { useRoute } from 'vue-router';
 
-
-function isActiveLink (routeName) { 
+function isActiveLink(routeName) {
   const route = useRoute();
   return route.name === routeName ? 'active-link' : '';
 }
 
-export {
-    isActiveLink
-}
+export { isActiveLink };

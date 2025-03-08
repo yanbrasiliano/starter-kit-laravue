@@ -9,26 +9,27 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Fluent;
 use Spatie\Permission\Models\Role;
 
-final class UpdateRoleAction
+final readonly class UpdateRoleAction
 {
     use LogsActivityTrait;
 
-    public function execute(Role $role, Fluent $params): ?Role
+    /**
+     * @param Fluent<string, mixed> $params
+     */
+    public function execute(Role $role, Fluent $params): Role
     {
-        return DB::transaction(function () use ($role, $params) {
-
+        return DB::transaction(function () use ($role, $params): Role {
             $role->update([
-                'name' => $params->name,
-                'description' => $params->description,
+                'name' => $params->get('name', $role->name),
+                'description' => $params->get('description', $role->getAttribute('description')),
                 'guard_name' => 'web',
             ]);
 
-            (new SyncRolePermissionAction($role, $params->permissions))->execute();
+            $role->syncPermissions($params->get('permissions', []));
 
             $this->logUpdateActivity('Gestão de Perfis', $role, $role->getDirty(), 'Atualizou um perfil');
 
             return $role;
         });
     }
-
 }
