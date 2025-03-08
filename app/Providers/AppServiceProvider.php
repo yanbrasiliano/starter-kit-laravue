@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Providers;
 
@@ -32,7 +32,6 @@ class AppServiceProvider extends ServiceProvider
         $this->configureRequest();
         $this->configureScramble();
         $this->configureVite();
-        $this->macros();
     }
 
     /**
@@ -72,19 +71,4 @@ class AppServiceProvider extends ServiceProvider
         Vite::usePrefetchStrategy('aggresive');
     }
 
-    /**
-     * Register custom macro bindings to the Laravel framework.
-     */
-    protected function macros(): void
-    {
-        Builder::macro('whereILike', function ($column, $value) {
-            /** @var \Illuminate\Database\Eloquent\Builder $this */
-            return $this->where($column, 'ILIKE', "%{$value}%");
-        });
-
-        Builder::macro('orWhereILike', function ($column, $value) {
-            /** @var \Illuminate\Database\Eloquent\Builder $this */
-            return $this->orWhere($column, 'ILIKE', "%{$value}%");
-        });
-    }
 }
