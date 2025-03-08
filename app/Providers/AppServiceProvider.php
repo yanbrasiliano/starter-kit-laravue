@@ -9,7 +9,7 @@ use Dedoc\Scramble\Support\Generator\{
     OpenApi,
     SecurityScheme
 };
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\{Builder, Model};
 use Illuminate\Support\Facades\{Vite};
 use Illuminate\Support\ServiceProvider;
 
@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configureRequest();
         $this->configureScramble();
         $this->configureVite();
+        $this->macros();
     }
 
     /**
@@ -71,4 +72,19 @@ class AppServiceProvider extends ServiceProvider
         Vite::usePrefetchStrategy('aggresive');
     }
 
+    /**
+     * Register custom macro bindings to the Laravel framework.
+     */
+    protected function macros(): void
+    {
+        Builder::macro('whereILike', function ($column, $value) {
+            /** @var \Illuminate\Database\Eloquent\Builder $this */
+            return $this->where($column, 'ILIKE', "%{$value}%");
+        });
+
+        Builder::macro('orWhereILike', function ($column, $value) {
+            /** @var \Illuminate\Database\Eloquent\Builder $this */
+            return $this->orWhere($column, 'ILIKE', "%{$value}%");
+        });
+    }
 }
