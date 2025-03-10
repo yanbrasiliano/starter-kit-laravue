@@ -1,0 +1,26 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Starter Kit Laravue",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "http:\/\/localhost:8001\/api\/v1\/documentation"
+        }
+    ],
+    "security": [
+        {
+            "http": []
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "http": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}

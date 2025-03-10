@@ -4,7 +4,7 @@ use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
 
 return [
 
-    'api_path' => 'api',
+    'api_path' => 'api/v1/',
 
     'api_domain' => null,
 

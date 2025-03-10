@@ -2,9 +2,9 @@
 
 use Illuminate\Support\Facades\{File, Route};
 
-Route::get('/{any}', function () {
+Route::get('{any}', function () {
     return view('app');
-})->where('any', '^(?!der|assets|schema.json).*');
+})->where('any', '^(?!der|assets|schema.json|docs).*');
 
 Route::get('/der', function () {
     $key = request()->get('key');
