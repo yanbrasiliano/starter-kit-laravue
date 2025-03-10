@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\{
     OpenApi,
     SecurityScheme
 };
-use Illuminate\Database\Eloquent\{Builder, Model};
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\{Vite};
 use Illuminate\Support\ServiceProvider;
 
@@ -20,7 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        if ($this->app->environment() !== 'local') {
+            Debugbar::disable();
+        }
     }
 
     /**
@@ -68,7 +71,7 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function configureVite(): void
     {
-        Vite::usePrefetchStrategy('aggresive');
+        Vite::usePrefetchStrategy('aggressive');
     }
 
 }

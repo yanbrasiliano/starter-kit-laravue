@@ -2,12 +2,11 @@
 
 use Illuminate\Support\Facades\{File, Route};
 
-Route::get('/{any}', function () {
+Route::get('{any}', function () {
     return view('app');
-})->where('any', '^(?!der|assets|schema.json).*');
+})->where('any', '^(?!der|assets|schema.json|docs).*');
 
 Route::get('/der', function () {
-    $key = request()->get('key');
 
     if (!request()->has('key')) {
         return abort(404);
@@ -44,7 +43,7 @@ Route::get('/assets/{path}', function ($path) {
         abort(404);
     }
 
-    $mimeType = match(pathinfo($filePath, PATHINFO_EXTENSION)) {
+    $mimeType = match (pathinfo($filePath, PATHINFO_EXTENSION)) {
         'js' => 'application/javascript; charset=utf-8',
         'css' => 'text/css',
         'ico' => 'image/x-icon',
