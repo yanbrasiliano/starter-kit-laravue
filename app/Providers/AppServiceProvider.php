@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Providers;
 
@@ -9,7 +9,7 @@ use Dedoc\Scramble\Support\Generator\{
     OpenApi,
     SecurityScheme
 };
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\{Builder, Model};
 use Illuminate\Support\Facades\{Vite};
 use Illuminate\Support\ServiceProvider;
 
