@@ -113,9 +113,8 @@ Following this convention will help ensure that commits are clear, well-document
 
 ---
 
-## 📌 **To-Do List**
+## 📌 **TODO List**
 
 - [ ] Set phpstan max level(10), currently level is 8.
 - [ ] Create **policies** for users and permissions.
 - [ ] Create screen to display **application logs**.
-- [ ] Fix **unit tests**.
