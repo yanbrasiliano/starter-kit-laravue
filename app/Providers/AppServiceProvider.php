@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\{Vite};
 use Illuminate\Support\ServiceProvider;
 
+// @codeCoverageIgnoreStart
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -75,3 +76,5 @@ class AppServiceProvider extends ServiceProvider
     }
 
 }
+
+// @codeCoverageIgnoreEnd
