@@ -96,35 +96,55 @@ const useUser = () => {
   };
 
   const onStatus = async (event) => {
-    const { id, name, email, cpf, active, role_id } = event.data;
-    dataHandleStatus.value = {
-      id,
-      name,
-      email,
-      cpf,
-      active: active ? 1 : 0,
-      role_id,
-    };
+    try {
+  
+      $q.loading.show();
+      await store.consult(event.data.id);
+      const userData = store.getUser;
 
-    confirmHandleStatus.value = Boolean(event.value);
-    if (!event.value) {
-      handleStatus(false);
+      const { id } = event.data;
+      dataHandleStatus.value = {
+        id,
+        name: userData.name,
+        email: userData.email,
+        cpf: userData.cpf,
+        active: event.value ? 1 : 0,
+        role_id:
+          userData.roles && userData.roles.length > 0 ? userData.roles[0].id : null,
+      };
+
+   
+      $q.loading.hide();
+
+      confirmHandleStatus.value = Boolean(event.value);
+      if (!event.value) {
+        handleStatus(false);
+      }
+    } catch (error) {
+      console.error('Erro ao preparar dados para atualização de status:', error);
+      $q.loading.hide();
     }
   };
 
   const handleStatus = async (isNotify) => {
     try {
+      $q.loading.show();
       const { id } = dataHandleStatus.value;
-      delete dataHandleStatus.value.id;
+      const updateData = { ...dataHandleStatus.value };
+      delete updateData.id;
+
       await store.update(id, {
-        ...dataHandleStatus.value,
+        ...updateData,
         notify_status: isNotify,
       });
 
       notify('Status atualizado com sucesso');
-
       dataHandleStatus.value = null;
+    } catch (error) {
+      console.error('Erro ao atualizar status:', error);
+      notify('Erro ao atualizar status', 'negative');
     } finally {
+      $q.loading.hide();
       await listPage({
         limit: pagination.value?.rowsPerPage,
         page: pagination.value?.page,
