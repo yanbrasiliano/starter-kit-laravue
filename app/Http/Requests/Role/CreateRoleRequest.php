@@ -7,7 +7,7 @@ namespace App\Http\Requests\Role;
 use App\Traits\FailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class CreateRoleRequest extends FormRequest
 {
@@ -24,7 +24,6 @@ class CreateRoleRequest extends FormRequest
     public function prepareForValidation(): void
     {
         $permissions = (new Collection($this->permissions))->pluck('value')->toArray();
-
         $this->merge([
             'permissions' => $permissions,
         ]);
@@ -38,7 +37,21 @@ class CreateRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', Rule::unique('roles', 'name')->ignore($this->id)],
+            'name' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    $trimmedValue = trim($value);
+                    $exists = DB::table('roles')
+                        ->whereRaw('LOWER(name) = ?', [strtolower($trimmedValue)])
+                        ->when($this->id, fn ($query) => $query->where('id', '!=', $this->id))
+                        ->exists();
+
+                    if ($exists) {
+                        $fail('Este nome de perfil já está em uso. Escolha outro nome.');
+                    }
+                },
+            ],
             'description' => ['max:258'],
             'permissions' => ['array'],
         ];
@@ -60,9 +73,8 @@ class CreateRoleRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'O :attribute é obrigatório.',
+            'name.required' => 'O nome do perfil é obrigatório.',
             'name.string' => 'O :attribute deve conter uma palavra.',
-            'name.unique' => 'O :attribute inserido já está em uso.',
             'description.max' => 'A :attribute inserida excede o limite de caracteres.',
             'permissions.array' => 'O :attribute deve ser uma lista',
         ];

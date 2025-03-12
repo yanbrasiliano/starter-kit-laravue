@@ -18,23 +18,28 @@ const useRole = () => {
   const authStore = useAuthStore();
 
   const selectedPermissionIds = ref([]);
+  const initialRoleSetup = ref(false);
 
   watch(
     () => role.value,
     (newRole) => {
-      if (!newRole) return;
+      if (!newRole || initialRoleSetup.value) return;
 
       const permissions = newRole.permissions || [];
-      selectedPermissionIds.value = [];
 
       permissions.forEach((permission) => {
         const permissionId =
           typeof permission === 'object' ? permission.value : permission;
 
-        if (typeof permissionId === 'number') {
+        if (
+          typeof permissionId === 'number' &&
+          !selectedPermissionIds.value.includes(permissionId)
+        ) {
           selectedPermissionIds.value.push(permissionId);
         }
       });
+
+      initialRoleSetup.value = true;
     },
     { immediate: true, deep: true },
   );
@@ -98,10 +103,13 @@ const useRole = () => {
   const initializeRoleData = async () => {
     roleStore.resetStore();
     await permissionStore.fetchPermissions();
+    initialRoleSetup.value = false;
   };
 
   const cleanupRoleData = () => {
     roleStore.resetStore();
+    selectedPermissionIds.value = [];
+    initialRoleSetup.value = false;
   };
 
   async function updatePagination(event) {

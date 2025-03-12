@@ -1,12 +1,13 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Http\Requests\Role;
 
 use App\Traits\FailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\{Collection, Fluent};
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class UpdateRoleRequest extends FormRequest
@@ -42,7 +43,21 @@ class UpdateRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', Rule::unique('roles', 'name')->ignore($this->role->id)],
+            'name' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    $trimmedValue = trim($value);
+                    $exists = DB::table('roles')
+                        ->whereRaw('LOWER(name) = ?', [strtolower($trimmedValue)])
+                        ->when($this->id, fn($query) => $query->where('id', '!=', $this->id))
+                        ->exists();
+
+                    if ($exists) {
+                        $fail('Este nome de perfil já está em uso. Escolha outro nome.');
+                    }
+                },
+            ],
             'description' => ['max:258'],
             'permissions' => ['array'],
         ];
