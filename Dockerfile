@@ -78,7 +78,7 @@ COPY --chown=www-data:www-data . .
 RUN chmod +x ./permissions.sh \
     && ./permissions.sh
 
-RUN composer install --no-dev --no-interaction --no-progress --optimize-autoloader \
+RUN composer install --no-interaction --no-progress --optimize-autoloader \
     && composer clear-cache \
     && npm i -g npm@latest npx gulp-cli cross-env postcss-cli autoprefixer \
     && npm install laravel-vite-plugin@^1.0.0 --save-dev eslint-define-config \

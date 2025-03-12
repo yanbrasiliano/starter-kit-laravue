@@ -1,10 +1,10 @@
-import { useRouter } from 'vue-router';
-import { computed, ref } from 'vue';
 import useAuthStore from '@/store/useAuthStore';
-import { storeToRefs } from 'pinia';
 import useUserStore from '@/store/useUserStore';
-import { useQuasar } from 'quasar';
 import notify from '@/utils/notify';
+import { storeToRefs } from 'pinia';
+import { useQuasar } from 'quasar';
+import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const useUser = () => {
   const $q = useQuasar();
@@ -147,10 +147,10 @@ const useUser = () => {
     });
   };
 
-  const onDelete = async (payload) => {
+  const onDelete = async (event) => {
     try {
       $q.loading.show();
-      await store.destroy(payload);
+      await store.destroy(event.id);
 
       notify('Usuário removido com sucesso');
     } finally {

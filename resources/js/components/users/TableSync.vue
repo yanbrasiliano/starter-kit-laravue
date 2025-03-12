@@ -1,6 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
-import DeletionConfirmation from '@/components/users/modal/DeletionConfirmation.vue';
+import { ref } from 'vue';
 
 const emit = defineEmits([
   'update:modelValue',
@@ -22,37 +21,16 @@ const deletionReason = ref('');
 const itemDelete = ref(null);
 const confirmRowDelete = ref(false);
 
-const props = defineProps({
-  modelValue: Boolean,
-});
-
-const show = ref(props.modelValue);
-
-watch(
-  () => props.modelValue,
-  (newValue) => {
-    show.value = newValue;
-  },
-);
-
-const confirmDeletion = (payload) => {
-  try {
-    emit('onDelete', payload);
-  } finally {
-    confirmRowDelete.value = false;
-  }
-};
-
 const deleteRow = (row) => {
-  itemDelete.value = row;
   confirmRowDelete.value = true;
+  itemDelete.value = row;
 };
-
-const cancelDeletion = () => {
-  emit('cancel');
-  show.value = false;
-  deletionReason.value = '';
+const confirmDeleteRow = (isStatus) => {
   confirmRowDelete.value = false;
+  if (isStatus) {
+    emit('onDelete', itemDelete.value);
+  }
+  itemDelete.value = null;
 };
 </script>
 
@@ -70,14 +48,36 @@ const cancelDeletion = () => {
     :computed-rows-number="20"
     @update:pagination="emit('updatePagination', $event)"
     @request="emit('updatePagination', $event)">
-    <template #header="headerProps">
-      <DeletionConfirmation
-        v-model="confirmRowDelete"
-        :item="itemDelete"
-        @confirm="confirmDeletion"
-        @cancel="cancelDeletion" />
-      <q-tr :props="headerProps">
-        <q-th v-for="col in headerProps.cols" :key="col.name" :props="headerProps">
+    <template #header="props">
+      <q-dialog v-model="confirmRowDelete" persistent>
+        <q-card>
+          <q-card-section class="row items-center">
+            <span class="q-ml-sm">
+              <strong
+                >Tem certeza de que deseja excluir este perfil de acesso?
+                <br />
+                Esta ação não poderá ser desfeita.</strong
+              >
+            </span>
+          </q-card-section>
+
+          <q-card-actions align="center">
+            <q-btn
+              v-close-popup
+              label="Sim"
+              color="primary"
+              @click="confirmDeleteRow(true)" />
+            <q-btn
+              v-close-popup
+              outline
+              label="Não"
+              color="primary"
+              @click="confirmDeleteRow(false)" />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+      <q-tr :props="props">
+        <q-th v-for="col in props.cols" :key="col.name" :props="props">
           {{ col.label }}
         </q-th>
       </q-tr>

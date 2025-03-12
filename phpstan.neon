@@ -8,8 +8,6 @@ parameters:
     level: 8
     ignoreErrors:
         - '#Class App\\Models\\User uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types: TFactory#'
-        - '#Class App\\Models\\DeleteReason uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types: TFactory#'
-        - '#Method App\\Models\\DeleteReason::deletedByUser\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types: TRelatedModel, TDeclaringModel#'
 
     excludePaths:
         - ./*/*/FileToBeExcluded.php

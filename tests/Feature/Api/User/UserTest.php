@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Users;
 
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 
@@ -258,28 +257,8 @@ describe('Users Management', function () {
         )->with('invalidRoleData');
     });
 
-    describe('Deleting Users', function () {
-        it('should delete a user and return a 204 status code for valid user ID', function () {
-            $user = asReviewer();
-            actingAs($this->asAdmin)
-                ->delete(route('users.delete', $user->id), ['reason' => 'Test deletion reason'])
-                ->assertStatus(Response::HTTP_NO_CONTENT)
-                ->assertNoContent();
-
-            expect(User::find($user->id))->toBeNull();
-        });
-
-        it('should return a 404 status code for invalid user ID', function () {
-
-            actingAs($this->asAdmin)
-                ->delete(route('users.delete', $this->invalidId), ['reason' => 'Test deletion reason'])
-                ->assertStatus(Response::HTTP_NOT_FOUND)
-                ->assertJson(['message' => "No query results for model [App\\Models\\User] {$this->invalidId}"]);
-        });
-    });
-
     describe('Register Users', function () {
-        it('Should return status 200 of registered user', function (array $registerUser) {
+        it('should return status 200 of registered user', function (array $registerUser) {
 
             $response = post(route('users.register'), $registerUser);
             $message = "Um e-mail de confirmação foi encaminhado para {$registerUser['email']}. Por favor, realize os procedimentos para ativação da sua conta.";
@@ -327,6 +306,45 @@ describe('Users Management', function () {
 
             get($url)
                 ->assertJson(['message' => 'Invalid signature.']);
+        });
+    });
+    describe('Deleting Users', function () {
+        it('should return a 404 status code for invalid user ID', function () {
+            actingAs($this->asAdmin)
+                ->delete(route('users.delete', $this->invalidId), ['reason' => 'Test deletion reason'])
+                ->assertStatus(Response::HTTP_NOT_FOUND)
+                ->assertJson(['message' => "No query results for model [App\\Models\\User] {$this->invalidId}"]);
+        });
+
+        it('should successfully delete a user and return 204 status code', function () {
+            $userToDelete = $this->users[1];
+
+            $response = actingAs($this->asAdmin)
+                ->delete(route('users.delete', $userToDelete), ['reason' => 'Test deletion reason']);
+
+            $response->assertStatus(Response::HTTP_NO_CONTENT);
+            $this->assertDatabaseMissing('users', ['id' => $userToDelete->id]);
+        });
+
+        it('should return an error status code when trying to delete own account', function () {
+            $response = actingAs($this->asAdmin)
+                ->delete(route('users.delete', $this->asAdmin), ['reason' => 'Test deletion reason']);
+
+            $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR)
+                ->assertJson([
+                    'message' => 'Erro ao deletar usuário.',
+                    'error' => 'Não é possível realizar essa ação.',
+                ]);
+
+            $this->assertDatabaseHas('users', ['id' => $this->asAdmin->id]);
+        });
+
+        it('should return a 401 status code for unauthenticated user', function () {
+            $userToDelete = $this->users[1];
+
+            $response = $this->delete(route('users.delete', $userToDelete), ['reason' => 'Test deletion reason']);
+
+            $response->assertStatus(Response::HTTP_UNAUTHORIZED);
         });
     });
 })->group('users');

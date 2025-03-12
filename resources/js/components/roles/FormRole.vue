@@ -1,65 +1,42 @@
 <script setup>
 import useRole from '@/composables/Roles/useRole';
 import usePermissionStore from '@/store/usePermissionStore';
-import useRoleStore from '@/store/useRoleStore';
 import ErrorInput from '@components/shared/ErrorInput.vue';
-import { storeToRefs } from 'pinia';
-import { useQuasar } from 'quasar';
 import { onBeforeMount, onUnmounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 
-const { shouldBlockSelectPermission } = useRole();
-const $q = useQuasar();
+const {
+  role,
+  errors,
+  loading,
+  selectedPermissionIds,
+  shouldBlockSelectPermission,
+  togglePermission,
+  saveRole,
+  initializeRoleData,
+  cleanupRoleData,
+} = useRole();
+
 const permissionStore = usePermissionStore();
-const { role, errors, loading, message, isSuccess } = storeToRefs(useRoleStore());
-const roleStore = useRoleStore();
-const { store, update } = roleStore;
-const route = useRoute();
-const router = useRouter();
 
 onBeforeMount(async () => {
-  roleStore.resetStore();
-  await permissionStore.fetchPermissions();
+  await initializeRoleData();
 });
 
 onUnmounted(() => {
-  roleStore.resetStore();
+  cleanupRoleData();
 });
-
-async function onSave() {
-  $q.loading.show();
-  const params = getParams();
-
-  const action = route.params.id ? update(route.params.id, params) : store(params);
-  await action;
-
-  $q.loading.hide();
-
-  const color = isSuccess.value ? 'positive' : 'negative';
-  $q.notify({ message: message.value, color, position: 'top-right' });
-
-  if (isSuccess.value) {
-    router.push({ name: 'listRoles' });
-  }
-}
-
-function getParams() {
-  return {
-    name: role.value?.name,
-    description: role.value?.description,
-    permissions: role.value.permissions,
-  };
-}
 </script>
 
 <template>
   <q-form v-if="role">
     <div>
-      <label for="name" class="text-weight-bold">Nome do Perfil</label>
+      <label for="name" class="text-weight-bold">
+        Nome do Perfil <span class="text-negative">*</span>
+      </label>
       <q-input
         v-model="role.name"
         filled
-        placeholder="Digite o nome do perfil"
+        placeholder="Campo obrigatório."
         bottom-slots
         lazy-rules
         :error="errors && errors?.name?.length > 0">
@@ -73,7 +50,7 @@ function getParams() {
       <q-input
         v-model="role.description"
         filled
-        placeholder="Digite a descrição"
+        placeholder="Texto não obrigatório."
         bottom-slots
         :error="errors && errors?.description?.length > 0">
         <template #error>
@@ -81,15 +58,26 @@ function getParams() {
         </template>
       </q-input>
     </div>
-    <div v-if="!shouldBlockSelectPermission">
-      <label for="permission" class="text-weight-bold">Permissões</label>
-      <q-select
-        v-model="role.permissions"
-        multiple
-        use-chips
-        :options="permissionStore.getPermissions"
-        label="Selecione as permissões"
-        filled />
+    <div v-if="!shouldBlockSelectPermission" class="q-mt-md">
+      <label class="text-weight-bold">Permissões</label>
+      <div class="q-mt-sm q-gutter-y-sm">
+        <q-card flat bordered>
+          <q-card-section>
+            <div class="row q-col-gutter-md">
+              <div
+                v-for="permission in permissionStore.getPermissions"
+                :key="permission.value"
+                class="col-12 col-sm-6 col-md-4">
+                <q-checkbox
+                  :model-value="selectedPermissionIds.includes(permission.value)"
+                  :label="permission.label"
+                  :disable="shouldBlockSelectPermission"
+                  @update:model-value="togglePermission(permission.value)" />
+              </div>
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
     </div>
     <div class="q-mt-lg q-gutter-sm">
       <q-btn
@@ -98,7 +86,7 @@ function getParams() {
         type="submit"
         color="secondary"
         :loading="loading"
-        @click.prevent="onSave()" />
+        @click.prevent="saveRole()" />
 
       <q-btn
         flat

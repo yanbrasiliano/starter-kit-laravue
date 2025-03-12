@@ -47,4 +47,4 @@ class RestrictScrambleAccess
         ], HttpFoundationResponse::HTTP_FORBIDDEN);
     }
 }
-// @codeCoverageIgnore
+// @codeCoverageIgnoreEnd

@@ -24,11 +24,7 @@ const update = async (id, params) => {
 };
 
 const destroy = async (payload) => {
-  const reason = payload.reason;
-  const id = payload.row.id;
-  return await http.delete(`${route}/${id}`, {
-    data: { reason: reason },
-  });
+  return await http.delete(`${route}/${id}`);
 };
 
 const register = async (params) => {

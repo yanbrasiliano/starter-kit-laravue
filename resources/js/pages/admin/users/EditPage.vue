@@ -69,7 +69,6 @@ const formattedDate = computed(() => {
 });
 
 const send = async (payload) => {
-  console.log(payload);
   try {
     loading.value = true;
     const updatedUser = await userStore.update(route.params.id, payload);

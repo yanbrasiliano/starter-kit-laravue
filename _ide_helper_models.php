@@ -15,39 +15,6 @@ namespace App\Models{
      *
      *
      * @property int $id
-     * @property int $deleted_user_id
-     * @property string $deleted_user_email
-     * @property string $deleted_user_name
-     * @property int|null $deleted_by_user_id
-     * @property string $deleted_by_user_name
-     * @property string $deleted_by_user_email
-     * @property string $reason
-     * @property string $deleted_at
-     * @property-read \App\Models\User|null $deletedByUser
-     * @method static \Database\Factories\DeleteReasonFactory factory($count = null, $state = [])
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|DeleteReason newModelQuery()
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|DeleteReason newQuery()
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|DeleteReason query()
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|DeleteReason whereDeletedAt($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|DeleteReason whereDeletedByUserEmail($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|DeleteReason whereDeletedByUserId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|DeleteReason whereDeletedByUserName($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|DeleteReason whereDeletedUserEmail($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|DeleteReason whereDeletedUserId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|DeleteReason whereDeletedUserName($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|DeleteReason whereId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|DeleteReason whereReason($value)
-     */
-    class DeleteReason extends \Eloquent
-    {
-    }
-}
-
-namespace App\Models{
-    /**
-     *
-     *
-     * @property int $id
      * @property string $name
      * @property string $email
      * @property string|null $cpf
