@@ -184,7 +184,6 @@ const useUser = () => {
 
   return {
     router,
-    filter,
     handleSearch,
     onEdit,
     onDelete,

@@ -1,25 +1,20 @@
 <script setup>
-import logoImage from '@assets/logo-125px40px.png';
 import logoSmaller from '@assets/icons/logoSmaller-50px40px.png';
-import { isActiveLink } from '@utils/isActiveLink';
+import logoImage from '@assets/logo-125px40px.png';
 import { hasPermission } from '@utils/hasPermission';
-import { USER_PERMISSION, ROLE_PERMISSION } from '@utils/permissions';
+import { isActiveLink } from '@utils/isActiveLink';
+import { ROLE_PERMISSION, USER_PERMISSION } from '@utils/permissions';
 
 const props = defineProps({
   miniState: Boolean,
 });
+
+const emit = defineEmits(['update:miniState']);
 </script>
 
 <template>
-  <q-scroll-area
-    style="height: calc(100% - 100px); margin-top: 70px; border-right: 1px solid #ddd">
+  <q-scroll-area class="sidebar-custom">
     <q-list padding class="q-mt-md">
-      <q-item v-show="!props.miniState">
-        <q-item-label header class="text-white font-weight-bold text-uppercase">
-          Administração
-        </q-item-label>
-      </q-item>
-
       <q-item
         v-ripple
         clickable
@@ -34,12 +29,6 @@ const props = defineProps({
     </q-list>
 
     <q-list v-if="hasPermission([USER_PERMISSION.LIST, ROLE_PERMISSION.LIST])">
-      <q-item v-show="!props.miniState">
-        <q-item-label header class="text-white font-weight-bold text-uppercase">
-          Gestão de acessos
-        </q-item-label>
-      </q-item>
-
       <q-item
         v-if="hasPermission([USER_PERMISSION.LIST])"
         v-ripple
@@ -67,10 +56,23 @@ const props = defineProps({
       </q-item>
     </q-list>
   </q-scroll-area>
-  <div v-if="!props.miniState" class="logo__sidebar--active">
+  <div
+    v-if="!props.miniState"
+    class="logo__sidebar--active"
+    style="top: 65px; left: 55px">
     <img :src="logoImage" width="124px" />
   </div>
-  <div v-else class="logo__sidebar--inactive">
+  <div v-else class="logo__sidebar--inactive" style="top: 65px; left: 20px">
     <img :src="logoSmaller" width="50px" />
+  </div>
+  <div class="absolute" style="top: 80px; right: -11px">
+    <q-btn
+      round
+      dense
+      size="sm"
+      unelevated
+      color="secondary"
+      :icon="props.miniState ? 'chevron_right' : 'chevron_left'"
+      @click="emit('update:miniState', !props.miniState)"></q-btn>
   </div>
 </template>

@@ -2,9 +2,9 @@
 *    Folha de Estilo Geral de customização do layout
 * (OBS: o padrão de nomenclatura para novas ´class´ é o BEM)
 **/
-@import 'quasar-variables.sass';
+@import "quasar-variables.sass";
 
-.layout__admin{
+.layout__admin {
     min-height: 100vh;
 }
 
@@ -12,24 +12,95 @@
     border-radius: 0px;
 }
 
-.text__header--style{
+.text__header--style {
     font-size: 18px;
-    color: #3B3B3B;
+    color: #3b3b3b;
 }
 
-.bg__grey--style{
+.bg__grey--style {
     background-color: #eef0ff;
 }
 
-.logo__sidebar--inactive{
-    top: 15px; left: 5px; position: absolute
+.logo__sidebar--inactive {
+    top: 15px;
+    left: 5px;
+    position: absolute;
 }
 
-.logo__sidebar--active{
-    top: 15px; left: 35px; position: absolute
+.logo__sidebar--active {
+    top: 15px;
+    left: 35px;
+    position: absolute;
 }
 
-.title__page--style{
+.title__page--style {
     font-size: 20px;
     color: $dark;
+}
+
+.q-drawer--left.q-drawer--bordered {
+    z-index: 999999;
+}
+
+.sidebar-custom {
+    height: calc(100% - 135px);
+    margin-top: 135px;
+}
+
+.sidebar-custom .q-item__section--avatar {
+    min-width: 40px;
+}
+
+.header-custom .toolbar-custom {
+    height: 100px;
+    padding: 0 50px;
+    color: #232f34 !important;
+    padding-right: 1.8rem;
+}
+
+.header-custom .toolbar-custom .text-h4 {
+    font-size: 1.74rem;
+    font-weight: 500;
+}
+
+.header-custom .toolbar-custom i:first-child {
+    font-size: 3.1rem;
+}
+
+.header-custom .toolbar-custom .question-mark i {
+    font-size: 1.3rem;
+}
+
+.header-custom .toolbar-custom .question-mark {
+    font-size: 0.8rem !important;
+    margin-right: 1.6rem;
+}
+
+.header-custom .toolbar-custom .q-btn__content .block {
+    font-size: 1.1rem;
+}
+
+.header-custom .toolbar-custom button {
+    text-transform: none;
+}
+
+.header-custom .toolbar-custom button:hover {
+    background: unset;
+}
+
+.header-custom .q-hoverable:hover > .q-focus-helper {
+    opacity: 0 !important;
+}
+
+.header-custom .toolbar-custom .q-ripple {
+    background-color: unset;
+    opacity: 0;
+}
+
+.header-custom .q-layout__shadow:after {
+    box-shadow: unset;
+}
+
+.header-custom .q-layout__shadow {
+    bottom: unset;
 }

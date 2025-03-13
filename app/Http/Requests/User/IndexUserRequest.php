@@ -23,7 +23,7 @@ class IndexUserRequest extends FormRequest
             'limit' => $this->get('limit', 10),
             'page' => $this->get('page', 1),
             'order' => $this->get('order', 'desc'),
-            'column' => ['sometimes', 'string', 'in:id,name,email,cpf,role,setSituation'],
+            'column' => $this->get('column', 'id'),
             'search' => $this->get('search', ''),
             'paginated' => $this->get('paginated', 1),
         ]);
@@ -40,7 +40,7 @@ class IndexUserRequest extends FormRequest
             'name' => ['sometimes', 'string'],
             'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
             'page' => ['sometimes', 'integer', 'min:1'],
-            'column' => ['sometimes', 'string', 'in:id,name,email,cpf'],
+            'column' => ['sometimes', 'string', 'in:id,name,email,cpf,role,setSituation'],
             'order' => ['sometimes', 'string', 'in:asc,desc'],
             'search' => ['sometimes', 'string', 'nullable'],
             'paginated' => ['sometimes', 'integer', 'in:0,1'],

@@ -1,7 +1,7 @@
 <script setup>
-import { useRouter } from 'vue-router';
 import useAuthenticate from '@/composables/Authenticate/useAuthenticate';
 import useAuthStore from '@/store/useAuthStore';
+import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
 const { logout } = useAuthenticate();
@@ -13,9 +13,18 @@ const goToEditProfile = () => {
 </script>
 
 <template>
-  <q-header elevated>
-    <q-toolbar class="bg-white text-grey-8 q-pt-xs q-pb-xs">
+  <q-header elevated class="header-custom">
+    <q-toolbar class="bg-white text-grey-8 q-pt-xs q-pb-xs toolbar-custom">
       <slot></slot>
+
+      <q-btn
+        class="question-mark"
+        round
+        dense
+        size="sm"
+        unelevated
+        color="secondary"
+        icon="question_mark"></q-btn>
 
       <q-btn-dropdown
         class="q-pl-xs dropdown__header--style"
