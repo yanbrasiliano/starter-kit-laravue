@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\User;
 
@@ -17,6 +17,8 @@ class UserController extends Controller
 {
     public function index(IndexUserRequest $request): JsonResource
     {
+        $this->authorize('index', User::class);
+
         $users = app(ListUserAction::class)->execute($request->fluent());
 
         return new UserResource($users);

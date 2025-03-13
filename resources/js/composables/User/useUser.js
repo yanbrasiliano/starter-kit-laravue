@@ -17,7 +17,6 @@ const useUser = () => {
 
   const { user } = storeToRefs(useAuthStore());
 
-  const filter = ref(null);
   const errors = ref(null);
 
   const confirmHandleStatus = ref(false);
@@ -27,8 +26,8 @@ const useUser = () => {
     return user.value?.name;
   });
 
-  const handleSearch = async () => {
-    searchText.value = filter.value;
+  const handleSearch = async (value) => {
+    searchText.value = value;
     await listPage({
       limit: pagination.value?.rowsPerPage,
       order:
@@ -97,7 +96,6 @@ const useUser = () => {
 
   const onStatus = async (event) => {
     try {
-  
       $q.loading.show();
       await store.consult(event.data.id);
       const userData = store.getUser;
@@ -113,7 +111,6 @@ const useUser = () => {
           userData.roles && userData.roles.length > 0 ? userData.roles[0].id : null,
       };
 
-   
       $q.loading.hide();
 
       confirmHandleStatus.value = Boolean(event.value);

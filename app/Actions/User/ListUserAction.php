@@ -27,12 +27,11 @@ final readonly class ListUserAction
             ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id');
 
         $query->when($params->get('search'), fn($query, $search) => $query->where(function ($query) use ($search) {
-            $query->whereLike('users.id', $search)
-                ->orWhereLike('users.name', $search)
-                ->orWhereLike('users.email', $search)
-                ->orWhereLike('roles.name', $search);
+            $query->whereLike('users.id', "%$search%")
+                ->orWhereLike('users.name', "%$search%")
+                ->orWhereLike('users.email', "%$search%")
+                ->orWhereLike('roles.name', "%$search%");
         }));
-
         $query->when($params->get('order'), fn($query, $order) => $query->orderBy(
             match ($params->get('column', 'id')) {
                 'name' => 'users.name',

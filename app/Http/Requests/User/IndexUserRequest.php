@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
@@ -23,7 +23,7 @@ class IndexUserRequest extends FormRequest
             'limit' => $this->get('limit', 10),
             'page' => $this->get('page', 1),
             'order' => $this->get('order', 'desc'),
-            'column' => $this->get('column', 'id'),
+            'column' => ['sometimes', 'string', 'in:id,name,email,cpf,role,setSituation'],
             'search' => $this->get('search', ''),
             'paginated' => $this->get('paginated', 1),
         ]);
