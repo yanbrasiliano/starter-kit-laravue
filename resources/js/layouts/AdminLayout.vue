@@ -32,7 +32,7 @@ const $q = useQuasar();
       v-model="drawer"
       show-if-above
       :mini="miniState"
-      mini-width="90"
+      :mini-width="90"
       :width="238"
       bordered
       :breakpoint="400"

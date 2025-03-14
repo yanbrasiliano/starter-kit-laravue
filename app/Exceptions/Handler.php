@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Exceptions;
 
@@ -34,7 +34,9 @@ class Handler extends ExceptionHandler
         if ($status !== Response::HTTP_INTERNAL_SERVER_ERROR || $exception->getCode() !== 0) {
             return response()->json([
                 'error' => $exception->error ?? 'Erro',
-                'message' => $exception->getMessage() ?: 'Um erro inesperado aconteceu. Por favor, tente novamente.',
+                'message' => $exception instanceof AuthenticationException
+                    ? 'Não autenticado, faça login para continuar.'
+                    : ($exception->getMessage() ?: 'Um erro inesperado aconteceu. Por favor, tente novamente.'),
             ], $status);
         }
 
