@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page class="q-pr-md q-pr-none-xs">
     <q-card class="q-mb-md">
       <q-card-section class="text-h5"> Dashboard </q-card-section>
     </q-card>
