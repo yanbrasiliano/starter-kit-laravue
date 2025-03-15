@@ -16,18 +16,7 @@ function asAdmin(): User
 
     return $user;
 }
-
-function asReviewer(): User
-{
-    $user = User::factory()->create();
-    $user->createToken('test-token')->plainTextToken;
-    $roleAdminId = Role::where('slug', RolesEnum::REVIEWER->value)->first()->id;
-    $user->assignRole([$roleAdminId]);
-
-    return $user;
-}
-
-function createUsers(int $quantity = 20): User | Collection
+function createUsers(int $quantity = 20): User|Collection
 {
     return User::factory($quantity)->create();
 }

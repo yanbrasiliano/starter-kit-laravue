@@ -91,7 +91,7 @@ describe('RoleTest', function () {
         it('should return a 200 status code and proper JSON structure for valid role ID and data', function () {
             $this->actingAs($this->userAuth);
 
-            $role = $this->roles->where('slug', RolesEnum::REVIEWER->value)->first();
+            $role = $this->roles->where('slug', RolesEnum::GUEST->value)->first();
 
             $response = $this->put(route('roles.edit', $role->id), [
                 'name' => fake('pt_BR')->text(30),

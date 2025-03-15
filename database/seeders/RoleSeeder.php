@@ -36,16 +36,5 @@ class RoleSeeder extends Seeder
             ]
         );
 
-        Role::updateOrCreate(
-            ['slug' => 'reviewer'],
-            [
-                'name' => 'Revisor',
-                'guard_name' => 'web',
-                'slug' => 'reviewer',
-                'description' => 'Revisor de conteúdos da plataforma.',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        );
     }
 }

@@ -8,7 +8,10 @@ const { logout } = useAuthenticate();
 const router = useRouter();
 
 const goToEditProfile = () => {
-  router.push({ name: 'editUsers', params: { id: authStore.getUser?.id } });
+  router.push({
+    name: 'editUsers',
+    params: { id: authStore.getUser?.id, viewOnly: 'true' },
+  });
 };
 </script>
 
@@ -37,12 +40,18 @@ const goToEditProfile = () => {
         icon="account_circle">
         <q-list>
           <q-item v-close-popup clickable @click="goToEditProfile">
+            <q-item-section avatar>
+              <q-icon name="person" />
+            </q-item-section>
             <q-item-section>
               <q-item-label>Meu Perfil</q-item-label>
             </q-item-section>
           </q-item>
 
           <q-item v-close-popup clickable @click="logout">
+            <q-item-section avatar>
+              <q-icon name="logout" />
+            </q-item-section>
             <q-item-section>
               <q-item-label>Sair</q-item-label>
             </q-item-section>

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
@@ -32,7 +32,7 @@ class RegisterExternalUserRequest extends FormRequest
             'role' => [
                 'required',
                 Rule::in([
-                    RolesEnum::REVIEWER->value,
+                    RolesEnum::GUEST->value,
                 ]),
             ],
             'password' => ['required', 'min:8', 'confirmed'],

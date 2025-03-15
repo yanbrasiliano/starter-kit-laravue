@@ -1,10 +1,11 @@
 <script setup>
 import TableSync from '@/components/roles/TableSync.vue';
-import { useRouter } from 'vue-router';
-import useRoleConfigListPage from '@composables/Roles/useRoleConfigListPage';
+import PageTopTitle from '@/components/shared/PageTopTitle.vue';
 import useRole from '@composables/Roles/useRole';
+import useRoleConfigListPage from '@composables/Roles/useRoleConfigListPage';
 import { hasPermission } from '@utils/hasPermission';
 import { ROLE_PERMISSION } from '@utils/permissions';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const { loading, roles, pagination, updatePagination, onEdit, onDelete } = useRole();
@@ -14,9 +15,7 @@ const { columns } = useRoleConfigListPage();
   <div>
     <div class="row">
       <div class="col-md-4" :style="{ marginBottom: '20px' }">
-        <span :style="{ fontSize: '20px', fontWeight: 'bold', color: '#3B3B3B' }">
-          Gerencie a sua listagem de perfis de acesso
-        </span>
+        <PageTopTitle>Gerencie a sua listagem de perfis de acesso</PageTopTitle>
       </div>
     </div>
     <q-card>

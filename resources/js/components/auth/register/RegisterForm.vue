@@ -18,7 +18,7 @@ const { formData, showFields, show, isLoading, isParecerista, onSubmit } =
     <q-select
       v-model="formData.role"
       class="input-color-blue input--margin-bottom"
-      :options="[{ name: 'Revisor', value: 'Revisor' }]"
+      :options="[{ name: 'Administrador', value: 'Administrador' }]"
       option-label="name"
       option-value="value"
       filled

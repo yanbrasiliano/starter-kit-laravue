@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Actions\Auth;
 
@@ -27,7 +27,7 @@ final readonly class ForgotPasswordAction
                 $params->toArray(),
                 function ($user, string $token) {
                     throw_if(
-                        !$user->roles->where('slug', RolesEnum::REVIEWER->value)->count(),
+                        !$user->roles->where('slug', RolesEnum::GUEST->value)->count(),
                         new \Exception(
                             'Usuário não disponível para solicitar a redefinição de senha.',
                             Response::HTTP_CONFLICT

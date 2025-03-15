@@ -27,21 +27,21 @@ describe('ForgotPasswordTest', function () {
             ]);
     })->group('password');
 
-    it('should queue the SendForgetPasswordMail when a valid reviewer requests password reset', function () {
+    it('should queue the SendForgetPasswordMail when a valid guest requests password reset', function () {
 
         $user = User::factory()->create();
 
         DB::table('roles')->updateOrInsert(
-            ['slug' => RolesEnum::REVIEWER->value],
+            ['slug' => RolesEnum::GUEST->value],
             [
-                'name' => 'Reviewer',
+                'name' => 'GUEST',
                 'guard_name' => 'web',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
         );
 
-        $role = DB::table('roles')->where('slug', RolesEnum::REVIEWER->value)->first();
+        $role = DB::table('roles')->where('slug', RolesEnum::GUEST->value)->first();
         $user->assignRole([$role->id]);
 
         $payload = ['email' => $user->email];
@@ -90,16 +90,16 @@ describe('ForgotPasswordTest', function () {
         $user = User::factory()->create();
 
         DB::table('roles')->updateOrInsert(
-            ['slug' => RolesEnum::REVIEWER],
+            ['slug' => RolesEnum::GUEST],
             [
-                'name' => 'Reviewer',
+                'name' => 'Guest',
                 'guard_name' => 'web',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
         );
 
-        $role = DB::table('roles')->where('slug', RolesEnum::REVIEWER)->first();
+        $role = DB::table('roles')->where('slug', RolesEnum::GUEST)->first();
 
         $user->assignRole([$role->id]);
 
