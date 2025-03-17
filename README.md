@@ -26,6 +26,62 @@ The **LaraVue Starter Kit** is an advanced project template that combines **Lara
 
 ---
 
+## 📥 Installation and Configuration
+
+### 🔄 Cloning the repository
+
+```bash
+git clone git@github.com:yanbrasiliano/starter-kit-laravue.git
+```
+### 📂 Access the project directory
+
+```bash
+cd starter-kit-laravue
+```
+
+### 🐳 Run Docker Compose to spin up containers
+
+```bash
+docker compose up -d --build --force-recreate --remove-orphans
+```
+
+## 🛠️ Database Configuration
+
+1 - Copy the env.example and create an instance of the database in your favorite software client.
+
+2 - In the .env, assign the connection variables related to the instance that was created.
+
+### 📦 Install Laravel and Vue.js dependencies
+
+```bash
+docker exec -it starterkit-app bash
+composer install
+npm install
+php artisan migrate --seed
+```
+
+### 🛑 If you have problems with permissions
+
+1. Give execute permission to the file:
+   ```bash
+   chmod +x permissions.sh
+   ```
+2. Now run the script:
+   ```bash
+   ./permissions.sh
+   ```
+
+### 🌐 Access the system
+
+Run the command:
+
+```bash
+docker exec -it starterkit-app npm run dev
+```
+
+Now, access the system through the link:
+http://localhost:8001
+
 ## 🚀 **Project Architecture**
 
 The architecture adopted minimizes complexity and improves testability. Laravel's native **Action Pattern** was used, eliminating the need for custom `Service Providers'.
@@ -34,13 +90,6 @@ The architecture adopted minimizes complexity and improves testability. Laravel'
 Application Architecture](./architecture.svg)
 
 ---
-
-## GETTING STARTING UP THE APP
-
-`docker compose up -d --build` or add `--force-recreate` to recreate the container 
-
-`docker exec -it starterkit-app bash` => `npm run dev` or `php artisan test`
-
 
 ## 📊 **Database Schema Dump & ER Diagram**
 
