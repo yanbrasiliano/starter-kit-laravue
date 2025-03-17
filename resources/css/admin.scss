@@ -1,162 +1,176 @@
-/**
- * Folha de Estilo Geral de customização do layout
- * (OBS: o padrão de nomenclatura para novas 'class' é o BEM)
- **/
- @import 'quasar-variables.sass';
+@import 'quasar-variables.sass';
 
- .layout__admin {
-   min-height: 100vh;
- }
- 
- .dropdown__header--style {
-   border-radius: 0;
- }
- 
- .text__header--style {
-   font-size: 18px;
-   color: #3b3b3b;
- }
- 
- .bg__grey--style {
-   background-color: #f5f5f5ff;
- }
- 
- .logo__sidebar--inactive {
-   top: 15px;
-   left: 5px;
-   position: absolute;
- }
- 
- .logo__sidebar--active {
-   top: 15px;
-   left: 35px;
-   position: absolute;
- }
- 
- .title__page--style {
-   font-size: 20px;
-   color: $dark;
- }
- 
- .q-drawer--left.q-drawer--bordered {
-   z-index: 999999;
- }
- 
- .sidebar-custom {
-   height: calc(100% - 135px);
-   margin-top: 135px;
- 
-   .q-item__section--avatar {
-     min-width: 40px;
-   }
- }
- 
- .header-custom {
-   .toolbar-custom {
-     height: 100px;
-     padding: 0 50px;
-     color: #232f34 !important;
-     padding-right: 1.8rem;
- 
-     .text-h4 {
-       font-size: 1.74rem;
-       font-weight: 500;
-     }
- 
-     i:first-child {
-       font-size: 3.1rem;
-     }
- 
-     .question-mark {
-       font-size: 0.8rem !important;
-       margin-right: 1.6rem;
- 
-       i {
-         font-size: 1.3rem;
-       }
-     }
- 
-     .q-btn__content .block {
-       font-size: 1.1rem;
-     }
- 
-     button {
-       text-transform: none;
- 
-       &:hover {
-         background: unset;
-       }
-     }
- 
-     .q-hoverable:hover > .q-focus-helper {
-       opacity: 0 !important;
-     }
- 
-     .q-ripple {
-       background-color: unset;
-       opacity: 0;
-     }
-   }
- 
-   .q-layout__shadow {
-     bottom: unset;
- 
-     &:after {
-       box-shadow: unset;
-     }
-   }
- }
- 
- .page-top {
-   margin-top: -0.8rem;
-   padding-bottom: 0.3rem;
- 
-   .title__page--style {
-     color: $dark;
-     font-size: 1.5rem;
-     font-weight: 500;
-   }
- }
- 
- .page-top-span {
-   font-size: 0.989rem;
-   color: $dark;
- }
- 
- @media (max-width: 600px) {
-   .q-layout-container .absolute-full {
-     right: unset !important;
-   }
- 
-   .header-custom {
-     .toolbar-custom {
-       padding: 0 2.5rem 0 0.9375rem;
- 
-       .text-h4 {
-         font-size: 1.1rem;
-         line-height: 0;
-       }
- 
-       i:first-child {
-         font-size: 2.3rem;
-       }
- 
-       .question-mark {
-         margin-right: 2.6rem;
- 
-         span {
-           i {
-             font-size: 1.2rem !important;
-           }
-         }
-       }
-     }
-   }
- }
+.layout__admin {
+  min-height: 100vh;
+}
 
- @media (max-width: 1024px) {
-    .q-layout-container .absolute-full {
-        right: 0 !important;
-    }
+.dropdown__header--style {
+  border-radius: 0px;
+}
+
+.text__header--style {
+  font-size: 18px;
+  color: #3b3b3b;
+}
+
+.bg__grey--style {
+  background-color: #f5f5f5ff;
+}
+
+.logo__sidebar--inactive {
+  top: 15px;
+  left: 5px;
+  position: absolute;
+}
+
+.logo__sidebar--active {
+  top: 15px;
+  left: 35px;
+  position: absolute;
+}
+
+.title__page--style {
+  font-size: 20px;
+  color: $dark;
+}
+
+.q-drawer--left.q-drawer--bordered {
+  z-index: 999999;
+}
+
+.sidebar-custom {
+  height: calc(100% - 135px);
+  margin-top: 135px;
+}
+
+.sidebar-custom .q-item__section--avatar {
+  min-width: 40px;
+}
+
+.header-custom .toolbar-custom {
+  height: 100px;
+  padding: 0 50px;
+  color: #232f34 !important;
+  padding-right: 1.8rem;
+}
+
+.header-custom .toolbar-custom .text-h4 {
+  font-size: 1.74rem;
+  font-weight: 500;
+}
+
+.header-custom .toolbar-custom i:first-child {
+  font-size: 3.1rem;
+}
+
+.header-custom .toolbar-custom .question-mark i {
+  font-size: 1.3rem;
+}
+
+.header-custom .toolbar-custom .question-mark {
+  font-size: 0.8rem !important;
+  margin-right: 1.6rem;
+}
+
+.header-custom .toolbar-custom .q-btn__content .block {
+  font-size: 1.1rem;
+}
+
+.header-custom .toolbar-custom button {
+  text-transform: none;
+}
+
+.header-custom .toolbar-custom button:hover {
+  background: unset;
+}
+
+.header-custom .q-hoverable:hover > .q-focus-helper {
+  opacity: 0 !important;
+}
+
+.header-custom .toolbar-custom .q-ripple {
+  background-color: unset;
+  opacity: 0;
+}
+
+.header-custom .q-layout__shadow:after {
+  box-shadow: unset;
+}
+
+.header-custom .q-layout__shadow {
+  bottom: unset;
+}
+
+.page-top {
+  margin-top: -0.8rem;
+  padding-bottom: 0.3rem;
+}
+
+.page-top .title__page--style {
+  color: $dark;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.page-top-span {
+  font-size: 0.989rem;
+  color: $dark;
+}
+
+.notices-padding {
+  padding-left: 24px;
+}
+
+.q-drawer--mobile {
+  border-right: unset !important;
+}
+
+.avatar-mobile > div {
+  padding: 1rem 1.4rem;
+}
+
+.header-mobile .q-layout__shadow:after {
+  box-shadow: unset;
+}
+
+.q-page-container main.q-layout-padding {
+  padding-left: 1.2rem;
+}
+
+@media (max-width: 599.98px) {
+  .q-layout-container .absolute-full {
+    right: 0 !important;
   }
- 
+  .notices-padding {
+    padding-left: 0.3125rem;
+  }
+  .header-custom .toolbar-custom {
+    padding: 0 2.5rem 0 0.9375rem;
+  }
+  .header-custom .toolbar-custom .text-h4 {
+    font-size: 1.1rem;
+    line-height: 0;
+  }
+  .header-custom .toolbar-custom i:first-child {
+    font-size: 2.3rem;
+  }
+  .header-custom .toolbar-custom .question-mark span i {
+    font-size: 1.2rem !important;
+  }
+  .header-custom .toolbar-custom .question-mark {
+    margin-right: 2.6rem;
+  }
+
+  .q-page-container main.q-layout-padding {
+    padding-right: 1.5em;
+  }
+  .page-top .title__page--style {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .q-layout-container .absolute-full {
+    right: 0 !important;
+  }
+}
