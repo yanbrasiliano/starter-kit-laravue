@@ -155,7 +155,6 @@ const useRole = () => {
       loading.value = true;
       params.search = searchText.value;
       await store.list(params);
-      console.log(store.getRolesRows.roles);
       rows.value = store.getRolesRows.roles;
       pagination.value.rowsPerPage = store.getRolesRows.pagination.per_page;
       pagination.value.page = store.getRolesRows.pagination.current_page;

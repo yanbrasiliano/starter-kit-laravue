@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-config">
     <slot name="title" />
     <q-card>
       <q-card-section>

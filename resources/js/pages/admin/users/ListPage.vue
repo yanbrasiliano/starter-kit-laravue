@@ -5,9 +5,9 @@ import SearchInput from '@/components/shared/SearchInput.vue';
 import TableSync from '@/components/users/TableSync.vue';
 import useUser from '@/composables/User/useUser';
 import useUserConfigListPage from '@/composables/User/useUserConfigListPage';
+import PageWrapper from '@/pages/admin/PageWrapper.vue';
 import { hasPermission } from '@utils/hasPermission';
 import { USER_PERMISSION } from '@utils/permissions';
-import PageWrapper from '../PageWrapper.vue';
 
 const { columns } = useUserConfigListPage();
 const {

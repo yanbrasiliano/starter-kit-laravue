@@ -31,6 +31,8 @@ const confirmDeleteRow = (isStatus) => {
 <template>
   <q-table
     class="table-default-data-table"
+    flat
+    bordered
     :rows="rows"
     :columns="columns"
     row-key="name"

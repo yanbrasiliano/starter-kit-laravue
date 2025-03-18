@@ -8,9 +8,10 @@ const searchValue = ref('');
   <q-input
     v-model="searchValue"
     filled
-    label="Pesquisar por..."
+    class="search-input"
+    label="Pesquise por..."
     @update:model-value="emit('updateSearch', searchValue)">
-    <template #append>
+    <template #prepend>
       <q-icon
         name="search"
         class="cursor-pointer"
