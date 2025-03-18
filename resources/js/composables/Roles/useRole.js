@@ -6,17 +6,20 @@ import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { ROLES } from '@/utils/roles';
 
 const useRole = () => {
   const $q = useQuasar();
   const router = useRouter();
   const route = useRoute();
+  const searchText = ref('');
   const { role, roles, pagination, loading, errors, message, isSuccess } =
     storeToRefs(useRoleStore());
-  const roleStore = useRoleStore();
+  const store = useRoleStore();
   const permissionStore = usePermissionStore();
   const authStore = useAuthStore();
 
+  const rows = ref([]);
   const selectedPermissionIds = ref([]);
   const initialRoleSetup = ref(false);
 
@@ -44,18 +47,31 @@ const useRole = () => {
     { immediate: true, deep: true },
   );
 
-  const shouldBlockDeleteRoleUserAuth = computed(() => {
-    return (idRoleRow) => !authStore.getRoles.find(({ id }) => id == idRoleRow);
-  });
-
-  const shouldBlockSelectPermission = computed(() => role.value?.id === 1);
-
-  const isProtectedRole = (idRoleRow) => {
-    return idRoleRow === 1 || idRoleRow === 2; // Admin (1) ou Visitante (2)
+  const shouldBlockDeleteRoleUserAuth = (idRoleRow) => {
+    return !authStore.getRoles.find(({ id }) => id == idRoleRow);
   };
 
-  const shouldBlockEditRoleAdmin = (idRoleRow) => {
-    return idRoleRow === 1;
+  const shouldBlockSelectPermission = computed(() => {
+    return role.value?.slug === ROLES.ADMINISTRATOR
+  });
+
+  const isProtectedRole = (slugRoleRow) => {
+    return slugRoleRow === ROLES.ADMINISTRATOR || slugRoleRow === ROLES.GUEST;
+  };
+
+  const handleSearch = async (value) => {
+    searchText.value = value;
+    await listPage({
+      limit: pagination?.rowsPerPage,
+      page: pagination?.page,
+      order:
+        pagination?.descending || pagination?.descending == undefined ? 'desc' : 'asc',
+      column: pagination?.sortBy,
+    });
+  };
+
+  const shouldBlockEditRoleAdmin = (slugRoleRow) => {
+    return slugRoleRow === ROLES.ADMINISTRATOR;
   };
 
   const shouldBlockDeleteProtectedRole = (idRoleRow) => {
@@ -84,8 +100,8 @@ const useRole = () => {
     try {
       const hasId = Boolean(route.params.id);
       const action = hasId
-        ? roleStore.update(route.params.id, params)
-        : roleStore.store(params);
+        ? store.update(route.params.id, params)
+        : store.store(params);
 
       await action;
 
@@ -101,13 +117,13 @@ const useRole = () => {
   };
 
   const initializeRoleData = async () => {
-    roleStore.resetStore();
+    store.resetStore();
     await permissionStore.fetchPermissions();
     initialRoleSetup.value = false;
   };
 
   const cleanupRoleData = () => {
-    roleStore.resetStore();
+    store.resetStore();
     selectedPermissionIds.value = [];
     initialRoleSetup.value = false;
   };
@@ -118,7 +134,7 @@ const useRole = () => {
       pagination.value.descending = event.pagination?.descending;
       pagination.value.sortBy = event.pagination?.sortBy;
 
-      await roleStore.fetchRoles({
+      await listPage({
         limit: event.pagination?.rowsPerPage,
         page: event.pagination?.page,
         order:
@@ -126,11 +142,29 @@ const useRole = () => {
             ? 'desc'
             : 'asc',
         column: event.pagination?.sortBy,
+        search: '',
       });
     } finally {
       $q.loading.hide();
     }
   }
+
+  const listPage = async (params = {}) => {
+    try {
+      $q.loading.show();
+      loading.value = true;
+      params.search = searchText.value;
+      await store.list(params);
+      console.log(store.getRolesRows.roles);
+      rows.value = store.getRolesRows.roles;
+      pagination.value.rowsPerPage = store.getRolesRows.pagination.per_page;
+      pagination.value.page = store.getRolesRows.pagination.current_page;
+      pagination.value.rowsNumber = store.getRolesRows.pagination.total;
+    } finally {
+      loading.value = false;
+      $q.loading.hide();
+    }
+  };
 
   const onEdit = (event) => {
     router.push({
@@ -144,7 +178,7 @@ const useRole = () => {
   const onDelete = async (event) => {
     try {
       $q.loading.show();
-      await roleStore.destroy(event.id);
+      await store.destroy(event.id);
 
       notify('Perfil excluído com sucesso!');
     } finally {
@@ -162,6 +196,7 @@ const useRole = () => {
     errors,
     message,
     isSuccess,
+    rows,
     selectedPermissionIds,
     shouldBlockSelectPermission,
     shouldBlockDeleteRoleUserAuth,
@@ -169,6 +204,7 @@ const useRole = () => {
     shouldBlockDeleteProtectedRole,
     togglePermission,
     saveRole,
+    handleSearch,
     initializeRoleData,
     cleanupRoleData,
     updatePagination,

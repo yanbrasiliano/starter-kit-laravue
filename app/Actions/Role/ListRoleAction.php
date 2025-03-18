@@ -18,10 +18,28 @@ final readonly class ListRoleAction
     public function execute(Fluent $params): LengthAwarePaginator|Collection
     {
         return Role::query()
-            ->with(['permissions' => fn ($query) => $query->select(['id', 'description'])])
-            ->when($params->get('order'), function ($query) use ($params) {
-                return $query->orderBy($params->get('column', 'id'), $params->get('order', 'asc'));
+            ->with(['permissions' => fn ($query) => $query->select(['id', 'description', 'name'])])
+            ->when($params->get('search'), function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->whereLike('id', "%$search%")
+                        ->orWhereLike('name', "%$search%")
+                        ->orWhereLike('description', "%$search%");
+                });
             })
-            ->when($params->get('paginated', false), fn ($query) => $query->paginate($params->get('limit', 10)), fn ($query) => $query->get());
+            ->when($params->get('order'), function ($query) use ($params) {
+                return $query->orderBy(
+                    match ($params->get('column', 'id')) {
+                        'name' => 'name',
+                        'description' => 'description',
+                        default => 'id',
+                    },
+                    $params->get('order', 'asc')
+                );
+            })
+            ->when(
+                $params->get('paginated', false),
+                fn ($query) => $query->paginate($params->get('limit', 10)),
+                fn ($query) => $query->get()
+            );
     }
 }

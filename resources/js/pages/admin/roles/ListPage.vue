@@ -3,12 +3,14 @@ import TableSync from '@/components/roles/TableSync.vue';
 import PageTopTitle from '@/components/shared/PageTopTitle.vue';
 import useRole from '@composables/Roles/useRole';
 import useRoleConfigListPage from '@composables/Roles/useRoleConfigListPage';
+import SearchInput from '@/components/shared/SearchInput.vue';
 import { hasPermission } from '@utils/hasPermission';
 import { ROLE_PERMISSION } from '@utils/permissions';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const { loading, roles, pagination, updatePagination, onEdit, onDelete } = useRole();
+const { loading, rows, pagination, handleSearch, updatePagination, onEdit, onDelete } =
+  useRole();
 const { columns } = useRoleConfigListPage();
 </script>
 <template>
@@ -20,7 +22,10 @@ const { columns } = useRoleConfigListPage();
     </div>
     <q-card>
       <q-card-section>
-        <div class="row justify-end">
+        <div class="row justify-between">
+          <div class="col-md-4">
+            <SearchInput @update-search="handleSearch" @trigger-search="handleSearch" />
+          </div>
           <div class="col-md-4 offset-md-4">
             <div class="column items-end">
               <q-btn
@@ -37,7 +42,7 @@ const { columns } = useRoleConfigListPage();
         <TableSync
           :loading="loading"
           :columns="columns"
-          :rows="roles"
+          :rows="rows"
           :pagination="pagination"
           @update-pagination="updatePagination"
           @on-edit="onEdit"

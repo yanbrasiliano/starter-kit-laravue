@@ -2,7 +2,11 @@
 import useRole from '@/composables/Roles/useRole';
 import { ref } from 'vue';
 
-const { shouldBlockEditRoleAdmin, shouldBlockDeleteRoleUserAuth } = useRole();
+const {
+  shouldBlockEditRoleAdmin,
+  shouldBlockDeleteRoleUserAuth,
+  shouldBlockDeleteProtectedRole,
+} = useRole();
 const emit = defineEmits(['updatePagination', 'onConsult', 'onEdit', 'onDelete']);
 const loading = ref();
 const pagination = ref({});
@@ -83,7 +87,7 @@ const confirmDeleteRow = (isStatus) => {
               <q-tooltip>Visualizar</q-tooltip>
             </q-btn>
             <q-btn
-              v-if="!shouldBlockEditRoleAdmin(props.row.id) && col.methods.onEdit"
+              v-if="!shouldBlockEditRoleAdmin(props.row.slug) && col.methods.onEdit"
               color="primary"
               flat
               dense
@@ -93,8 +97,8 @@ const confirmDeleteRow = (isStatus) => {
             </q-btn>
             <q-btn
               v-if="
-                !(props.row.id === 1) &&
-                shouldBlockDeleteRoleUserAuth &&
+                !shouldBlockDeleteProtectedRole(props.row.slug) &&
+                shouldBlockDeleteRoleUserAuth(props.row.id) &&
                 col.methods.onDelete
               "
               color="primary"

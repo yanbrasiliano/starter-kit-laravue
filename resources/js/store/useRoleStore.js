@@ -36,17 +36,14 @@ const useRoleStore = defineStore('roles', {
     },
   },
   actions: {
-    async fetchRoles(params) {
-      this.loading = true;
+    async list(params) {
       try {
-        const { pagination, roles, status } = await roleService.index(params);
-        String(status).startsWith('2') &&
-          ((this.roles = roles),
-          (this.pagination = {
-            rowsPerPage: pagination?.per_page,
-            page: pagination?.current_page,
-            rowsNumber: pagination?.total,
-          }));
+        const data = await roleService.index(params);
+        this.roles = data;
+      } catch (error) {
+        this.isSuccess = false;
+        this.errors = error.response.data.errors;
+        throw error;
       } finally {
         this.loading = false;
       }
