@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Actions\User;
 
@@ -17,9 +17,12 @@ final readonly class VerifyAction
     public function execute(Fluent $params): void
     {
         DB::transaction(function () use ($params) {
-            if (!request()->hasValidSignature()) {
-                throw new \Exception('Link de validação expirado, cadastre-se novamente', Response::HTTP_NOT_FOUND);
-            }
+            throw_if(
+                !request()->hasValidSignature(),
+                \Exception::class,
+                'Link de validação expirado, cadastre-se novamente',
+                Response::HTTP_NOT_FOUND
+            );
 
             // @phpstan-ignore-next-line
             $userId = $params->id;
@@ -27,12 +30,12 @@ final readonly class VerifyAction
             /** @var User $user */
             $user = User::query()->whereKey($userId)->firstOrFail();
 
-            if ($user->email_verified_at !== null) {
-                throw new \Exception(
-                    'Seu cadastro já foi validado! Por favor, aguarde até que um administrador realize a liberação do seu acesso.',
-                    Response::HTTP_CONFLICT
-                );
-            }
+            throw_if(
+                $user->email_verified_at !== null,
+                \Exception::class,
+                'Seu cadastro já foi validado! Por favor, aguarde até que um administrador realize a liberação do seu acesso.',
+                Response::HTTP_CONFLICT
+            );
 
             $user->update([
                 'email_verified_at' => now(),

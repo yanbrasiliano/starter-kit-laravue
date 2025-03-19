@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
@@ -14,17 +14,19 @@ class CheckPermission
 {
     public function handle(Request $request, Closure $next)
     {
-
         $user = auth()->user();
         $permission = Route::currentRouteName();
 
         $permissions = str_contains($permission, 'view')
-          ? [$permission, str_replace('view', 'edit', $permission)]
-          : [$permission];
+            ? [$permission, str_replace('view', 'edit', $permission)]
+            : [$permission];
 
-        if (!$user->canAny($permissions)) {
-            throw new Exception('Você não tem permissão para realizar esta ação.', HttpResponse::HTTP_FORBIDDEN);
-        }
+        throw_if(
+            !$user->canAny($permissions),
+            Exception::class,
+            'Você não tem permissão para realizar esta ação.',
+            HttpResponse::HTTP_FORBIDDEN
+        );
 
         return $next($request);
     }
