@@ -1,11 +1,11 @@
 <script setup>
-import logoSmaller from '@assets/logoSmaller-50px40px.png';
+import useAuthenticate from '@/composables/Authenticate/useAuthenticate';
+import useAuthStore from '@/store/useAuthStore';
 import logoImage from '@assets/logo-125px40px.png';
+import logoSmaller from '@assets/logoSmaller-50px40px.png';
 import { hasPermission } from '@utils/hasPermission';
 import { isActiveLink } from '@utils/isActiveLink';
 import { ROLE_PERMISSION, USER_PERMISSION } from '@utils/permissions';
-import useAuthStore from '@/store/useAuthStore';
-import useAuthenticate from '@/composables/Authenticate/useAuthenticate';
 import { useRouter } from 'vue-router';
 
 const props = defineProps({
@@ -26,7 +26,7 @@ const emit = defineEmits(['update:miniState']);
 
 <template>
   <q-scroll-area class="sidebar-custom">
-    <q-list padding class="q-mt-md">
+    <q-list padding class="q-mt-md q-pb-none">
       <q-item
         v-ripple
         clickable
@@ -117,7 +117,10 @@ const emit = defineEmits(['update:miniState']);
       @click="emit('update:miniState', !props.miniState)"></q-btn>
   </div>
 
-  <div v-if="isMobile" class="absolute-top text-white avatar-mobile" style="height: 150px">
+  <div
+    v-if="isMobile"
+    class="absolute-top text-white avatar-mobile"
+    style="height: 150px">
     <div class="absolute-bottom bg-transparent">
       <div size="56px" class="q-mb-sm">
         <q-icon name="account_circle" size="56px" />

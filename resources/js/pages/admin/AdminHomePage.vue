@@ -1,10 +1,19 @@
-<template>
-  <q-page class="q-pr-md q-pr-none-xs">
-    <q-card class="q-mb-md">
-      <q-card-section class="text-h5"> Dashboard </q-card-section>
-    </q-card>
+<script setup>
+import PageWrapper from '@/pages/admin/PageWrapper.vue';
 
-    <q-card class="q-mb-md">
+const userCount = 1234;
+const profileCount = 10;
+</script>
+
+<template>
+  <PageWrapper>
+    <template #title>
+      <q-card class="q-mb-md">
+        <q-card-section class="text-h5"> Dashboard </q-card-section>
+      </q-card>
+    </template>
+
+    <template #content>
       <q-card-section>
         <div class="row q-gutter-md">
           <q-card class="col q-pa-sm">
@@ -12,7 +21,7 @@
             <q-card-section>
               <div class="row items-center">
                 <q-icon name="people" class="q-mr-sm" size="32px" />
-                <span class="text-h6">1234</span>
+                <span class="text-h6">{{ userCount }}</span>
               </div>
             </q-card-section>
           </q-card>
@@ -22,12 +31,12 @@
             <q-card-section>
               <div class="row items-center">
                 <q-icon name="contacts" class="q-mr-sm" size="32px" />
-                <span class="text-h6">10</span>
+                <span class="text-h6">{{ profileCount }}</span>
               </div>
             </q-card-section>
           </q-card>
         </div>
       </q-card-section>
-    </q-card>
-  </q-page>
+    </template>
+  </PageWrapper>
 </template>
