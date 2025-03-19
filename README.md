@@ -102,8 +102,7 @@ pg_dump --schema-only --file=schema.sql “postgres://$(grep DB_USERNAME .env | 
 DER generation:
 
 ```bash
-npx @liam-hq/cli erd build --input $(pwd)/schema.sql --format=postgres
-mv $(pwd)/dist $(pwd)/public
+npx @liam-hq/cli erd build --input $(pwd)/schema.sql --format=postgres --output-dir $(pwd)/public
 ```
 
 The diagram will be accessible at `/der?key=access_key`. To do this, set `APP_DER_KEY` in `.env`.
