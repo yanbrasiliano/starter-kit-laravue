@@ -87,7 +87,7 @@ http://localhost:8001
 The architecture adopted minimizes complexity and improves testability. Laravel's native **Action Pattern** was used, eliminating the need for custom `Service Providers'.
 
 📌 **Architecture Diagram**  
-Application Architecture](./architecture.svg)
+[Application Architecture](./architecture.svg)
 
 ---
 
