@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Actions\Auth;
 
@@ -22,7 +22,7 @@ final readonly class MyProfileAction
             'permissions' => $user->getAllPermissions()->toArray(),
             'roles' => $user->roles()->get(['id', 'name'])->toArray(),
         ]
-        : [];
+            : [];
 
         return $userData;
     }

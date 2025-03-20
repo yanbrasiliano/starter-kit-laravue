@@ -21,8 +21,14 @@ The **LaraVue Starter Kit** is an advanced project template that combines **Lara
 - **Vue 3.5** | **Quasar Framework**
 - **Pinia (State Management)**
 - **Spatial Permission**
-- **PestPHP and PHPUnit**
+- **PestPHP**
 - **Larastan (PHPStan for Laravel)**
+- **Scramble (API Documentation)**
+- **Laravel Debugbar**
+- **Larvel Horizon**
+- **Laravel Telescope**
+- **Spatie Activity Log**
+- **Docker**
 
 ---
 
@@ -33,6 +39,7 @@ The **LaraVue Starter Kit** is an advanced project template that combines **Lara
 ```bash
 git clone git@github.com:yanbrasiliano/starter-kit-laravue.git
 ```
+
 ### 📂 Access the project directory
 
 ```bash
@@ -84,7 +91,7 @@ http://localhost:8001
 
 ## 🚀 **Project Architecture**
 
-The architecture adopted minimizes complexity and improves testability. Laravel's native **Action Pattern** was used, eliminating the need for custom `Service Providers'.
+We use Laravel's native Action Pattern, which promotes the separation of responsibilities by encapsulating each functionality in a specific action. This eliminates the need for custom Service Providers and facilitates code reuse and maintenance. Actions perform a single task, making the code cleaner, more predictable and testable.We adopted the Event-Driven Development (EDD) paradigm to decouple processes and improve the extensibility of the system. This model allows events to be triggered from actions or services and processed by Listeners asynchronously or synchronously, as required. This makes it easier to implement logic such as notifications, log auditing and integration with external systems without directly coupling these responsibilities to the main flow of the application.
 
 📌 **Architecture Diagram**  
 [Application Architecture](./architecture.svg)
@@ -109,7 +116,6 @@ The diagram will be accessible at `/der?key=access_key`. To do this, set `APP_DE
 
 ---
 
-
 ## 🔄 **Commit Conventions**
 
 We follow the **Conventional Commits** specification to maintain a clean commit history and facilitate semantic versioning. Every commit message should follow the structure:
@@ -119,6 +125,7 @@ We follow the **Conventional Commits** specification to maintain a clean commit 
 ```
 
 Where:
+
 - **type**: Represents the type of change made. Examples include adding a feature, fixing a bug, etc.
 - **Jira task ID**: The unique ID associated with the Jira task or activity related to the commit. This allows you to track which task the commit is addressing.
 - **description of what was done**: A concise, clear explanation of what was changed, added, or fixed in the code.
@@ -138,12 +145,12 @@ Where:
 - **revert**: Reverts a previous commit or set of changes.
 
 ### Benefits of Following This Convention:
+
 - **Consistency**: The use of a standard format makes it easier for developers to understand commit history.
 - **Traceability**: Linking each commit to a Jira task ID allows for better tracking and traceability.
 - **Automation**: Enables the use of tools like semantic versioning and automatic changelog generation.
 
-Following this convention will help ensure that commits are clear, well-documented, and directly tied to specific tasks, making it easier to understand the context of each change.
----
+## Following this convention will help ensure that commits are clear, well-documented, and directly tied to specific tasks, making it easier to understand the context of each change.
 
 ## 📝 **Code Standards**
 
@@ -165,4 +172,5 @@ Following this convention will help ensure that commits are clear, well-document
 
 - [ ] Set phpstan max level(10), currently level is 8.
 - [ ] Create **policies** for users and permissions.
-- [ ] Create screen to display **application logs**.
+- [ ] Create a screen to display the logs on the frontend.
+- [ ] Create more unit and integration tests for the application features.

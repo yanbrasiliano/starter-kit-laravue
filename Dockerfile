@@ -2,7 +2,7 @@ FROM composer:latest AS composer
 
 FROM node:22 AS node
 
-FROM php:8.4.1-fpm AS base
+FROM php:8.4.5-fpm AS base
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV ACCEPT_EULA=Y
 ENV DEBIAN_FRONTEND=noninteractive
@@ -36,6 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 \
     wget \
     lsb-release \
+    && docker-php-ext-install pcntl \
     && pecl install -o -f redis xdebug \
     && docker-php-ext-enable redis xdebug \
     && docker-php-ext-configure zip \
