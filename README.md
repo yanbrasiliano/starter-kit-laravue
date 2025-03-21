@@ -171,6 +171,7 @@ Where:
 ## 📌 **TODO List**
 
 - [ ] Set phpstan max level(10), currently level is 8.
-- [ ] Create **policies** for users and permissions.
+- [ ] Create **policies** for permissions.
 - [ ] Create a screen to display the logs on the frontend.
 - [ ] Create more unit and integration tests for the application features.
+- [ ] Create a screen for show users informations.
