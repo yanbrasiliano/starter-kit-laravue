@@ -9,9 +9,9 @@ const ROLE_PERMISSION = {
 const USER_PERMISSION = {
   CREATE: 'users.create',
   LIST: 'users.list',
-  EDIT: 'users.edit',
-  VIEW: 'users.view',
+  UPDATE: 'users.update',
+  SHOW: 'users.show',
   DELETE: 'users.delete',
 };
 
-export { USER_PERMISSION, ROLE_PERMISSION };
+export { ROLE_PERMISSION, USER_PERMISSION };

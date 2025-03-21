@@ -25,12 +25,12 @@ class Handler extends ExceptionHandler
     {
         $status = match (true) {
             $exception instanceof InvalidCredentialsException => (int) ($exception->getCode() ?: Response::HTTP_UNAUTHORIZED),
-            $exception instanceof AuthenticationException => Response::HTTP_UNAUTHORIZED,
+            $exception instanceof AuthenticationException => (int) Response::HTTP_UNAUTHORIZED,
             $exception instanceof UnactivatedUserException => (int) ($exception->getCode() ?: Response::HTTP_FORBIDDEN),
-            $exception instanceof RoleIsAssignedToUserException => Response::HTTP_UNPROCESSABLE_ENTITY,
-            default => Response::HTTP_INTERNAL_SERVER_ERROR,
+            $exception instanceof RoleIsAssignedToUserException => (int) Response::HTTP_UNPROCESSABLE_ENTITY,
+            default => (int) Response::HTTP_INTERNAL_SERVER_ERROR,
         };
-
+        \Log::info('Status Code: ' . $status);
         if ($status !== Response::HTTP_INTERNAL_SERVER_ERROR || $exception->getCode() !== 0) {
             return response()->json([
                 'error' => $exception->error ?? 'Erro',

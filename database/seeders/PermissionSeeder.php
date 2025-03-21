@@ -30,7 +30,7 @@ class PermissionSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => 'users.edit',
+                'name' => 'users.update',
                 'guard_name' => 'web',
                 'description' => 'Editar usuários',
                 'resource' => 'users',
@@ -41,6 +41,14 @@ class PermissionSeeder extends Seeder
                 'name' => 'users.delete',
                 'guard_name' => 'web',
                 'description' => 'Deletar usuários',
+                'resource' => 'users',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'users.show',
+                'guard_name' => 'web',
+                'description' => 'Listar informações de um usuário',
                 'resource' => 'users',
                 'created_at' => now(),
                 'updated_at' => now(),

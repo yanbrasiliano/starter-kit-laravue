@@ -21,7 +21,7 @@ const userRoutes = {
         requiresAuth: true,
         module: 'Usuários',
         icon: 'people_alt',
-        roles: [USER_PERMISSION.EDIT],
+        roles: [USER_PERMISSION.UPDATE],
       },
     },
     {

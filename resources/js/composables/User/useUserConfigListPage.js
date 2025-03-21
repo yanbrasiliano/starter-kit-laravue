@@ -50,7 +50,7 @@ export default function useUserConfigListPage() {
       format: (val) => `${val}`,
       methods: {
         onConsult: false,
-        onEdit: hasPermission([USER_PERMISSION.EDIT]),
+        onEdit: hasPermission([USER_PERMISSION.UPDATE]),
         onDelete: (row) => {
           return row.id !== user.value?.id && hasPermission([USER_PERMISSION.DELETE]);
         },

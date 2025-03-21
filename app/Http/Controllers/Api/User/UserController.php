@@ -26,22 +26,26 @@ class UserController extends Controller
 
     public function store(CreateUserRequest $request): JsonResource
     {
+        $this->authorize('create', User::class);
+
         $user = app(CreateUserAction::class)->execute($request->fluent());
 
         return new UserResource($user);
     }
 
-    public function show(): JsonResource
+
+    public function show(int $id): JsonResource
     {
-        $showUser = app(ShowUserAction::class)->execute(request()->route('id'));
+        $this->authorize('show', User::class);
+
+        $showUser = app(ShowUserAction::class)->execute($id);
 
         return new UserResource($showUser);
     }
 
-    public function update(UpdateUserRequest $request): JsonResource
+    public function update(UpdateUserRequest $request, int $id): JsonResource
     {
-        /** @var int|string $id */
-        $id = request()->route('id');
+        $this->authorize('update', User::class);
 
         $updatedUser = app(UpdateUserAction::class)->execute(
             params: $request->fluent(),
@@ -53,6 +57,8 @@ class UserController extends Controller
 
     public function destroy(Request $request, User $user): Response
     {
+        $this->authorize('delete', User::class);
+
         try {
             $response = app(DeleteUserAction::class)->execute(params: $request->fluent(), user: $user);
 

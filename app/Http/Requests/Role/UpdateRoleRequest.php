@@ -50,7 +50,7 @@ class UpdateRoleRequest extends FormRequest
                     $trimmedValue = trim($value);
                     $exists = DB::table('roles')
                         ->whereRaw('LOWER(name) = ?', [strtolower($trimmedValue)])
-                        ->when($this->id, fn($query) => $query->where('id', '!=', $this->id))
+                        ->when($this->role, fn($query) => $query->where('id', '!=', $this->role->id))
                         ->exists();
 
                     if ($exists) {

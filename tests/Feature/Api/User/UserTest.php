@@ -44,7 +44,7 @@ describe('Users Management', function () {
 
         it('should return a 404 status code for invalid user ID', function () {
             actingAs($this->asAdmin)
-                ->get(route('users.view', $this->invalidId))
+                ->get(route('users.show', $this->invalidId))
                 ->assertStatus(Response::HTTP_NOT_FOUND);
         });
     });
@@ -163,7 +163,7 @@ describe('Users Management', function () {
             function (array $updateDataUser, array $userJsonValidStructure) {
 
                 actingAs($this->asAdmin)
-                    ->put(route('users.edit', [$this->asAdmin->id]), $updateDataUser)
+                    ->put(route('users.update', [$this->asAdmin->id]), $updateDataUser)
                     ->assertStatus(Response::HTTP_OK)
                     ->assertJsonStructure($userJsonValidStructure);
             }
@@ -176,7 +176,7 @@ describe('Users Management', function () {
             function (array $nameNotProvided) {
 
                 actingAs($this->asAdmin)
-                    ->put(route('users.edit', [$this->asAdmin->id]), $nameNotProvided)
+                    ->put(route('users.update', [$this->asAdmin->id]), $nameNotProvided)
                     ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
                     ->assertJson([
                         'errors' => [
@@ -193,7 +193,7 @@ describe('Users Management', function () {
             function (array $invalidEmail) {
 
                 actingAs($this->asAdmin)
-                    ->put(route('users.edit', $this->asAdmin->id), $invalidEmail)
+                    ->put(route('users.update', $this->asAdmin->id), $invalidEmail)
                     ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
                     ->assertJson([
                         'errors' => [
@@ -210,7 +210,7 @@ describe('Users Management', function () {
             function (array $emailAlreadyExists) {
 
                 actingAs($this->asAdmin)
-                    ->put(route('users.edit', [$this->asAdmin->id]), $emailAlreadyExists)
+                    ->put(route('users.update', [$this->asAdmin->id]), $emailAlreadyExists)
                     ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
                     ->assertJson([
                         'errors' => [
@@ -227,7 +227,7 @@ describe('Users Management', function () {
             function (array $invalidStatus) {
 
                 actingAs($this->asAdmin)
-                    ->put(route('users.edit', [$this->asAdmin->id]), $invalidStatus)
+                    ->put(route('users.update', [$this->asAdmin->id]), $invalidStatus)
                     ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
                     ->assertJson([
                         'errors' => [
@@ -244,7 +244,7 @@ describe('Users Management', function () {
             function (array $invalidRoleData) {
 
                 actingAs($this->asAdmin)
-                    ->put(route('users.edit', [$this->asAdmin->id]), $invalidRoleData)
+                    ->put(route('users.update', [$this->asAdmin->id]), $invalidRoleData)
                     ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
                     ->assertJson([
                         'errors' => [
