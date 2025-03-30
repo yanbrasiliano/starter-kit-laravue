@@ -1,20 +1,20 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Actions\User;
 
 use App\Actions\Role\RoleBySlugAction;
 use App\Mail\SendVerifyEmail;
 use App\Models\User;
-use App\Traits\LogsActivityTrait;
+use App\Traits\LogsActivity;
 use Illuminate\Support\Facades\{DB, Mail};
 use Illuminate\Support\Fluent;
 use Spatie\Permission\Models\Role;
 
 final readonly class CreateExternalUserAction
 {
-    use LogsActivityTrait;
+    use LogsActivity;
 
     /**
      * @param Fluent<string, mixed> $params

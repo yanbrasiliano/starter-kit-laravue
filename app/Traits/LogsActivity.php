@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 
-trait LogsActivityTrait
+trait LogsActivity
 {
     /**
      * Logs an update activity.
@@ -26,11 +26,11 @@ trait LogsActivityTrait
         ];
 
         activity($activityName)
-          ->event('update')
-          ->performedOn($model)
-          ->causedBy(auth()->user())
-          ->withProperties(['attributes' => $changes])
-          ->log($description);
+            ->event('update')
+            ->performedOn($model)
+            ->causedBy(auth()->user())
+            ->withProperties(['attributes' => $changes])
+            ->log($description);
     }
 
     /**
@@ -44,11 +44,11 @@ trait LogsActivityTrait
     public function logDeleteActivity(string $activityName, Model $model, string $description = 'Deleted record'): void
     {
         activity($activityName)
-          ->event('delete')
-          ->performedOn($model)
-          ->causedBy(auth()->user())
-          ->withProperties(['attributes' => ['before' => $model->toArray()]])
-          ->log($description);
+            ->event('delete')
+            ->performedOn($model)
+            ->causedBy(auth()->user())
+            ->withProperties(['attributes' => ['before' => $model->toArray()]])
+            ->log($description);
     }
 
     /**
@@ -63,10 +63,10 @@ trait LogsActivityTrait
     public function logGeneralActivity(string $activityName, Model $model, string $description, string $event = 'view'): void
     {
         activity($activityName)
-          ->event($event)
-          ->performedOn($model)
-          ->causedBy(auth()->user())
-          ->withProperties(['attributes' => $model->toArray()])
-          ->log($description);
+            ->event($event)
+            ->performedOn($model)
+            ->causedBy(auth()->user())
+            ->withProperties(['attributes' => $model->toArray()])
+            ->log($description);
     }
 }

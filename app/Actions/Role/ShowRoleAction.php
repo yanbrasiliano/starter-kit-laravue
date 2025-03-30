@@ -1,16 +1,16 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Actions\Role;
 
-use App\Traits\LogsActivityTrait;
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Collection;
 use Spatie\Permission\Models\{Permission, Role};
 
 final readonly class ShowRoleAction
 {
-    use LogsActivityTrait;
+    use LogsActivity;
 
     public function execute(Role $role): Role
     {
@@ -21,7 +21,7 @@ final readonly class ShowRoleAction
 
         $role->setAttribute(
             'mapped_permissions',
-            $permissions->map(fn (Permission $permission): array => [
+            $permissions->map(fn(Permission $permission): array => [
                 'value' => $permission->id,
                 'label' => $permission->getAttribute('description'),
             ])->all()

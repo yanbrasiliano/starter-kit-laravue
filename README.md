@@ -165,6 +165,10 @@ Where:
   ```bash
   php artisan scramble:export
   ```
+- Run PHP Insights
+  ```bash
+  ./vendor/bin/phpstan insights
+  ```
 
 ---
 

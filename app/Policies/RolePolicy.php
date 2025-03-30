@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Policies;
 
@@ -19,7 +19,7 @@ class RolePolicy
         return $user->can('roles.list');
     }
 
-    public function show(User $user, Role $role): bool
+    public function show(User $user): bool
     {
         return $user->can('roles.view');
     }
@@ -33,7 +33,7 @@ class RolePolicy
         return $user->can('roles.edit') && $role->id !== 1;
     }
 
-    public function delete(User $user, Role $role): bool
+    public function delete(User $user): bool
     {
         return $user->can('roles.delete');
     }

@@ -1,19 +1,19 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Actions\User;
 
 use App\Actions\User\RemoveUserRoleAction as RemoveRole;
 use App\Models\User;
-use App\Traits\LogsActivityTrait;
+use App\Traits\LogsActivity;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Fluent;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 final readonly class DeleteUserAction
 {
-    use LogsActivityTrait;
+    use LogsActivity;
 
     /**
      * @param Fluent<int|string, mixed> $params

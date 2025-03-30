@@ -1,17 +1,17 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Actions\User;
 
 use App\Models\User;
-use App\Traits\LogsActivityTrait;
+use App\Traits\LogsActivity;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Fluent;
 
 final readonly class UpdateUserAction
 {
-    use LogsActivityTrait;
+    use LogsActivity;
 
     /**
      * @param Fluent<string, mixed> $params

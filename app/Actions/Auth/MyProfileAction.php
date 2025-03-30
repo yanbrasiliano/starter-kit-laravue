@@ -16,7 +16,7 @@ final readonly class MyProfileAction
         /** @var User|null $user */
         $user = auth()->user();
 
-        $userData = $user ? [
+        return $user ? [
             ...$user->only(['name', 'email']),
 
             'permissions' => $user->getAllPermissions()->toArray(),
@@ -24,6 +24,5 @@ final readonly class MyProfileAction
         ]
             : [];
 
-        return $userData;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
@@ -22,14 +22,12 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = array_merge(
+        return array_merge(
             $this->baseRules(),
             $this->cpfRule(),
             $this->passwordRule(),
             $this->roleSlugRule()
         );
-
-        return $rules;
     }
 
     /**
