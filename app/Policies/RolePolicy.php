@@ -19,7 +19,7 @@ class RolePolicy
         return $user->can('roles.list');
     }
 
-    public function show(User $user): bool
+    public function show(User $user, Role $role): bool
     {
         return $user->can('roles.view');
     }
@@ -33,7 +33,7 @@ class RolePolicy
         return $user->can('roles.edit') && $role->id !== 1;
     }
 
-    public function delete(User $user): bool
+    public function delete(User $user, Role $role): bool
     {
         return $user->can('roles.delete');
     }
