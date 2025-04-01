@@ -77,40 +77,48 @@ const confirmDeleteRow = (isStatus) => {
     <template #body="props">
       <q-tr :props="props">
         <q-td v-for="col in props.cols" :key="col.name" :props="props">
-          <span v-if="col.name == 'action'">
-            <q-btn
-              v-if="col.methods.onConsult"
-              color="primary"
-              dense
-              flat
-              icon="visibility"
-              :to="{ name: 'showRole', params: { id: props.row.id } }"
-              @click="emit('onConsult', props.row)">
-              <q-tooltip>Visualizar</q-tooltip>
-            </q-btn>
-            <q-btn
-              v-if="!shouldBlockEditRoleAdmin(props.row.slug) && col.methods.onEdit"
-              color="primary"
-              flat
-              dense
-              icon="edit"
-              @click="emit('onEdit', props.row)">
-              <q-tooltip>Editar</q-tooltip>
-            </q-btn>
-            <q-btn
-              v-if="
-                !shouldBlockDeleteProtectedRole(props.row.slug) &&
-                shouldBlockDeleteRoleUserAuth(props.row.id) &&
-                col.methods.onDelete
-              "
-              color="primary"
-              flat
-              dense
-              icon="delete"
-              @click="deleteRow(props.row)">
-              <q-tooltip>Deletar</q-tooltip>
-            </q-btn>
-          </span>
+          <q-btn
+            v-if="col.name == 'action'"
+            dense
+            flat
+            round
+            icon="more_horiz"
+            class="button-more-horiz"
+          >
+            <q-menu>
+              <q-list dense style="min-width: 150px">
+                <q-item
+                  clickable
+                  v-close-popup
+                  :to="{ name: 'showRole', params: { id: props.row.id } }"
+                  @click="emit('onConsult', props.row)"
+                >
+                  <q-item-section>Ver detalhes</q-item-section>
+                </q-item>
+                <q-item
+                  v-if="!shouldBlockEditRoleAdmin(props.row.slug) && col.methods.onEdit"
+                  clickable
+                  v-close-popup
+                  @click="emit('onEdit', props.row)"
+                >
+                  <q-item-section>Editar</q-item-section>
+                </q-item>
+                <q-separator></q-separator>
+                <q-item 
+                  v-if="
+                    !shouldBlockDeleteProtectedRole(props.row.slug) &&
+                    shouldBlockDeleteRoleUserAuth(props.row.id) &&
+                    col.methods.onDelete
+                  "
+                  clickable 
+                  v-close-popup 
+                  @click="deleteRow(props.row)"
+                >
+                  <q-item-section>Excluir</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
           <span v-else>
             {{ col.value }}
           </span>
@@ -157,4 +165,10 @@ const confirmDeleteRow = (isStatus) => {
   </q-table>
 </template>
 
-<style lang="sass"></style>
+<style lang="sass" scoped>
+:deep(.button-more-horiz i)
+  font-size: 1.2rem !important
+
+.q-list--dense > .q-item, .q-item--dense
+  min-height: 38px
+</style>

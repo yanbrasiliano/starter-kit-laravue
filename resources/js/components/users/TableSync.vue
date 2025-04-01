@@ -97,35 +97,44 @@ const confirmDeleteRow = (isStatus) => {
                 emit('onStatus', { value: $event, data: bodyProps.row })
               " />
           </span>
-          <span v-else-if="col.name == 'action'">
-            <q-btn
-              v-if="col.methods.onConsult"
-              color="primary"
-              dense
-              flat
-              icon="visibility"
-              @click="emit('onConsult', bodyProps.row)">
-              <q-tooltip>Visualizar</q-tooltip>
-            </q-btn>
-            <q-btn
-              v-if="col.methods.onEdit"
-              color="primary"
-              dense
-              flat
-              icon="edit"
-              @click="emit('onEdit', bodyProps.row)">
-              <q-tooltip>Editar</q-tooltip>
-            </q-btn>
-            <q-btn
-              v-if="col.methods.onDelete(bodyProps.row)"
-              color="primary"
-              flat
-              dense
-              icon="delete"
-              @click="deleteRow(bodyProps.row)">
-              <q-tooltip>Deletar</q-tooltip>
-            </q-btn>
-          </span>
+          <q-btn
+            v-else-if="col.name == 'action'"
+            dense
+            flat
+            round
+            icon="more_horiz"
+            class="button-more-horiz"
+          >
+            <q-menu>
+              <q-list dense style="min-width: 150px">
+                <q-item
+                  v-if="col.methods.onConsult"
+                  clickable
+                  v-close-popup
+                  @click="emit('onConsult', bodyProps.row)"
+                >
+                  <q-item-section>Ver detalhes</q-item-section>
+                </q-item>
+                <q-item
+                  v-if="col.methods.onEdit"
+                  clickable
+                  v-close-popup
+                  @click="emit('onEdit', bodyProps.row)"
+                >
+                  <q-item-section>Editar</q-item-section>
+                </q-item>
+                <q-separator></q-separator>
+                <q-item 
+                  v-if="col.methods.onDelete(bodyProps.row)"
+                  clickable 
+                  v-close-popup 
+                  @click="deleteRow(bodyProps.row)"
+                >
+                  <q-item-section>Excluir</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
           <span v-else>
             {{ col.value }}
           </span>
@@ -173,7 +182,7 @@ const confirmDeleteRow = (isStatus) => {
   </q-table>
 </template>
 
-<style lang="sass">
+<style lang="sass" scoped>
 .table-default-data-table
   .q-table__top,
   thead tr:first-child th
@@ -186,4 +195,10 @@ const confirmDeleteRow = (isStatus) => {
     z-index: 1
   thead tr:first-child th
     top: 0
+
+:deep(.button-more-horiz i)
+  font-size: 1.2rem !important
+
+.q-list--dense > .q-item, .q-item--dense
+  min-height: 38px
 </style>
