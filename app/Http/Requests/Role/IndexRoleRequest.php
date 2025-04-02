@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Http\Requests\Role;
 
@@ -9,7 +9,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class IndexRoleRequest extends FormRequest
 {
-
     use FailedValidation;
     /**
      * Determine if the user is authorized to make this request.

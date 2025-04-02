@@ -47,7 +47,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
 
-    RUN mkdir -p /var/log/nginx /var/log/php /var/log/supervisor \
+RUN mkdir -p /var/log/nginx /var/log/php /var/log/supervisor \
     && touch /var/log/nginx/access.log /var/log/nginx/error.log \
     && touch /var/log/php_errors.log \
     && chmod -R 666 /var/log/nginx/*.log /var/log/php_errors.log
@@ -62,17 +62,16 @@ RUN { \
     echo "log_errors = On"; \
     echo "error_log = /var/log/php_errors.log"; \
     echo "error_reporting = E_ALL"; \
-    if [ \"$APP_ENV\" = \"production\" ] || [ \"$APP_ENV\" = \"staging\" ]; then \
-    echo \"display_errors = Off\"; \
+    if [ "$APP_ENV" = "production" ] || [ "$APP_ENV" = "staging" ]; then \
+    echo "display_errors = Off"; \
     else \
-    echo \"display_errors = On\"; \
+    echo "display_errors = On"; \
     fi; \
-    echo "disable_functions = exec,passthru,shell_exec,system,proc_open,popen,curl_exec,curl_multi_exec,parse_ini_file,show_source"; \
+    echo "disable_functions = exec,passthru,shell_exec,system,curl_exec,curl_multi_exec,parse_ini_file,show_source"; \
     echo "[PHP]"; \
     echo "date.timezone = America/Bahia"; \
-    } > /usr/local/etc/php/conf.d/custom.ini \
-    && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    } > /usr/local/etc/php/conf.d/custom.ini
+
 
 RUN touch /var/log/php_errors.log && chmod 666 /var/log/php_errors.log \
     && echo "0 0 * * 0 truncate -s 0 /var/log/php_errors.log" > /etc/cron.d/clean_php_log \

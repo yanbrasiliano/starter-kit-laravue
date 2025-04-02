@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Http\Controllers\Api\User;
 
@@ -32,7 +32,6 @@ class UserController extends Controller
 
         return new UserResource($user);
     }
-
 
     public function show(int $id): JsonResource
     {

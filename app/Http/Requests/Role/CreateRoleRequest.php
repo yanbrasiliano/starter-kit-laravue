@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Http\Requests\Role;
 
@@ -44,7 +44,7 @@ class CreateRoleRequest extends FormRequest
                     $trimmedValue = trim($value);
                     $exists = DB::table('roles')
                         ->whereRaw('LOWER(name) = ?', [strtolower($trimmedValue)])
-                        ->when($this->role, fn($query) => $query->where('id', '!=', $this->role->id))
+                        ->when($this->role, fn ($query) => $query->where('id', '!=', $this->role->id))
                         ->exists();
 
                     if ($exists) {

@@ -4,7 +4,7 @@ use App\Enums\RolesEnum;
 dataset(
     'validUser',
     [
-        fn() => [
+        fn () => [
             'cpf' => preg_replace('/\D/', '', fake('pt_BR')->cpf()),
             'name' => fake('pt_BR')->name(),
             'email' => fake('pt_BR')->email(),
@@ -12,12 +12,12 @@ dataset(
             'active' => fake('pt_BR')->randomElement([0, 1]),
             'send_random_password' => true,
             'role_id' => fake('pt_BR')->randomElement([1]),
-        ]
+        ],
     ]
 );
 
 dataset('userJsonValidStructure', [
-    fn() => [
+    fn () => [
         'data' => [
             'id',
             'name',
@@ -33,7 +33,7 @@ dataset('userJsonValidStructure', [
 ]);
 
 dataset('createUserJsonValidStructure', [
-    fn() => [
+    fn () => [
         'data' => [
             'id',
             'name',
@@ -47,7 +47,7 @@ dataset('createUserJsonValidStructure', [
 ]);
 
 dataset('validJsonStructure', [
-    fn() => [
+    fn () => [
         'data' => [
             'id',
             'name',
@@ -63,7 +63,7 @@ dataset('validJsonStructure', [
 ]);
 
 dataset('paginationStructure', [
-    fn() => [
+    fn () => [
         'current_page',
         'data',
         'first_page_url',
@@ -81,7 +81,7 @@ dataset('paginationStructure', [
 ]);
 
 dataset('nameNotProvided', [
-    fn() => [
+    fn () => [
         'name' => null,
         'email' => fake('pt_BR')->email(),
         'password' => fake('pt_BR')->password(10),
@@ -94,7 +94,7 @@ dataset('nameNotProvided', [
 $pass = fake('pt_BR')->password(8);
 
 dataset('registerUser', [
-    fn() => [
+    fn () => [
         'name' => fake('pt_BR')->name(),
         'email' => fake('pt_BR')->email(),
         'password' => $pass,
@@ -107,7 +107,7 @@ dataset('registerUser', [
 dataset(
     'updateUserData',
     [
-        fn() => [
+        fn () => [
             'cpf' => preg_replace('/\D/', '', fake('pt_BR')->cpf()),
             'name' => fake('pt_BR')->name(),
             'email' => fake('pt_BR')->email(),
@@ -119,7 +119,7 @@ dataset(
 );
 
 dataset('invalidEmail', [
-    fn() => [
+    fn () => [
         'name' => fake('pt_BR')->name(),
         'email' => fake('pt_BR')->text(),
         'password' => fake('pt_BR')->password(10),
@@ -130,7 +130,7 @@ dataset('invalidEmail', [
 ]);
 
 dataset('emailAlreadyExists', [
-    fn() => [
+    fn () => [
         'name' => fake('pt_BR')->name(),
         'email' => createUsers()->first()->email,
         'password' => fake('pt_BR')->password(10),
@@ -141,7 +141,7 @@ dataset('emailAlreadyExists', [
 ]);
 
 dataset('invalidRole', [
-    fn() => [
+    fn () => [
         'name' => fake('pt_BR')->name(),
         'email' => fake('pt_BR')->email(),
         'password' => fake('pt_BR')->password(10),
@@ -152,7 +152,7 @@ dataset('invalidRole', [
 ]);
 
 dataset('invalidStatus', [
-    fn() => [
+    fn () => [
         'name' => fake('pt_BR')->name(),
         'email' => fake('pt_BR')->email(),
         'password' => fake('pt_BR')->password(10),
@@ -163,7 +163,7 @@ dataset('invalidStatus', [
 ]);
 
 dataset('invalidRoleData', [
-    fn() => [
+    fn () => [
         'name' => fake('pt_BR')->name(),
         'email' => fake('pt_BR')->email(),
         'password' => fake('pt_BR')->password(10),
@@ -174,7 +174,7 @@ dataset('invalidRoleData', [
 ]);
 
 dataset('emailNotAvailable', [
-    fn() => [
+    fn () => [
         'name' => fake('pt_BR')->name(),
         'email' => 'test@test.com',
         'password' => $pass,

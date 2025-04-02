@@ -1,14 +1,13 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Http\Requests\Role;
 
 use App\Traits\FailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\{Collection, Fluent};
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\{Collection, Fluent};
 
 class UpdateRoleRequest extends FormRequest
 {
@@ -50,7 +49,7 @@ class UpdateRoleRequest extends FormRequest
                     $trimmedValue = trim($value);
                     $exists = DB::table('roles')
                         ->whereRaw('LOWER(name) = ?', [strtolower($trimmedValue)])
-                        ->when($this->role, fn($query) => $query->where('id', '!=', $this->role->id))
+                        ->when($this->role, fn ($query) => $query->where('id', '!=', $this->role->id))
                         ->exists();
 
                     if ($exists) {

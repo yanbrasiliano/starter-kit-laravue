@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Exceptions;
 
@@ -31,6 +31,7 @@ class Handler extends ExceptionHandler
             default => (int) Response::HTTP_INTERNAL_SERVER_ERROR,
         };
         \Log::info('Status Code: ' . $status);
+
         if ($status !== Response::HTTP_INTERNAL_SERVER_ERROR || $exception->getCode() !== 0) {
             return response()->json([
                 'error' => $exception->error ?? 'Erro',
