@@ -59,11 +59,14 @@ for file in $staged_files; do
     *.php)
         run_formatter "./vendor/bin/pint" "$file"
         ;;
-    *.js | *.vue)
-        run_formatter "npm run lint" "$file"
-        ;;
     esac
 done
+
+echo "🔍 Executando lint JavaScript/Vue..."
+docker exec -i starterkit-app npm run lint || {
+    echo "❌ Lint falhou ou apresentou warnings. Corrija antes de commitar."
+    exit 1
+}
 
 if [ "$current_branch" != "main" ]; then
     run_phpstan
@@ -81,4 +84,4 @@ main)
     ;;
 esac
 
-echo "✅ Pre-commit hook finalizado com sucesso!"
+echo "✅Pre-commit hook finalizado com sucesso!"

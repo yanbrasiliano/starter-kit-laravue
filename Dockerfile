@@ -6,6 +6,8 @@ FROM php:8.4.5-fpm AS base
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV ACCEPT_EULA=Y
 ENV DEBIAN_FRONTEND=noninteractive
+ENV APP_ENV=${APP_ENV}
+ARG APP_ENV=development
 
 WORKDIR /var/www/html
 
@@ -43,19 +45,39 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-configure gd --enable-gd --with-webp --with-jpeg --with-freetype \
     && docker-php-ext-install -j$(nproc) exif gd zip pdo pdo_pgsql ftp bcmath xml intl \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && mkdir -p /var/log/supervisor
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
+
+    RUN mkdir -p /var/log/nginx /var/log/php /var/log/supervisor \
+    && touch /var/log/nginx/access.log /var/log/nginx/error.log \
+    && touch /var/log/php_errors.log \
+    && chmod -R 666 /var/log/nginx/*.log /var/log/php_errors.log
+
 
 RUN { \
     echo "upload_max_filesize = 16M"; \
     echo "post_max_size = 64M"; \
-    echo "max_execution_time = -1"; \
-    echo "memory_limit = -1"; \
+    echo "max_execution_time = 60"; \
+    echo "memory_limit = 512M"; \
+    echo "expose_php = Off"; \
+    echo "log_errors = On"; \
+    echo "error_log = /var/log/php_errors.log"; \
+    echo "error_reporting = E_ALL"; \
+    if [ \"$APP_ENV\" = \"production\" ] || [ \"$APP_ENV\" = \"staging\" ]; then \
+    echo \"display_errors = Off\"; \
+    else \
+    echo \"display_errors = On\"; \
+    fi; \
+    echo "disable_functions = exec,passthru,shell_exec,system,proc_open,popen,curl_exec,curl_multi_exec,parse_ini_file,show_source"; \
     echo "[PHP]"; \
-    echo "date.timezone = \"America/Bahia\""; \
+    echo "date.timezone = America/Bahia"; \
     } > /usr/local/etc/php/conf.d/custom.ini \
     && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+RUN touch /var/log/php_errors.log && chmod 666 /var/log/php_errors.log \
+    && echo "0 0 * * 0 truncate -s 0 /var/log/php_errors.log" > /etc/cron.d/clean_php_log \
+    && chmod 0644 /etc/cron.d/clean_php_log \
+    && crontab /etc/cron.d/clean_php_log
 
 RUN echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
     wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg \

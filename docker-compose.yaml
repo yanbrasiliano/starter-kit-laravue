@@ -1,9 +1,10 @@
-
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        APP_ENV: ${APP_ENV:-development}
     container_name: starterkit-app
     restart: always
     ports:
@@ -19,7 +20,7 @@ services:
       - redis
       - mailpit
     environment:
-      - APP_ENV=local
+      - APP_ENV=development
       - APP_DEBUG=true
       - CHOKIDAR_USEPOLLING=true
     networks:
@@ -29,7 +30,7 @@ services:
     image: postgres:latest
     container_name: starterkit-db
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       - POSTGRES_DB=starterkit
       - POSTGRES_USER=postgres
@@ -49,7 +50,7 @@ services:
     image: redis:latest
     container_name: starterkit-redis
     ports:
-      - "6379:6379"
+      - '6379:6379'
     networks:
       - starterkit-network
     healthcheck:
@@ -62,8 +63,8 @@ services:
     image: axllent/mailpit:latest
     container_name: starterkit-mailpit
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - '1025:1025'
+      - '8025:8025'
     networks:
       - starterkit-network
 

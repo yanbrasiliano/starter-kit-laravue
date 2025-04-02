@@ -7,7 +7,7 @@
     "build-development": "vite build --mode development",
     "build-staging": "vite build --mode staging",
     "serve": "vite preview",
-    "lint": "eslint --ext .js,.vue --fix resources/js",
+    "lint": "eslint --ext .js,.vue --fix resources/js --max-warnings=0",
     "commit": "git-cz",
     "format": "prettier ./resources/js --write"
   },
