@@ -23,6 +23,7 @@ services:
       - APP_ENV=development
       - APP_DEBUG=true
       - CHOKIDAR_USEPOLLING=true
+      - PHP_ENABLE_XDEBUG=0 # 1 to enable xdebug
     networks:
       - starterkit-network
 

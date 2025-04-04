@@ -38,14 +38,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 \
     wget \
     lsb-release \
+    libcurl4-openssl-dev \
     && docker-php-ext-install pcntl \
     && pecl install -o -f redis xdebug \
     && docker-php-ext-enable redis xdebug \
     && docker-php-ext-configure zip \
     && docker-php-ext-configure gd --enable-gd --with-webp --with-jpeg --with-freetype \
-    && docker-php-ext-install -j$(nproc) exif gd zip pdo pdo_pgsql ftp bcmath xml intl \
+    && docker-php-ext-install -j$(nproc) exif gd zip curl pdo pdo_pgsql ftp bcmath xml intl \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mkdir -p /var/log/nginx /var/log/php /var/log/supervisor \
     && touch /var/log/nginx/access.log /var/log/nginx/error.log \
@@ -53,24 +54,26 @@ RUN mkdir -p /var/log/nginx /var/log/php /var/log/supervisor \
     && chmod -R 666 /var/log/nginx/*.log /var/log/php_errors.log
 
 
-RUN { \
-    echo "upload_max_filesize = 16M"; \
-    echo "post_max_size = 64M"; \
-    echo "max_execution_time = 60"; \
-    echo "memory_limit = 512M"; \
-    echo "expose_php = Off"; \
-    echo "log_errors = On"; \
-    echo "error_log = /var/log/php_errors.log"; \
-    echo "error_reporting = E_ALL"; \
-    if [ "$APP_ENV" = "production" ] || [ "$APP_ENV" = "staging" ]; then \
-    echo "display_errors = Off"; \
-    else \
-    echo "display_errors = On"; \
-    fi; \
-    echo "disable_functions = exec,passthru,shell_exec,system,curl_exec,curl_multi_exec,parse_ini_file,show_source"; \
-    echo "[PHP]"; \
-    echo "date.timezone = America/Bahia"; \
-    } > /usr/local/etc/php/conf.d/custom.ini
+RUN echo "upload_max_filesize = 16M" > /usr/local/etc/php/conf.d/custom.ini && \
+    echo "post_max_size = 64M" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "max_execution_time = 60" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "expose_php = Off" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "log_errors = On" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "error_log = /var/log/php_errors.log" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "disable_functions = exec,passthru,shell_exec,system,parse_ini_file,show_source" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "date.timezone = America/Bahia" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "opcache.enable_cli=1" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "opcache.interned_strings_buffer=8" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "opcache.validate_timestamps=1" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "opcache.revalidate_freq=2" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "opcache.jit=tracing" >> /usr/local/etc/php/conf.d/custom.ini && \
+    echo "opcache.jit_buffer_size=100M" >> /usr/local/etc/php/conf.d/custom.ini && \
+    if [ "$APP_ENV" = "production" ] || [ "$APP_ENV" = "staging" ]; then echo "display_errors = Off"; else echo "display_errors = On"; fi >> /usr/local/etc/php/conf.d/custom.ini
 
 
 RUN touch /var/log/php_errors.log && chmod 666 /var/log/php_errors.log \
@@ -108,4 +111,9 @@ RUN composer install --no-interaction --no-progress --optimize-autoloader \
     && npm audit fix --force
 
 RUN git config --global --add safe.directory /var/www/html
-CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
+# XDEBUG só será ativado se a variável de ambiente PHP_ENABLE_XDEBUG=1 estiver setada.
+# Isso evita conflitos com o JIT e melhora performance geral.
+# Em produção ou desenvolvimento comum, deixe desativado (padrão).
+ENTRYPOINT ["/bin/sh", "-c"]
+CMD ["[ \"$PHP_ENABLE_XDEBUG\" = \"1\" ] && echo 'zend_extension=xdebug.so' > /usr/local/etc/php/conf.d/zzz-xdebug.ini; exec supervisord -c /etc/supervisor/conf.d/supervisord.conf"]
