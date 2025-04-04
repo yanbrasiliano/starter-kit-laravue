@@ -174,6 +174,7 @@ Where:
 
 ## 📌 **TODO List**
 
+- [ ] Migrate Dockerfile from debian to alpine.
 - [ ] Set phpstan max level(10), currently level is 8.
 - [ ] Create a screen to display the logs on the frontend.
 - [ ] Create more unit and integration tests for the application features.
