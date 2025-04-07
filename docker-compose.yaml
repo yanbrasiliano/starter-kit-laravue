@@ -1,3 +1,4 @@
+
 services:
   app:
     build:
@@ -8,28 +9,41 @@ services:
     container_name: starterkit-app
     restart: always
     ports:
-      - '8001:80'
       - '3000:3000'
       - '5173:5173'
     volumes:
       - .:/var/www/html
-      - ./docker/NGINX/default.conf:/etc/nginx/sites-available/default
-      - ./docker/SUPERVISOR/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
-    depends_on:
-      - db
-      - redis
-      - mailpit
+      - ./docker/SUPERVISOR/supervisord.conf:/etc/supervisord.conf
     environment:
       - APP_ENV=development
       - APP_DEBUG=true
       - CHOKIDAR_USEPOLLING=true
-      - PHP_ENABLE_XDEBUG=0 # 1 to enable xdebug
+      - PHP_ENABLE_XDEBUG=0
+    networks:
+      - starterkit-network
+    depends_on:
+      - db
+      - redis
+      - mailpit
+
+  nginx:
+    image: nginx:1.27.4-alpine
+    container_name: starterkit-nginx
+    restart: always
+    ports:
+      - '8001:80'
+    volumes:
+      - .:/var/www/html
+      - ./docker/NGINX/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
     networks:
       - starterkit-network
 
   db:
-    image: postgres:latest
+    image: postgres:17.4-alpine
     container_name: starterkit-db
+    restart: always
     ports:
       - '5432:5432'
     environment:
@@ -48,8 +62,9 @@ services:
       retries: 5
 
   redis:
-    image: redis:latest
+    image: redis:7.2.4-alpine
     container_name: starterkit-redis
+    restart: always
     ports:
       - '6379:6379'
     networks:
@@ -61,8 +76,9 @@ services:
       retries: 5
 
   mailpit:
-    image: axllent/mailpit:latest
+    image: axllent/mailpit:v1.15.1
     container_name: starterkit-mailpit
+    restart: always
     ports:
       - '1025:1025'
       - '8025:8025'
