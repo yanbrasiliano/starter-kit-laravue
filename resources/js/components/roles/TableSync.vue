@@ -18,6 +18,17 @@ const rows = ref([]);
 const itemDelete = ref(null);
 const confirmRowDelete = ref(false);
 
+const LABELS = {
+  loading: 'Carregando...',
+  noData: 'Nenhum registro encontrado',
+  confirmDeleteTitle: 'Tem certeza que deseja excluir por definitivo este perfil?',
+  yes: 'Sim',
+  no: 'Não',
+  details: 'Ver detalhes',
+  edit: 'Editar',
+  delete: 'Excluir',
+};
+
 const deleteRow = (row) => {
   confirmRowDelete.value = true;
   itemDelete.value = row;
@@ -25,9 +36,7 @@ const deleteRow = (row) => {
 
 const confirmDeleteRow = (isStatus) => {
   confirmRowDelete.value = false;
-  if (isStatus) {
-    emit('onDelete', itemDelete.value);
-  }
+  if (isStatus) emit('onDelete', itemDelete.value);
   itemDelete.value = null;
 };
 </script>
@@ -42,32 +51,29 @@ const confirmDeleteRow = (isStatus) => {
     row-key="id"
     :rows-per-page-options="[10, 25, 50, 100]"
     :loading="loading"
-    loading-label="Carregando..."
+    :loading-label="LABELS.loading"
     :pagination="pagination"
-    :no-data-label="loading ? '' : 'Nenhum registro encontrado'"
+    :no-data-label="loading ? '' : LABELS.noData"
     @update:pagination="emit('updatePagination', $event)"
     @request="emit('updatePagination', $event)">
     <template #header="props">
       <q-dialog v-model="confirmRowDelete" persistent>
         <q-card>
-          <q-card-section class="row items-center">
-            <span class="q-ml-sm">
-              <strong>
-                Tem certeza que deseja excluir por definitivo este perfil?
-              </strong>
-            </span>
+          <q-card-section class="confirm-dialog-title">
+            <span
+              ><strong>{{ LABELS.confirmDeleteTitle }}</strong></span
+            >
           </q-card-section>
-
-          <q-card-actions align="center">
+          <q-card-actions align="center" class="confirm-dialog-actions">
             <q-btn
               v-close-popup
               outline
-              label="Sim"
+              :label="LABELS.yes"
               color="primary"
               @click="confirmDeleteRow(true)" />
             <q-btn
               v-close-popup
-              label="Não"
+              :label="LABELS.no"
               color="primary"
               @click="confirmDeleteRow(false)" />
           </q-card-actions>
@@ -84,48 +90,39 @@ const confirmDeleteRow = (isStatus) => {
     <template #body="props">
       <q-tr :props="props">
         <q-td v-for="col in props.cols" :key="col.name" :props="props">
-          <q-btn
-            v-if="col.name === 'action'"
-            dense
-            flat
-            round
-            icon="more_horiz"
-            class="button-more-horiz">
-            <q-menu>
-              <q-list dense style="min-width: 150px">
-                <q-item
-                  clickable
-                  v-close-popup
-                  :to="{ name: 'showRole', params: { id: props.row.id } }"
-                  @click="emit('onConsult', props.row)">
-                  <q-item-section>Ver detalhes</q-item-section>
-                </q-item>
-
-                <q-item
-                  v-if="!shouldBlockEditRoleAdmin(props.row.slug) && col.methods?.onEdit"
-                  clickable
-                  v-close-popup
-                  @click="emit('onEdit', props.row)">
-                  <q-item-section>Editar</q-item-section>
-                </q-item>
-
-                <q-separator />
-
-                <q-item
-                  v-if="
-                    !shouldBlockDeleteProtectedRole(props.row.slug) &&
-                    shouldBlockDeleteRoleUserAuth(props.row.id) &&
-                    col.methods?.onDelete
-                  "
-                  clickable
-                  v-close-popup
-                  @click="deleteRow(props.row)">
-                  <q-item-section>Excluir</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
-
+          <div v-if="col.name === 'action'" class="actions-container">
+            <q-btn
+              dense
+              flat
+              round
+              color="primary"
+              icon="visibility"
+              @click="emit('onConsult', props.row)"
+              :title="LABELS.details"
+              v-if="col.methods?.onConsult" />
+            <q-btn
+              dense
+              flat
+              round
+              color="primary"
+              icon="edit"
+              @click="emit('onEdit', props.row)"
+              :title="LABELS.edit"
+              v-if="!shouldBlockEditRoleAdmin(props.row.slug) && col.methods?.onEdit" />
+            <q-btn
+              dense
+              flat
+              round
+              color="negative"
+              icon="delete"
+              @click="deleteRow(props.row)"
+              :title="LABELS.delete"
+              v-if="
+                !shouldBlockDeleteProtectedRole(props.row.slug) &&
+                shouldBlockDeleteRoleUserAuth(props.row.id) &&
+                col.methods?.onDelete
+              " />
+          </div>
           <span v-else>
             {{ props.row[col.field] ?? '-' }}
           </span>
@@ -140,9 +137,38 @@ const confirmDeleteRow = (isStatus) => {
 </template>
 
 <style lang="sass" scoped>
-:deep(.button-more-horiz i)
-  font-size: 1.2rem !important
+.table-default-data-table
+  .q-table__top,
+  thead tr:first-child th
+    background-color: #064C7E
+    color: #ffffff
+    font-weight: bold
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
 
-.q-list--dense > .q-item, .q-item--dense
-  min-height: 38px
+.actions-container
+  display: flex
+  justify-content: center
+  align-items: center
+  gap: 8px
+
+.confirm-dialog-title
+  display: flex
+  justify-content: center
+  align-items: center
+  text-align: center
+  padding: 16px
+
+.confirm-dialog-actions
+  display: flex
+  justify-content: center
+  gap: 12px
+
+.q-btn
+  transition: transform 0.15s ease
+  &:hover
+    transform: scale(1.1)
 </style>

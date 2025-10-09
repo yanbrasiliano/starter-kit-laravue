@@ -7,32 +7,16 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Actions\Auth\{LoginAction, LogoutAction, MyProfileAction};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use Exception;
 use Illuminate\Http\JsonResponse;
 
-/**
- * @apiInfo
- *
- * @title SP 2.0
- *
- * @version 1.0.0
- *
- * @description staterkit
- */
 final class AuthController extends Controller {
     public function login(LoginRequest $request): JsonResponse {
-        try {
-            /** @var \Illuminate\Support\Fluent<string, string> $params */
-            $params = $request->fluentParams();
+        /** @var \Illuminate\Support\Fluent<string, string> $params */
+        $params = $request->fluentParams();
 
-            $data = app(LoginAction::class)->execute($params);
+        $data = app(LoginAction::class)->execute($params);
 
-            return response()->json($data);
-        } catch (Exception $exception) {
-            return response()->json([
-                'message' => $exception->getMessage(),
-            ], $exception->getCode());
-        }
+        return response()->json($data);
     }
 
     public function logout(): JsonResponse {

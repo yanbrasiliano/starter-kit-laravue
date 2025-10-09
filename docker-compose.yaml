@@ -41,7 +41,7 @@ services:
       - starterkit-network
 
   db:
-    image: postgres:17.4
+    image: postgres:16.8
     container_name: starterkit-db
     restart: always
     ports:
