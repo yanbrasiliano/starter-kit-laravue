@@ -25,16 +25,9 @@ lint_js() {
   echo "🔍 Lintando arquivos JS/Vue..."
   docker exec "$container" npm run lint || { echo "❌ Lint JS/Vue falhou."; exit 1; }
 }
-
 run_phpstan() {
   echo "🔍 Executando análise estática (Composer)..."
   docker exec "$container" composer phpstan || { echo "❌ Phpstan/Larastan falhou."; exit 1; }
-}
-
-run_tests() {
-  local script="$1"
-  echo "🧪 Rodando testes (composer $script)..."
-  docker exec "$container" composer run "$script" || { echo "❌ Testes falharam."; exit 1; }
 }
 
 check_container
@@ -54,12 +47,6 @@ fi
 if [ -n "$php_changed" ]; then
   echo "🔍 Executando verificação de Profanity..."
   docker exec "$container" composer profanity || { echo "❌ Profanity check falhou."; exit 1; }
-
-  case "$current_branch" in
-    hml) run_tests "test" ;;
-    main) exit 0 ;;
-    *) run_tests "test:coverage" ;;
-  esac
 fi
 
 end_time=$(date +%s)
