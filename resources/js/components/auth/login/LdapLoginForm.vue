@@ -86,7 +86,7 @@ const togglePasswordVisibility = () => {
         :disable="isLoading"
         color="secondary"
         class="full-width"
-        @click="auth">
+        type="submit">
         <span v-if="!isLoading">Entrar</span>
         <span v-else>Conectando...</span>
       </q-btn>
