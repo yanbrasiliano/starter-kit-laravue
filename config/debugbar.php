@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 return [
 
@@ -16,10 +17,9 @@ return [
      */
 
     'enabled' => env('DEBUGBAR_ENABLED', null),
-    'hide_empty_tabs' => false, // Hide tabs until they have content
+    'hide_empty_tabs' => false,
     'except' => [
         'telescope*',
-        'horizon*',
     ],
 
     /*

@@ -1,15 +1,17 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Models\User;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\{
     OpenApi,
     SecurityScheme
 };
+use Gate;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\{DB, Vite};
 use Illuminate\Support\{ServiceProvider, Sleep};
@@ -34,6 +36,10 @@ final class AppServiceProvider extends ServiceProvider {
         $this->configureRequest();
         $this->configureScramble();
         $this->configureVite();
+
+        Gate::define('viewPulse', function (User $user) {
+            return $user->isAdmin();
+        });
 
         if ($this->app->runningUnitTests()) {
             Sleep::fake();

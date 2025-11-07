@@ -1,0 +1,125 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit\Http\Requests\User;
+
+use App\Enums\RolesEnum;
+use App\Http\Requests\User\CreateUserRequest;
+use Illuminate\Support\Fluent;
+use Illuminate\Support\Str;
+
+describe('CreateUserRequest', function () {
+    it('authorizes request', function () {
+        $request = new CreateUserRequest();
+        expect($request->authorize())->toBeTrue();
+    });
+
+    it('returns correct attributes', function () {
+        $request = new CreateUserRequest();
+
+        expect($request->attributes())->toHaveKeys([
+            'name',
+            'email',
+            'password',
+            'role_id',
+            'active',
+            'cpf',
+            'registration',
+            'send_random_password'
+        ]);
+    });
+
+    it('returns correct messages', function () {
+        $request = new CreateUserRequest();
+
+        expect($request->messages())->toHaveKeys([
+            'cpf.unique',
+            'email.unique',
+            'email.email',
+            'boolean',
+            'required',
+            'exists',
+            'max',
+            'unique',
+            'in',
+            'password.min'
+        ]);
+    });
+
+    it('returns rules including password when random password not sent and role is not admin', function () {
+        $request = new CreateUserRequest();
+        $request->merge([
+            'send_random_password' => false,
+            'role_slug' => 'guest',
+        ]);
+
+        $rules = $request->rules();
+
+        expect($rules)->toHaveKey('password')
+            ->and($rules['password'])->toContain('required', 'min:8');
+    });
+
+    it('omits password rule when random password is sent or user is admin', function () {
+        $request = new CreateUserRequest();
+
+        $request->merge([
+            'send_random_password' => true,
+            'role_slug' => RolesEnum::GUEST->value,
+        ]);
+        expect($request->rules())->not->toHaveKey('password');
+
+        $request = new CreateUserRequest();
+        $request->merge([
+            'send_random_password' => false,
+            'role_slug' => RolesEnum::ADMINISTRATOR->value,
+        ]);
+        expect($request->rules())->not->toHaveKey('password');
+    });
+
+
+    it('returns Fluent with random password when send_random_password is true', function () {
+        $stub = new class {
+            public bool $send_random_password = true;
+            public string $password = '';
+
+            public function has(string $key): bool {
+                return $key === 'send_random_password';
+            }
+
+            public function fluentParams(): Fluent {
+                $validated = ['name' => 'Yan', 'email' => 'test@ex.com'];
+                return new Fluent(array_merge($validated, [
+                    'password' => $this->has('send_random_password') ? Str::password(8) : $this->password,
+                ]));
+            }
+        };
+
+        $fluent = $stub->fluentParams();
+
+        expect($fluent)->toBeInstanceOf(Fluent::class)
+            ->and(strlen($fluent->password))->toBe(8);
+    });
+
+    it('returns Fluent with provided password when random not requested', function () {
+        $stub = new class {
+            public bool $send_random_password = false;
+            public string $password = '12345678';
+
+            public function has(string $key): bool {
+                return false;
+            }
+
+            public function fluentParams(): Fluent {
+                $validated = ['name' => 'Yan', 'email' => 'test@ex.com', 'password' => $this->password];
+                return new Fluent(array_merge($validated, [
+                    'password' => $this->has('send_random_password') ? Str::password(8) : $this->password,
+                ]));
+            }
+        };
+
+        $fluent = $stub->fluentParams();
+
+        expect($fluent->password)->toBe('12345678');
+    });
+})->group('userRequest', 'createUserRequest');

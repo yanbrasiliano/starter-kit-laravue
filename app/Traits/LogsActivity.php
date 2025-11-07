@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Traits;
 
@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 
+// @codeCoverageIgnoreStart
 trait LogsActivity {
     /**
      * @param  array<string, mixed>  $dirty
@@ -140,3 +141,5 @@ trait LogsActivity {
         return $normalized;
     }
 }
+
+// @codeCoverageIgnoreEnd

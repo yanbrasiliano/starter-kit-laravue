@@ -1,8 +1,9 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Unit\Model;
 
+use App\Enums\RolesEnum;
 use App\Models\User;
 
 describe('UserModel Test', function () {
@@ -47,5 +48,23 @@ describe('UserModel Test', function () {
     it('has correct model name', function () {
         $user = new User();
         expect($user::class)->toBe(User::class);
-    })->group('model');
-})->group('model');
+    });
+
+    it('returns true for admin role using isAdmin', function () {
+        $user = \Mockery::mock(User::class)->makePartial();
+        $user->shouldReceive('hasRole')
+            ->with(RolesEnum::ADMINISTRATOR->label())
+            ->andReturnTrue();
+
+        expect($user->isAdmin())->toBeTrue();
+    });
+
+    it('returns false for non-admin user using isAdmin', function () {
+        $user = \Mockery::mock(User::class)->makePartial();
+        $user->shouldReceive('hasRole')
+            ->with(RolesEnum::ADMINISTRATOR->label())
+            ->andReturnFalse();
+
+        expect($user->isAdmin())->toBeFalse();
+    });
+})->group('model', 'userModel');

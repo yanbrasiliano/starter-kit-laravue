@@ -40,7 +40,7 @@ The kit supports automated testing and offers tools for monitoring and debugging
 - **Testing:** PestPHP
 - **Static Analysis:** Larastan (PHPStan for Laravel)
 - **Documentation:** Scramble
-- **Debug & Monitoring:** Laravel Debugbar, Laravel Horizon, Laravel Telescope, Spatie Activity Log
+- **Debug & Monitoring:** Laravel Debugbar, Laravel Pulse, Laravel Telescope, Spatie Activity Log
 - **Environment:** Docker
 
 ---
