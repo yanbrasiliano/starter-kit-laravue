@@ -311,3 +311,68 @@ docker exec -it starterkit-app php artisan scramble:export
 docker exec -it starterkit-app composer test
 docker exec -it starterkit-app composer test:coverage
 ```
+
+#### Shortcuts for development
+
+make help
+
+╔═══════════════════════════════════════════╗
+║ Shortcuts for development ║
+╚═══════════════════════════════════════════╝
+
+📦 Container Management:
+make up - Start all containers
+make down - Stop all containers
+make restart - Restart all containers
+make build - Rebuild containers
+make ps - Show container status
+make logs - Follow all logs
+
+💻 Development:
+make shell - Enter app container shell
+make front - Run Vite dev server
+make install - Install PHP and NPM dependencies
+make fresh - Fresh database with seeds
+make cache - Clear all Laravel caches
+make optimize - Optimize for production
+
+🗄️ Database:
+make migrate - Run migrations
+make rollback - Rollback last migration
+make db-shell - Enter PostgreSQL shell
+make db-reset - Reset database
+make backup - Backup database
+make restore - Restore database from backup
+
+🧪 Testing:
+make test - Run all tests
+make test-unit - Run unit tests
+make test-feature - Run feature tests
+make coverage - Generate test coverage report
+
+✨ Code Quality:
+make pint - Run Laravel Pint (code formatting)
+make format - Format code with Pint
+make check - Check code style without fixing
+make ide - Generate IDE helper files
+
+🛠️ Artisan & Tools:
+make artisan - Run artisan command (e.g., make artisan ARGS="make:model Post")
+make tinker - Open Laravel Tinker
+make queue - Run queue worker
+make horizon - Open Laravel Horizon dashboard
+make telescope - Open Laravel Telescope
+make pulse - Open Laravel Pulse
+
+🔧 Utilities:
+make clean - Clean temporary files and caches
+make npm - Run npm command (e.g., make npm ARGS="install lodash")
+make composer - Run composer command (e.g., make composer ARGS="require package")
+
+⚡ Quick Shortcuts:
+make m - migrate
+make mf - fresh
+make t - test
+make s - shell
+make l - logs
+make c - cache
