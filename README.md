@@ -64,7 +64,7 @@ DB_PASSWORD=admin
 ### 4️⃣ Install dependencies
 
 ```bash
-docker compose exec starterkit-app bash
+docker exec -it starterkit-app bash
 composer install
 npm install
 php artisan migrate --seed
@@ -240,7 +240,7 @@ docker compose exec starterkit-app env APP_ENV=testing php artisan test --parall
 ### Performance
 
 - Cache repetitive queries (use tags and short TTLs).
-- Optimize autoloaders and config caches.
+- Optimize auto-loaders and config caches.
 - Use `DB::transaction()` for atomic operations.
 
 ### Code Quality
