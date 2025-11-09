@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
  *
  * @property mixed $preserveKeys
  */
-final class BaseResource extends JsonResource {
+abstract class BaseResource extends JsonResource {
     /**
      * Adds pagination information to the response.
      *
