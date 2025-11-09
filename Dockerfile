@@ -4,14 +4,12 @@ FROM php:8.4-fpm-alpine AS base
 
 ARG APP_ENV=local
 ENV APP_ENV=$APP_ENV \
-    COMPOSER_ALLOW_SUPERUSER=1 \
-    ACCEPT_EULA=Y \
-    DEBIAN_FRONTEND=noninteractive
+    COMPOSER_ALLOW_SUPERUSER=1
 
 WORKDIR /var/www/html
 
 RUN apk add --no-cache \
-    postgresql15-dev postgresql15-client \
+    postgresql16-dev postgresql16-client \
     clang16 llvm16 lz4-dev openssl-dev \
     libzip-dev \
     supervisor \
