@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./resources/js/*"],
+      "@css/*": ["./resources/css/*"],
+      "@components/*": ["./resources/js/components/*"],
+      "@composables/*": ["./resources/js/composables/*"],
+      "@utils/*": ["./resources/js/utils/*"],
+      "@routes/*": ["./resources/js/router/*"],
+      "@pages/*": ["./resources/js/pages/*"],
+      "@layouts/*": ["./resources/js/layouts/*"],
+      "@assets/*": ["./resources/js/assets/*"]
+    },
+    "jsx": "preserve",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "resources/**/*.js",
+    "resources/**/*.vue"
+  ],
+  "exclude": [
+    "node_modules",
+    "public"
+  ]
+}
