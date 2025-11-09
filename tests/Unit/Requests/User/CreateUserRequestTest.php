@@ -1,13 +1,12 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Unit\Http\Requests\User;
 
 use App\Enums\RolesEnum;
 use App\Http\Requests\User\CreateUserRequest;
-use Illuminate\Support\Fluent;
-use Illuminate\Support\Str;
+use Illuminate\Support\{Fluent, Str};
 
 describe('CreateUserRequest', function () {
     it('authorizes request', function () {
@@ -26,7 +25,7 @@ describe('CreateUserRequest', function () {
             'active',
             'cpf',
             'registration',
-            'send_random_password'
+            'send_random_password',
         ]);
     });
 
@@ -43,7 +42,7 @@ describe('CreateUserRequest', function () {
             'max',
             'unique',
             'in',
-            'password.min'
+            'password.min',
         ]);
     });
 
@@ -77,10 +76,10 @@ describe('CreateUserRequest', function () {
         expect($request->rules())->not->toHaveKey('password');
     });
 
-
     it('returns Fluent with random password when send_random_password is true', function () {
         $stub = new class {
             public bool $send_random_password = true;
+
             public string $password = '';
 
             public function has(string $key): bool {
@@ -89,6 +88,7 @@ describe('CreateUserRequest', function () {
 
             public function fluentParams(): Fluent {
                 $validated = ['name' => 'Yan', 'email' => 'test@ex.com'];
+
                 return new Fluent(array_merge($validated, [
                     'password' => $this->has('send_random_password') ? Str::password(8) : $this->password,
                 ]));
@@ -98,12 +98,13 @@ describe('CreateUserRequest', function () {
         $fluent = $stub->fluentParams();
 
         expect($fluent)->toBeInstanceOf(Fluent::class)
-            ->and(strlen($fluent->password))->toBe(8);
+            ->and(mb_strlen($fluent->password))->toBe(8);
     });
 
     it('returns Fluent with provided password when random not requested', function () {
         $stub = new class {
             public bool $send_random_password = false;
+
             public string $password = '12345678';
 
             public function has(string $key): bool {
@@ -112,6 +113,7 @@ describe('CreateUserRequest', function () {
 
             public function fluentParams(): Fluent {
                 $validated = ['name' => 'Yan', 'email' => 'test@ex.com', 'password' => $this->password];
+
                 return new Fluent(array_merge($validated, [
                     'password' => $this->has('send_random_password') ? Str::password(8) : $this->password,
                 ]));

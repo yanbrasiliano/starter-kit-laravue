@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Models;
 
@@ -23,7 +23,7 @@ use Spatie\Permission\Traits\{HasPermissions, HasRoles};
  * @property string $updated_at
  * @property \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
  */
-class User extends Authenticatable implements MustVerifyEmail {
+final class User extends Authenticatable implements MustVerifyEmail {
     use HasApiTokens;
     use HasFactory;
     use HasPermissions;

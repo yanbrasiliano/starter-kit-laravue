@@ -1,10 +1,11 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Unit\Model;
 
 use App\Enums\RolesEnum;
 use App\Models\User;
+use Mockery;
 
 describe('UserModel Test', function () {
     it('has correct fillable attributes', function () {
@@ -51,7 +52,7 @@ describe('UserModel Test', function () {
     });
 
     it('returns true for admin role using isAdmin', function () {
-        $user = \Mockery::mock(User::class)->makePartial();
+        $user = Mockery::mock(User::class)->makePartial();
         $user->shouldReceive('hasRole')
             ->with(RolesEnum::ADMINISTRATOR->label())
             ->andReturnTrue();
@@ -60,7 +61,7 @@ describe('UserModel Test', function () {
     });
 
     it('returns false for non-admin user using isAdmin', function () {
-        $user = \Mockery::mock(User::class)->makePartial();
+        $user = Mockery::mock(User::class)->makePartial();
         $user->shouldReceive('hasRole')
             ->with(RolesEnum::ADMINISTRATOR->label())
             ->andReturnFalse();
