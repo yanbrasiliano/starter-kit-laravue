@@ -1,5 +1,6 @@
 .PHONY: help up down restart logs shell migrate fresh test front build clean ps install npm composer artisan tinker db-shell cache optimize queue horizon telescope pulse ide pint format check deploy backup restore \
-	test-all test-fresh db-show db-table clear optimize-test ta tf ds dt oc ot test-coverage
+	test-all test-fresh db-show db-table clear optimize-test ta tf ds dt oc ot test-coverage \
+	changelog changelog-preview release release-minor release-major release-patch tag-list commit-check version cl clp rel relm relM rp
 
 # ============================================
 # Colors
@@ -7,6 +8,8 @@
 
 GREEN  := \033[0;32m
 YELLOW := \033[0;33m
+BLUE   := \033[0;34m
+RED    := \033[0;31m
 NC     := \033[0m # No Color
 
 # ============================================
@@ -62,12 +65,29 @@ help: ## Show this help message
 	@printf '  make telescope   - Open Laravel Telescope\n'
 	@printf '  make pulse       - Open Laravel Pulse\n'
 	@printf '\n'
+	@printf '${BLUE}📝 Changelog & Releases:${NC}\n'
+	@printf '  make changelog   - Generate/update CHANGELOG.md\n'
+	@printf '  make changelog-preview - Preview changelog without commit\n'
+	@printf '  make release     - Auto release (patch bump)\n'
+	@printf '  make release-minor - Release with minor version bump\n'
+	@printf '  make release-major - Release with major version bump\n'
+	@printf '  make release-patch - Release with patch version bump\n'
+	@printf '  make tag-list    - Show all git tags\n'
+	@printf '  make version     - Show current version\n'
+	@printf '  make commit-check - Check commits since last tag\n'
+	@printf '\n'
 	@printf '${YELLOW}⚡ Shortcuts:${NC}\n'
 	@printf '  make ta          - test-all\n'
 	@printf '  make tf          - test-fresh\n'
 	@printf '  make ds          - db-show\n'
 	@printf '  make dt TABLE=x  - db-table\n'
 	@printf '  make oc          - optimize:clear\n'
+	@printf '  make cl          - changelog\n'
+	@printf '  make clp         - changelog-preview\n'
+	@printf '  make rel         - release (patch)\n'
+	@printf '  make relm        - release-minor\n'
+	@printf '  make relM        - release-major\n'
+	@printf '  make rp          - release-patch\n'
 	@printf '\n'
 
 # ============================================
@@ -264,6 +284,75 @@ optimize-test:
 	@docker exec -e APP_ENV=testing starterkit-app php artisan optimize
 
 # ============================================
+# Changelog & Releases (Change log + Semantic Release)
+# ============================================
+
+changelog: ## Generate/update CHANGELOG.md
+	@printf "${BLUE}📝 Generating changelog...${NC}\n"
+	@docker exec starterkit-app npm run changelog
+	@printf "${GREEN}✓ Changelog updated in CHANGELOG.md${NC}\n"
+
+changelog-preview: ## Preview changelog without committing
+	@printf "${BLUE}👀 Previewing changelog...${NC}\n"
+	@docker exec starterkit-app npm run changelog:preview
+	@printf "${GREEN}✓ Preview complete (no changes committed)${NC}\n"
+
+release: ## Create a new release (auto patch bump)
+	@printf "${BLUE}🚀 Creating release...${NC}\n"
+	@printf "${YELLOW}⚠️  This will:${NC}\n"
+	@printf "   - Generate changelog\n"
+	@printf "   - Bump version (patch)\n"
+	@printf "   - Create git tag\n"
+	@printf "   - Push to remote\n"
+	@read -p "Continue? [y/N] " confirm; \
+	if [ "$$confirm" != "y" ] && [ "$$confirm" != "Y" ]; then \
+		printf "${RED}✗ Release cancelled${NC}\n"; \
+		exit 1; \
+	fi
+	@docker exec starterkit-app npm run release
+	@printf "${GREEN}✓ Release created and pushed!${NC}\n"
+
+release-patch: ## Create patch release (0.0.X)
+	@printf "${BLUE}🚀 Creating PATCH release...${NC}\n"
+	@docker exec starterkit-app npm run release:patch
+	@printf "${GREEN}✓ Patch release created!${NC}\n"
+
+release-minor: ## Create minor release (0.X.0)
+	@printf "${BLUE}🚀 Creating MINOR release...${NC}\n"
+	@docker exec starterkit-app npm run release:minor
+	@printf "${GREEN}✓ Minor release created!${NC}\n"
+
+release-major: ## Create major release (X.0.0)
+	@printf "${BLUE}🚀 Creating MAJOR release...${NC}\n"
+	@printf "${RED}⚠️  MAJOR VERSION BUMP - Breaking changes!${NC}\n"
+	@read -p "Are you sure? [y/N] " confirm; \
+	if [ "$$confirm" != "y" ] && [ "$$confirm" != "Y" ]; then \
+		printf "${RED}✗ Release cancelled${NC}\n"; \
+		exit 1; \
+	fi
+	@docker exec starterkit-app npm run release:major
+	@printf "${GREEN}✓ Major release created!${NC}\n"
+
+tag-list: ## Show all git tags
+	@printf "${BLUE}📋 Git tags:${NC}\n"
+	@git tag -l -n1
+
+version: ## Show current version
+	@printf "${BLUE}📌 Current version:${NC}\n"
+	@git describe --tags --abbrev=0 2>/dev/null || echo "No tags yet"
+
+commit-check: ## Check commits since last tag
+	@printf "${BLUE}📝 Commits since last tag:${NC}\n"
+	@LAST_TAG=$$(git describe --tags --abbrev=0 2>/dev/null); \
+	if [ -z "$$LAST_TAG" ]; then \
+		printf "${YELLOW}No tags found. Showing all commits:${NC}\n"; \
+		git log --oneline; \
+	else \
+		printf "${GREEN}Since $$LAST_TAG:${NC}\n"; \
+		git log $$LAST_TAG..HEAD --oneline; \
+	fi
+
+# ============================================
 # Quick Aliases
 # ============================================
 
@@ -273,3 +362,18 @@ ds: db-show
 dt: db-table
 oc: clear
 ot: optimize-test
+
+# Changelog shortcuts
+cl: changelog
+clp: changelog-preview
+rel: release
+rp: release-patch
+relm: release-minor
+relM: release-major
+
+# ============================================
+# Pre-Release Verification
+# ============================================
+
+pre-release: ## Run pre-release checks (tests, code style, commits)
+	@bash scripts/pre-release.sh
