@@ -23,6 +23,7 @@ const {
   onStatus,
   confirmHandleStatus,
   handleStatus,
+  onConsult,
 } = useUser();
 </script>
 <template>
@@ -44,7 +45,7 @@ const {
               v-if="hasPermission([USER_PERMISSION.CREATE])"
               icon="add"
               label="Criar"
-              color="accent"
+              color="secondary"
               @click-action="router.push({ name: 'createUsers' })" />
           </div>
         </div>
@@ -58,6 +59,7 @@ const {
         :pagination="pagination"
         @update-pagination="updatePagination"
         @on-status="onStatus"
+        @on-consult="onConsult"
         @on-edit="onEdit"
         @on-delete="onDelete" />
 

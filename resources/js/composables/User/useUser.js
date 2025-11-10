@@ -19,7 +19,6 @@ const useUser = () => {
   const currentRowStatus = ref(null);
 
   const { user } = storeToRefs(useAuthStore());
-
   const nameUser = computed(() => user.value?.name);
 
   const handleSearch = async (value) => {
@@ -72,7 +71,6 @@ const useUser = () => {
       loading.value = true;
       errors.value = {};
       await store.register({ ...params, role: role?.value });
-
       notify('Cadastro realizado com sucesso! Um e-mail de confirmação foi encaminhado.');
       router.push({ name: 'login' });
     } catch {
@@ -94,12 +92,11 @@ const useUser = () => {
   };
 
   const onEdit = (event) => {
-    router.push({
-      name: 'editUsers',
-      params: {
-        id: event.id,
-      },
-    });
+    router.push({ name: 'editUsers', params: { id: event.id } });
+  };
+
+  const onConsult = (event) => {
+    router.push({ name: 'showUsers', params: { id: event.id } });
   };
 
   const onDelete = async (row) => {
@@ -120,16 +117,13 @@ const useUser = () => {
 
   const onStatus = (payload) => {
     currentRowStatus.value = payload;
-
     if (payload.value) {
       confirmHandleStatus.value = true;
       return;
     }
-
     handleStatus(false);
   };
 
-  // Função utilitária para normalizar/whitelist
   const sanitizeUser = (user) => ({
     id: user.id,
     name: user.name,
@@ -138,29 +132,22 @@ const useUser = () => {
     active: !!user.active,
   });
 
-  const replaceUserInRows = (rows, updated) => {
-    return rows.map((row) => {
-      if (row.id !== updated.id) return row;
-
-      return {
-        ...sanitizeUser(updated),
-        role: row.role ?? updated.role,
-      };
-    });
-  };
+  const replaceUserInRows = (rows, updated) =>
+    rows.map((row) =>
+      row.id !== updated.id
+        ? row
+        : { ...sanitizeUser(updated), role: row.role ?? updated.role },
+    );
 
   const handleStatus = async (sendEmail) => {
     try {
       loading.value = true;
       const { data, value } = currentRowStatus.value;
-
       const updated = await store.update(data.id, {
         active: value ? 1 : 0,
         notify_status: sendEmail ? 1 : 0,
       });
-
       rows.value = replaceUserInRows(rows.value, updated);
-
       notify('Situação do usuário atualizada com sucesso!');
     } catch {
       notify('Erro ao atualizar situação do usuário', 'negative');
@@ -182,6 +169,7 @@ const useUser = () => {
     nameUser,
     errors,
     onEdit,
+    onConsult,
     onDelete,
     onStatus,
     confirmHandleStatus,
