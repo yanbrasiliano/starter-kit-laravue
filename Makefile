@@ -1,9 +1,17 @@
-.PHONY: help up down restart logs shell migrate fresh test front build clean ps install npm composer artisan tinker db-shell cache optimize queue horizon telescope pulse ide pint format check deploy backup restore
+.PHONY: help up down restart logs shell migrate fresh test front build clean ps install npm composer artisan tinker db-shell cache optimize queue horizon telescope pulse ide pint format check deploy backup restore \
+	test-all test-fresh db-show db-table clear optimize-test ta tf ds dt oc ot test-coverage
 
-# Colors for output
+# ============================================
+# Colors
+# ============================================
+
 GREEN  := \033[0;32m
 YELLOW := \033[0;33m
 NC     := \033[0m # No Color
+
+# ============================================
+# Help
+# ============================================
 
 help: ## Show this help message
 	@printf '\n${GREEN}╔═══════════════════════════════════════════╗${NC}\n'
@@ -19,6 +27,7 @@ help: ## Show this help message
 	@printf '\n'
 	@printf '${YELLOW}💻 Development:${NC}\n'
 	@printf '  make shell       - Enter app container shell\n'
+	@printf '  make shell-root  - Enter app container as root\n'
 	@printf '  make front       - Run Vite dev server\n'
 	@printf '  make install     - Install PHP and NPM dependencies\n'
 	@printf '  make fresh       - Fresh database with seeds\n'
@@ -28,43 +37,37 @@ help: ## Show this help message
 	@printf '${YELLOW}🗄️  Database:${NC}\n'
 	@printf '  make migrate     - Run migrations\n'
 	@printf '  make rollback    - Rollback last migration\n'
+	@printf '  make db-show     - Show current database info\n'
+	@printf '  make db-table TABLE=users - Show table info\n'
 	@printf '  make db-shell    - Enter PostgreSQL shell\n'
-	@printf '  make db-reset    - Reset database\n'
 	@printf '  make backup      - Backup database\n'
-	@printf '  make restore     - Restore database from backup\n'
+	@printf '  make restore FILE=backup.sql - Restore database\n'
 	@printf '\n'
 	@printf '${YELLOW}🧪 Testing:${NC}\n'
-	@printf '  make test        - Run all tests\n'
-	@printf '  make test-unit   - Run unit tests\n'
-	@printf '  make test-feature - Run feature tests\n'
-	@printf '  make coverage    - Generate test coverage report\n'
+	@printf '  make test        - Run all tests (local)\n'
+	@printf '  make test-all    - Run all tests (testing env, parallel)\n'
+	@printf '  make test-fresh  - Clear cache + run tests (testing env)\n'
+	@printf '  make test-coverage - Generate test coverage report\n'
 	@printf '\n'
 	@printf '${YELLOW}✨ Code Quality:${NC}\n'
-	@printf '  make pint        - Run Laravel Pint (code formatting)\n'
-	@printf '  make format      - Format code with Pint\n'
+	@printf '  make pint        - Run Laravel Pint (format)\n'
 	@printf '  make check       - Check code style without fixing\n'
 	@printf '  make ide         - Generate IDE helper files\n'
 	@printf '\n'
 	@printf '${YELLOW}🛠️  Artisan & Tools:${NC}\n'
-	@printf '  make artisan     - Run artisan command (e.g., make artisan ARGS="make:model Post")\n'
+	@printf '  make artisan ARGS="make:model Post" - Run artisan command\n'
 	@printf '  make tinker      - Open Laravel Tinker\n'
 	@printf '  make queue       - Run queue worker\n'
-	@printf '  make horizon     - Open Laravel Horizon dashboard\n'
+	@printf '  make horizon     - Open Laravel Horizon\n'
 	@printf '  make telescope   - Open Laravel Telescope\n'
 	@printf '  make pulse       - Open Laravel Pulse\n'
 	@printf '\n'
-	@printf '${YELLOW}🔧 Utilities:${NC}\n'
-	@printf '  make clean       - Clean temporary files and caches\n'
-	@printf '  make npm         - Run npm command (e.g., make npm ARGS="install lodash")\n'
-	@printf '  make composer    - Run composer command (e.g., make composer ARGS="require package")\n'
-	@printf '\n'
-	@printf '${YELLOW}⚡ Quick Shortcuts:${NC}\n'
-	@printf '  make m           - migrate\n'
-	@printf '  make mf          - fresh\n'
-	@printf '  make t           - test\n'
-	@printf '  make s           - shell\n'
-	@printf '  make l           - logs\n'
-	@printf '  make c           - cache\n'
+	@printf '${YELLOW}⚡ Shortcuts:${NC}\n'
+	@printf '  make ta          - test-all\n'
+	@printf '  make tf          - test-fresh\n'
+	@printf '  make ds          - db-show\n'
+	@printf '  make dt TABLE=x  - db-table\n'
+	@printf '  make oc          - optimize:clear\n'
 	@printf '\n'
 
 # ============================================
@@ -97,126 +100,118 @@ ps: ## Show container status
 logs: ## Follow all logs
 	docker compose logs -f
 
-logs-app: ## Follow app logs
+logs-app:
 	docker compose logs -f app
 
-logs-nginx: ## Follow nginx logs
-	docker compose logs -f nginx
-
-logs-db: ## Follow database logs
+logs-db:
 	docker compose logs -f db
 
 # ============================================
 # Development
 # ============================================
 
-shell: ## Enter app container shell
+shell:
 	docker exec -it starterkit-app sh
 
-shell-root: ## Enter app container as root
+shell-root:
 	docker exec -u root -it starterkit-app sh
 
-front: ## Run Vite dev server
+front:
 	docker exec -it starterkit-app npm run dev
 
-build-assets: ## Build production assets
-	docker exec starterkit-app npm run build
-
-watch: ## Watch and rebuild assets
-	docker exec -it starterkit-app npm run dev
-
-install: ## Install all dependencies
+install:
 	@printf "${GREEN}📦 Installing dependencies...${NC}\n"
 	@docker exec starterkit-app composer install
 	@docker exec starterkit-app npm install
 	@printf "${GREEN}✓ Dependencies installed!${NC}\n"
 
-npm: ## Run npm command (use: make npm ARGS="install package")
+npm:
 	docker exec starterkit-app npm $(ARGS)
 
-composer: ## Run composer command (use: make composer ARGS="require package")
+composer:
 	docker exec starterkit-app composer $(ARGS)
 
 # ============================================
 # Database
 # ============================================
 
-migrate: ## Run migrations
+migrate:
 	@printf "${GREEN}🔄 Running migrations...${NC}\n"
 	@docker exec starterkit-app php artisan migrate
 	@printf "${GREEN}✓ Migrations complete!${NC}\n"
 
-rollback: ## Rollback last migration
+rollback:
 	docker exec starterkit-app php artisan migrate:rollback
 
-fresh: ## Fresh database with seeds
+fresh:
 	@printf "${YELLOW}⚠️  This will drop all tables and reseed!${NC}\n"
 	@docker exec starterkit-app php artisan migrate:fresh --seed
 	@printf "${GREEN}✓ Database refreshed!${NC}\n"
 
-db-reset: ## Reset database (drop and recreate)
-	@printf "${YELLOW}⚠️  Resetting database...${NC}\n"
-	@docker compose down
-	@docker volume rm starterkit_pg_data || true
-	@docker compose up -d db
-	@printf "Waiting for database...\n"
-	@sleep 5
-	@docker compose up -d
-	@sleep 5
-	@docker exec starterkit-app php artisan migrate
-	@printf "${GREEN}✓ Database reset complete!${NC}\n"
-
-db-shell: ## Enter PostgreSQL shell
+db-shell:
 	docker exec -it starterkit-db psql -U postgres starterkit
 
-backup: ## Backup database to backups/db-backup-TIMESTAMP.sql
+backup:
 	@mkdir -p backups
-	@printf "${GREEN}💾 Creating backup...${NC}\n"
-	@docker exec starterkit-db pg_dump -U postgres starterkit > backups/db-backup-$(date +%Y%m%d-%H%M%S).sql
+	@docker exec starterkit-db pg_dump -U postgres starterkit > backups/db-backup-$(shell date +%Y%m%d-%H%M%S).sql
 	@printf "${GREEN}✓ Backup created in backups/ directory${NC}\n"
 
-restore: ## Restore database from backup (use: make restore FILE=backups/file.sql)
+restore:
 	@if [ -z "$(FILE)" ]; then \
-		printf "${YELLOW}Usage: make restore FILE=backups/db-backup-YYYYMMDD-HHMMSS.sql${NC}\n"; \
+		printf "${YELLOW}Usage: make restore FILE=backups/db-backup.sql${NC}\n"; \
 		exit 1; \
 	fi
-	@printf "${YELLOW}⚠️  Restoring database from $(FILE)...${NC}\n"
 	@docker exec -i starterkit-db psql -U postgres starterkit < $(FILE)
 	@printf "${GREEN}✓ Database restored!${NC}\n"
+
+db-show:
+	@printf "${GREEN}🗂️  Showing current database info...${NC}\n"
+	@docker exec starterkit-app php artisan db:show
+
+db-table:
+	@if [ -z "$(TABLE)" ]; then \
+		printf "${YELLOW}Usage: make db-table TABLE=table_name${NC}\n"; \
+		exit 1; \
+	fi
+	@docker exec starterkit-app php artisan db:table $(TABLE)
 
 # ============================================
 # Testing
 # ============================================
 
-test: ## Run all tests
-	@printf "${GREEN}🧪 Running tests...${NC}\n"
-	@docker exec -it starterkit-app composer tests
+test:
+	@printf "${GREEN}🧪 Running local tests...${NC}\n"
+	@docker exec -it starterkit-app php artisan test
 
-test-unit: ## Run unit tests
-	docker exec starterkit-app php artisan test --testsuite=Unit
+test-all:
+	@printf "${GREEN}🧪 Running tests in APP_ENV=testing (parallel)...${NC}\n"
+	@docker exec -e APP_ENV=testing starterkit-app php artisan optimize:clear
+	@docker exec -e APP_ENV=testing starterkit-app php artisan test --env=testing --parallel
+	@printf "${GREEN}✓ All tests completed.${NC}\n"
 
-test-feature: ## Run feature tests
-	docker exec starterkit-app php artisan test --testsuite=Feature
+test-fresh:
+	@printf "${GREEN}🔄 Clearing cache and running tests (testing env)...${NC}\n"
+	@docker exec -e APP_ENV=testing starterkit-app php artisan optimize:clear
+	@docker exec -e APP_ENV=testing starterkit-app php artisan test --env=testing
+	@printf "${GREEN}✓ Tests executed after cache clear.${NC}\n"
 
-coverage: ## Generate test coverage report
-	docker exec starterkit-app php artisan optimize:clear && php artisan test --coverage
-
-test-watch: ## Watch and run tests on file changes
-	docker exec -it starterkit-app php artisan test --watch
+test-coverage:
+	@printf "${GREEN}🧪 Generating coverage report (testing env)...${NC}\n"
+	@docker exec -e APP_ENV=testing starterkit-app php artisan optimize:clear
+	@docker exec -e APP_ENV=testing starterkit-app php artisan test --env=testing --coverage-html storage/coverage
+	@printf "${GREEN}✓ Coverage report generated at storage/coverage/index.html${NC}\n"
 
 # ============================================
 # Code Quality
 # ============================================
 
-pint: ## Run Laravel Pint (fix code style)
+pint:
 	docker exec starterkit-app ./vendor/bin/pint
 
-format: pint ## Alias for pint
-
-check: ## Check code style without fixing
+check:
 	docker exec starterkit-app ./vendor/bin/pint --test
 
-ide: ## Generate IDE helper files
+ide:
 	@printf "${GREEN}🔧 Generating IDE helpers...${NC}\n"
 	@docker exec starterkit-app php artisan ide-helper:generate
 	@docker exec starterkit-app php artisan ide-helper:models --nowrite
@@ -224,113 +219,57 @@ ide: ## Generate IDE helper files
 	@printf "${GREEN}✓ IDE helpers generated!${NC}\n"
 
 # ============================================
-# Laravel Artisan & Tools
+# Laravel Tools
 # ============================================
 
-artisan: ## Run artisan command (use: make artisan ARGS="make:model Post")
-	docker exec -u root starterkit-app php artisan $(ARGS)
+artisan:
+	docker exec starterkit-app php artisan $(ARGS)
 
-tinker: ## Open Laravel Tinker
+tinker:
 	docker exec -it starterkit-app php artisan tinker
 
-queue: ## Run queue worker
+queue:
 	docker exec -it starterkit-app php artisan queue:work
 
-queue-listen: ## Listen to queue
-	docker exec -it starterkit-app php artisan queue:listen
-
-horizon: ## View Laravel Horizon
+horizon:
 	@printf "${GREEN}🌅 Horizon: http://localhost/horizon${NC}\n"
-	@command -v xdg-open > /dev/null && xdg-open http://localhost/horizon 2>/dev/null || \
-	 command -v open > /dev/null && open http://localhost/horizon 2>/dev/null || \
-	 printf "Open http://localhost/horizon in your browser\n"
 
-telescope: ## View Laravel Telescope
+telescope:
 	@printf "${GREEN}🔭 Telescope: http://localhost/telescope${NC}\n"
-	@command -v xdg-open > /dev/null && xdg-open http://localhost/telescope 2>/dev/null || \
-	 command -v open > /dev/null && open http://localhost/telescope 2>/dev/null || \
-	 printf "Open http://localhost/telescope in your browser\n"
 
-pulse: ## View Laravel Pulse
+pulse:
 	@printf "${GREEN}💓 Pulse: http://localhost/pulse${NC}\n"
-	@command -v xdg-open > /dev/null && xdg-open http://localhost/pulse 2>/dev/null || \
-	 command -v open > /dev/null && open http://localhost/pulse 2>/dev/null || \
-	 printf "Open http://localhost/pulse in your browser\n"
 
 # ============================================
-# Cache Management
+# Cache & Optimization
 # ============================================
 
-cache: ## Clear all caches
-	@printf "${GREEN}🧹 Clearing caches...${NC}\n"
+cache:
 	@docker exec starterkit-app php artisan cache:clear
 	@docker exec starterkit-app php artisan config:clear
 	@docker exec starterkit-app php artisan route:clear
 	@docker exec starterkit-app php artisan view:clear
 	@docker exec starterkit-app php artisan event:clear
-	@printf "${GREEN}✓ Caches cleared!${NC}\n"
 
-cache-config: ## Cache config files
-	docker exec starterkit-app php artisan config:cache
+clear:
+	@docker exec starterkit-app php artisan optimize:clear
 
-cache-routes: ## Cache routes
-	docker exec starterkit-app php artisan route:cache
-
-cache-views: ## Cache views
-	docker exec starterkit-app php artisan view:cache
-
-optimize: ## Optimize application for production
-	@printf "${GREEN}⚡ Optimizing application...${NC}\n"
+optimize:
 	@docker exec starterkit-app php artisan optimize
 	@docker exec starterkit-app php artisan config:cache
 	@docker exec starterkit-app php artisan route:cache
 	@docker exec starterkit-app php artisan view:cache
-	@printf "${GREEN}✓ Optimization complete!${NC}\n"
+
+optimize-test:
+	@docker exec -e APP_ENV=testing starterkit-app php artisan optimize
 
 # ============================================
-# Utilities
+# Quick Aliases
 # ============================================
 
-clean: ## Clean temporary files and caches
-	@printf "${GREEN}🧹 Cleaning up...${NC}\n"
-	@docker exec starterkit-app rm -rf storage/framework/cache/data/*
-	@docker exec starterkit-app rm -rf storage/framework/sessions/*
-	@docker exec starterkit-app rm -rf storage/framework/views/*
-	@docker exec starterkit-app rm -rf bootstrap/cache/*.php
-	@printf "${GREEN}✓ Cleanup complete!${NC}\n"
-
-permissions: ## Fix permissions
-	@printf "${GREEN}🔒 Fixing permissions...${NC}\n"
-	@docker exec starterkit-app chown -R www-data:www-data /app/storage /app/bootstrap/cache
-	@docker exec starterkit-app chmod -R 775 /app/storage /app/bootstrap/cache
-	@printf "${GREEN}✓ Permissions fixed!${NC}\n"
-
-deploy: ## Deploy application (optimize & migrate)
-	@printf "${GREEN}🚀 Deploying application...${NC}\n"
-	@$(MAKE) down
-	@$(MAKE) build
-	@$(MAKE) up
-	@sleep 5
-	@$(MAKE) migrate
-	@$(MAKE) optimize
-	@printf "${GREEN}✓ Deployment complete!${NC}\n"
-
-status: ## Show application status
-	@printf "${GREEN}📊 Application Status:${NC}\n\n"
-	@docker compose ps
-	@printf "\n${GREEN}Services:${NC}\n"
-	@printf "  App:      http://localhost\n"
-	@printf "  Mailpit:  http://localhost:8025\n"
-	@printf "  Database: localhost:5432\n"
-	@printf "  Redis:    localhost:6379\n"
-
-# ============================================
-# Quick Commands (Shortcuts)
-# ============================================
-
-m: migrate ## Shortcut for migrate
-mf: fresh ## Shortcut for fresh
-t: test ## Shortcut for test
-s: shell ## Shortcut for shell
-l: logs ## Shortcut for logs
-c: cache ## Shortcut for cache
+ta: test-all
+tf: test-fresh
+ds: db-show
+dt: db-table
+oc: clear
+ot: optimize-test

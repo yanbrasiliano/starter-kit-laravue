@@ -330,6 +330,7 @@ make logs - Follow all logs
 
 💻 Development:
 make shell - Enter app container shell
+make shell-root - Enter app container as root
 make front - Run Vite dev server
 make install - Install PHP and NPM dependencies
 make fresh - Fresh database with seeds
@@ -339,40 +340,34 @@ make optimize - Optimize for production
 🗄️ Database:
 make migrate - Run migrations
 make rollback - Rollback last migration
+make db-show - Show current database info
+make db-table TABLE=users - Show table info
 make db-shell - Enter PostgreSQL shell
-make db-reset - Reset database
 make backup - Backup database
-make restore - Restore database from backup
+make restore FILE=backup.sql - Restore database
 
 🧪 Testing:
-make test - Run all tests
-make test-unit - Run unit tests
-make test-feature - Run feature tests
-make coverage - Generate test coverage report
+make test - Run all tests (local)
+make test-all - Run all tests (testing env, parallel)
+make test-fresh - Clear cache + run tests (testing env)
+make test-coverage - Generate test coverage report
 
 ✨ Code Quality:
-make pint - Run Laravel Pint (code formatting)
-make format - Format code with Pint
+make pint - Run Laravel Pint (format)
 make check - Check code style without fixing
 make ide - Generate IDE helper files
 
 🛠️ Artisan & Tools:
-make artisan - Run artisan command (e.g., make artisan ARGS="make:model Post")
+make artisan ARGS="make:model Post" - Run artisan command
 make tinker - Open Laravel Tinker
 make queue - Run queue worker
-make horizon - Open Laravel Horizon dashboard
+make horizon - Open Laravel Horizon
 make telescope - Open Laravel Telescope
 make pulse - Open Laravel Pulse
 
-🔧 Utilities:
-make clean - Clean temporary files and caches
-make npm - Run npm command (e.g., make npm ARGS="install lodash")
-make composer - Run composer command (e.g., make composer ARGS="require package")
-
-⚡ Quick Shortcuts:
-make m - migrate
-make mf - fresh
-make t - test
-make s - shell
-make l - logs
-make c - cache
+⚡ Shortcuts:
+make ta - test-all
+make tf - test-fresh
+make ds - db-show
+make dt TABLE=x - db-table
+make oc - optimize:clear
