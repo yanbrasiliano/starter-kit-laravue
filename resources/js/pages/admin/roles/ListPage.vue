@@ -1,5 +1,6 @@
 <script setup>
 import TableSync from '@/components/roles/TableSync.vue';
+import ActionButton from '@/components/shared/ActionButton.vue';
 import PageTopTitle from '@/components/shared/PageTopTitle.vue';
 import SearchInput from '@/components/shared/SearchInput.vue';
 import PageWrapper from '@/pages/admin/PageWrapper.vue';
@@ -10,8 +11,16 @@ import { ROLE_PERMISSION } from '@utils/permissions';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const { loading, rows, pagination, handleSearch, updatePagination, onEdit, onDelete } =
-  useRole();
+const {
+  loading,
+  rows,
+  pagination,
+  handleSearch,
+  updatePagination,
+  onEdit,
+  onDelete,
+  onConsult,
+} = useRole();
 const { columns } = useRoleConfigListPage();
 </script>
 <template>
@@ -26,12 +35,12 @@ const { columns } = useRoleConfigListPage();
         </div>
         <div class="col-md-4 offset-md-4">
           <div class="column items-end">
-            <q-btn
+            <ActionButton
               v-if="hasPermission([ROLE_PERMISSION.CREATE])"
-              label="Criar"
-              color="accent"
               icon="add"
-              @click="router.push({ name: 'createRoles' })"></q-btn>
+              label="Criar"
+              color="secondary"
+              @click-action="router.push({ name: 'createRoles' })" />
           </div>
         </div>
       </div>
@@ -43,6 +52,7 @@ const { columns } = useRoleConfigListPage();
         :rows="rows"
         :pagination="pagination"
         @update-pagination="updatePagination"
+        @on-consult="onConsult"
         @on-edit="onEdit"
         @on-delete="onDelete" />
     </template>
