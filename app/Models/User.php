@@ -23,7 +23,7 @@ use Spatie\Permission\Traits\{HasPermissions, HasRoles};
  * @property string $updated_at
  * @property \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
  */
-final class User extends Authenticatable implements MustVerifyEmail {
+class User extends Authenticatable implements MustVerifyEmail {
     use HasApiTokens;
     use HasFactory;
     use HasPermissions;

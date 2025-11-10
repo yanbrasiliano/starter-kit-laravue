@@ -115,6 +115,9 @@
       ],
       "sort_algorithm": "none"
     },
+    "notName": [
+      "app/Models/*.php"
+    ],
     "no_superfluous_elseif": true,
     "modernize_types_casting": true,
     "mb_str_functions": true,
