@@ -9,7 +9,13 @@
     "serve": "vite preview",
     "lint": "eslint --ext .js,.vue --fix resources/js --max-warnings=0",
     "commit": "git-cz",
-    "format": "prettier ./resources/js --write"
+    "format": "prettier ./resources/js --write",
+    "changelog": "changelogen --output CHANGELOG.md",
+    "changelog:preview": "changelogen --output CHANGELOG.md --no-commit --no-tag",
+    "release": "changelogen --release --push",
+    "release:minor": "changelogen --release --minor --push",
+    "release:major": "changelogen --release --major --push",
+    "release:patch": "changelogen --release --patch --push"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.26.8",
@@ -19,6 +25,7 @@
     "@eslint/object-schema": "^2.1.0",
     "@quasar/vite-plugin": "^1.9.0",
     "axios": "^1.6.7",
+    "changelogen": "^0.6.2",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.2",
     "eslint-plugin-security": "^3.0.1",
