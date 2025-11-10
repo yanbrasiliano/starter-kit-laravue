@@ -1,6 +1,8 @@
 {
   "preset": "psr12",
-  "notPath": ["tests/TestCase.php"],
+  "notPath": [
+    "tests/TestCase.php"
+  ],
   "exclude": [
     "**/tests/**",
     "var/phpstan",
@@ -118,7 +120,7 @@
     "mb_str_functions": true,
     "final_class": true,
     "final_internal_class": true,
-    "final_public_method_for_abstract_class": true,
+    "final_public_method_for_abstract_class": false,
     "fully_qualified_strict_types": true,
     "ordered_interfaces": true,
     "ordered_traits": true,
