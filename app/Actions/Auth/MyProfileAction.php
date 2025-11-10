@@ -5,8 +5,9 @@ declare(strict_types = 1);
 namespace App\Actions\Auth;
 
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\{Permission, Role};
+use Spatie\Permission\Models\Role;
 
 final readonly class MyProfileAction {
     /** @return array<string, mixed> */
@@ -18,20 +19,22 @@ final readonly class MyProfileAction {
             return [];
         }
 
-        /** @var \Illuminate\Database\Eloquent\Collection<int, Role> $roles */
-        $roles = $user->roles()->get();
+        $user->loadMissing(['roles', 'roles.permissions']);
 
-        /** @var \Illuminate\Database\Eloquent\Collection<int, Permission> $permissions */
-        $permissions = $user->getAllPermissions();
+        /** @var Collection<int, Role> $roles */
+        $roles = $user->roles;
 
         return [
             ...$user->only(['name', 'email']),
 
-            'permissions' => $permissions->values()->toArray(),
+            'permissions' => $user->getAllPermissions()
+                ->values()
+                ->toArray(),
 
             'roles' => $roles
                 ->map(
-                    static fn (Role $role, int $index): array => [
+                    /** @param Role $role */
+                    static fn (Role $role): array => [
                         'id' => $role->getKey(),
                         'name' => $role->name,
                         'slug' => $role->getAttribute('slug'),

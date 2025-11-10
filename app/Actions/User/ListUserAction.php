@@ -15,7 +15,7 @@ final readonly class ListUserAction {
      * @return LengthAwarePaginator<int, User>|Collection<int, User>
      */
     public function execute(Fluent $params): LengthAwarePaginator|Collection {
-        $query = User::query()->with('roles');
+        $query = User::query();
 
         $query->select([
             'users.*',
