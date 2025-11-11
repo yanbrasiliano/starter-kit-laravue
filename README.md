@@ -7,18 +7,19 @@ It provides a pre-configured environment for authentication, user and permission
 
 ## 📑 Table of Contents
 
-1. [Architecture Overview](#-architecture-overview)
-2. [Installation](#-installation)
-3. [Husky (Git Hooks)](#-husky-git-hooks)
-4. [Database Configuration](#-database-configuration)
-5. [Key Features](#-key-features)
-6. [Technology Stack](#-technology-stack)
-7. [Project Architecture](#-project-architecture)
-8. [Docker Services](#-docker-services)
-9. [Testing](#-testing)
-10. [Best Practices](#-best-practices)
-11. [Commit Conventions](#-commit-conventions)
-12. [Code Standards](#-code-standards)
+1. [Architecture Overview](#️-architecture-overview)
+2. [Installation](#️-installation)
+3. [Husky (Git Hooks)](#️-husky-git-hooks)
+4. [Database Configuration](#️-database-configuration)
+5. [Fix Access Permissions (Spatie Permission Cache)](#️-fix-access-permissions-spatie-permission-cache)
+6. [Key Features](#️-key-features)
+7. [Technology Stack](#️-technology-stack)
+8. [Project Architecture](#️-project-architecture)
+9. [Docker Services](#️-docker-services)
+10. [Testing](#️-testing)
+11. [Best Practices](#️-best-practices)
+12. [Commit Conventions](#️-commit-conventions)
+13. [Code Standards](#️-code-standards)
 
 ---
 
@@ -122,6 +123,26 @@ docker exec -it starterkit-db psql -U postgres -d starterkit
 
 ---
 
+## 🧩 Fix Access Permissions (Spatie Permission Cache)
+
+If a user has correct permissions in the database but still receives:
+
+> “You do not have permission to perform this action.”
+
+Run inside the container:
+
+```bash
+docker compose exec starterkit-app php artisan permission:cache-reset
+```
+
+### Versions <5.x:
+
+```bash
+docker compose exec starterkit-app php artisan cache:forget spatie.permission.cache
+```
+
+---
+
 ## 📌 Key Features
 
 - **Laravel 12** — Modular, RESTful backend
@@ -151,25 +172,24 @@ docker exec -it starterkit-db psql -U postgres -d starterkit
 
 ## 🚀 Project Architecture
 
-The project applies **Action Pattern** to encapsulate business logic and ensure single-responsibility.
-It follows an **Event-Driven Design** (EDD) pattern, allowing features such as logging, notifications, and integrations to run asynchronously or synchronously.
+Applies **Action Pattern** for isolated business logic and **Event-Driven Design (EDD)** for asynchronous processes.
 
 ### 📡 Queues and Jobs
 
-The system is queue-ready using **Redis** and **Supervisor**.
-Heavy tasks (imports, notifications, integrations) should run via jobs dispatched with:
+Uses **Redis** and **Supervisor** for job queues.
+Heavy operations (imports, notifications, integrations) should run via:
 
 ```php
 dispatch(new ExampleJob())->onQueue('default');
 ```
 
-Supervisor handles automatic restart, retry, and timeout policies.
+Supervisor handles automatic restart, retry, and timeout.
 
 ---
 
 ## 🧱 Docker Services
 
-All services are defined in `docker-compose.yml`.
+All services are defined in `docker-compose.yaml`.
 
 ---
 
@@ -177,50 +197,26 @@ All services are defined in `docker-compose.yml`.
 
 ### 1️⃣ Test Database
 
-The test database (`starterkit_test`) is automatically created on the first container startup.
-
-If it is **not created automatically**, run the `docker-entrypoint-initdb.sh` script manually **outside** the container:
-
-#### Script
-
-```bash
-#!/usr/bin/env bash
-
-docker exec -i starterkit-db psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'starterkit_test';" | grep -q 1 && {
-    echo "Database starterkit_test already exists."
-    exit 0
-}
-
-docker exec -i starterkit-db psql -U postgres -c "CREATE DATABASE starterkit_test;"
-echo "Database starterkit_test created."
-```
-
-#### Run
+If `starterkit_test` is not created automatically, run:
 
 ```bash
 chmod +x docker-entrypoint-initdb.sh
 ./docker-entrypoint-initdb.sh
 ```
 
-After execution, the `starterkit_test` database will be available for automated test runs.
-
----
-
-### 2️⃣ Running Tests
-
-Run the full test suite:
+### 2️⃣ Run Tests
 
 ```bash
 docker compose exec starterkit-app composer test
 ```
 
-With coverage report:
+With coverage:
 
 ```bash
 docker compose exec starterkit-app composer test:coverage
 ```
 
-Parallel execution:
+Parallel mode:
 
 ```bash
 docker compose exec starterkit-app env APP_ENV=testing php artisan test --parallel
@@ -230,62 +226,48 @@ docker compose exec starterkit-app env APP_ENV=testing php artisan test --parall
 
 ## 🧠 Best Practices
 
-### Security
+**Security**
 
-- Set `APP_DEBUG=false` in production.
-- Generate a unique secure `APP_KEY`.
-- Protect routes using `auth:sanctum`.
-- Mask sensitive data in logs.
+- `APP_DEBUG=false` in production
+- Generate unique `APP_KEY`
+- Protect routes with `auth:sanctum`
+- Mask sensitive logs
 
-### Performance
+**Performance**
 
-- Cache repetitive queries (use tags and short TTLs).
-- Optimize auto-loaders and config caches.
-- Use `DB::transaction()` for atomic operations.
+- Cache queries (tagged TTLs)
+- Optimize autoloaders/config caches
+- Use `DB::transaction()` for atomicity
 
-### Code Quality
+**Code Quality**
 
-- Maintain test coverage ≥ 80%.
-- Run Larastan and PHP Insights regularly.
-- Keep controllers thin — logic belongs in Actions.
+- Maintain ≥80% coverage
+- Run Larastan + PHP Insights regularly
+- Keep controllers thin; logic in Actions
 
 ---
 
 ## 🔄 Commit Conventions
 
-Follows **Conventional Commits** to maintain readable history and semantic versioning.
-
-Format:
+Follow **Conventional Commits**.
 
 ```
 <type>: <Jira task ID> - <description>
 ```
 
-**Types:**
-
-- `feat` — New feature
-- `fix` — Bug fix
-- `docs` — Documentation update
-- `refactor` — Code restructuring
-- `test` — Add or modify tests
-- `perf` — Performance improvement
-- `build` — Build or dependency changes
-- `ci` — CI/CD updates
-- `ops` — Infrastructure or ops changes
-- `chore` — Maintenance tasks (deps, cleanup)
-- `revert` — Revert commit
+**Types:** feat, fix, docs, refactor, test, perf, build, ci, ops, chore, revert
 
 ---
 
 ## 📝 Code Standards
 
-- `declare(strict_types=1);` in all PHP files
+- `declare(strict_types=1);` required
 - Method names ≤ 5 words
-- Use imperative verbs for methods
+- Use imperative verbs
 - Variables in `camelCase`
-- Routes follow `{resource}.{action}` (e.g. `users.index`)
-- Versioned APIs: `/api/v1/...`
-- Test coverage ≥ 80 lines
+- Routes follow `{resource}.{action}`
+- API versioning `/api/v1/...`
+- Coverage ≥ 80 lines
 
 ### Static Analysis
 
@@ -312,62 +294,21 @@ docker exec -it starterkit-app composer test
 docker exec -it starterkit-app composer test:coverage
 ```
 
-#### Shortcuts for development
+---
 
+## ⚡ Makefile Shortcuts
+
+```bash
 make help
+```
 
-╔═══════════════════════════════════════════╗
-║ Shortcuts for development ║
-╚═══════════════════════════════════════════╝
+Key shortcuts:
 
-📦 Container Management:
-make up - Start all containers
-make down - Stop all containers
-make restart - Restart all containers
-make build - Rebuild containers
-make ps - Show container status
-make logs - Follow all logs
-
-💻 Development:
-make shell - Enter app container shell
-make shell-root - Enter app container as root
-make front - Run Vite dev server
-make install - Install PHP and NPM dependencies
-make fresh - Fresh database with seeds
-make cache - Clear all Laravel caches
-make optimize - Optimize for production
-
-🗄️ Database:
-make migrate - Run migrations
-make rollback - Rollback last migration
-make db-show - Show current database info
-make db-table TABLE=users - Show table info
-make db-shell - Enter PostgreSQL shell
-make backup - Backup database
-make restore FILE=backup.sql - Restore database
-
-🧪 Testing:
-make test - Run all tests (local)
-make test-all - Run all tests (testing env, parallel)
-make test-fresh - Clear cache + run tests (testing env)
-make test-coverage - Generate test coverage report
-
-✨ Code Quality:
-make pint - Run Laravel Pint (format)
-make check - Check code style without fixing
-make ide - Generate IDE helper files
-
-🛠️ Artisan & Tools:
-make artisan ARGS="make:model Post" - Run artisan command
-make tinker - Open Laravel Tinker
-make queue - Run queue worker
-make horizon - Open Laravel Horizon
-make telescope - Open Laravel Telescope
-make pulse - Open Laravel Pulse
-
-⚡ Shortcuts:
-make ta - test-all
-make tf - test-fresh
-make ds - db-show
-make dt TABLE=x - db-table
-make oc - optimize:clear
+| Category      | Command                                          | Description                    |
+| ------------- | ------------------------------------------------ | ------------------------------ |
+| 📦 Containers | `make up` / `make down` / `make restart`         | Manage containers              |
+| 💻 Dev        | `make shell` / `make front`                      | Enter container / run frontend |
+| 🗄️ DB         | `make migrate` / `make rollback`                 | Manage migrations              |
+| 🧪 Tests      | `make test` / `make test-all`                    | Run test suites                |
+| ✨ Quality    | `make pint` / `make check`                       | Format and lint                |
+| 🛠️ Tools      | `make artisan` / `make queue` / `make telescope` | Laravel utilities              |
