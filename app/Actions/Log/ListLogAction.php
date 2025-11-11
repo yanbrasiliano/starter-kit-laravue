@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Actions\Log;
 
@@ -19,10 +19,10 @@ final readonly class ListLogAction {
      */
     public function execute(Fluent $params): LengthAwarePaginator|Collection {
         $query = Activity::query()
-            ->with(['causer', 'subject'])
             ->selectRaw($this->subjectFallbackSelect())
             ->leftJoin('users as causer_users', 'activity_log.causer_id', '=', 'causer_users.id')
-            ->leftJoin('users as subject_users', 'activity_log.subject_id', '=', 'subject_users.id');
+            ->leftJoin('users as subject_users', 'activity_log.subject_id', '=', 'subject_users.id')
+            ->where('activity_log.created_at', '>=', now()->subDays(30));
 
         /** @var string|null $search */
         $search = $params->get('search');
@@ -34,7 +34,7 @@ final readonly class ListLogAction {
 
                 $query->when(
                     $eventSearch !== null,
-                    fn ($query) => $query->where('activity_log.event', $eventSearch)
+                    fn($query) => $query->where('activity_log.event', $eventSearch)
                 );
 
                 $query->when(

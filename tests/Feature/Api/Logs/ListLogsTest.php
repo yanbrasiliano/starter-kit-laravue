@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Api\Logs;
 
@@ -9,20 +9,26 @@ use App\Models\User;
 use Database\Factories\ActivityFactory;
 use Spatie\Permission\Models\Permission;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->user = User::factory()->create();
+
     Permission::findOrCreate(PermissionEnum::ACTIVITY_LOGS_LIST->value);
     $this->user->givePermissionTo(PermissionEnum::ACTIVITY_LOGS_LIST->value);
+
     $this->actingAs($this->user);
 });
 
 describe('List Logs API', function () {
-    it('returns paginated logs with default params', function () {
-        ActivityFactory::new()->count(3)->withCauser($this->user)->create([
-            'log_name' => 'system',
-            'event' => 'create',
-            'description' => 'Created record',
-        ]);
+    it('returns paginated logs with default params', function (): void {
+        ActivityFactory::new()
+            ->count(3)
+            ->withCauser($this->user)
+            ->create([
+                'log_name' => 'system',
+                'event' => 'create',
+                'description' => 'Created record',
+                'created_at' => now()->subDays(5), // dentro do range de 30 dias
+            ]);
 
         $response = $this->getJson(route('activity_logs.list'));
 
@@ -49,9 +55,16 @@ describe('List Logs API', function () {
         ]);
     });
 
-    it('applies search filter by description', function () {
-        ActivityFactory::new()->withCauser($this->user)->create(['description' => 'Special log']);
-        ActivityFactory::new()->withCauser($this->user)->create(['description' => 'Other log']);
+    it('applies search filter by description', function (): void {
+        ActivityFactory::new()->withCauser($this->user)->create([
+            'description' => 'Special log',
+            'created_at' => now(),
+        ]);
+
+        ActivityFactory::new()->withCauser($this->user)->create([
+            'description' => 'Other log',
+            'created_at' => now(),
+        ]);
 
         $response = $this->getJson(route('activity_logs.list', ['search' => 'Special']));
 
@@ -60,9 +73,18 @@ describe('List Logs API', function () {
         expect($response->json('data.0.description'))->toBe('Special log');
     });
 
-    it('applies search filter by event in portuguese', function () {
-        ActivityFactory::new()->withCauser($this->user)->create(['event' => 'delete', 'description' => 'Deleted']);
-        ActivityFactory::new()->withCauser($this->user)->create(['event' => 'create', 'description' => 'Created']);
+    it('applies search filter by event in portuguese', function (): void {
+        ActivityFactory::new()->withCauser($this->user)->create([
+            'event' => 'delete',
+            'description' => 'Deleted',
+            'created_at' => now(),
+        ]);
+
+        ActivityFactory::new()->withCauser($this->user)->create([
+            'event' => 'create',
+            'description' => 'Created',
+            'created_at' => now(),
+        ]);
 
         $response = $this->getJson(route('activity_logs.list', ['search' => 'Excluir']));
 
@@ -71,9 +93,16 @@ describe('List Logs API', function () {
         expect($response->json('data.0.event'))->toBe('delete');
     });
 
-    it('applies ordering by description asc', function () {
-        ActivityFactory::new()->withCauser($this->user)->create(['description' => 'B log']);
-        ActivityFactory::new()->withCauser($this->user)->create(['description' => 'A log']);
+    it('applies ordering by description asc', function (): void {
+        ActivityFactory::new()->withCauser($this->user)->create([
+            'description' => 'B log',
+            'created_at' => now(),
+        ]);
+
+        ActivityFactory::new()->withCauser($this->user)->create([
+            'description' => 'A log',
+            'created_at' => now(),
+        ]);
 
         $response = $this->getJson(route('activity_logs.list', [
             'column' => 'description',
@@ -84,14 +113,14 @@ describe('List Logs API', function () {
         expect($descriptions)->toBe(['A log', 'B log']);
     });
 
-    it('validates request rules', function () {
+    it('validates request rules', function (): void {
         $response = $this->getJson(route('activity_logs.list', ['limit' => 200]));
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['limit']);
     });
 
-    it('applies search filter by date (d/m/Y)', function () {
+    it('applies search filter by date (d/m/Y)', function (): void {
         $activity = ActivityFactory::new()->withCauser($this->user)->create([
             'created_at' => now()->startOfDay(),
             'description' => 'Log date test',
@@ -106,9 +135,9 @@ describe('List Logs API', function () {
         expect($response->json('data.0.id'))->toBe($activity->id);
     });
 
-    it('applies search filter by causer name', function () {
+    it('applies search filter by causer name', function (): void {
         $user = User::factory()->create(['name' => 'Special Causer']);
-        ActivityFactory::new()->withCauser($user)->create();
+        ActivityFactory::new()->withCauser($user)->create(['created_at' => now()]);
 
         $response = $this->getJson(route('activity_logs.list', ['search' => 'Special Causer']));
 
@@ -117,9 +146,12 @@ describe('List Logs API', function () {
         expect($response->json('data.0.causer'))->toBe('Special Causer');
     });
 
-    it('applies search filter by subject name', function () {
+    it('applies search filter by subject name', function (): void {
         $subject = User::factory()->create(['name' => 'Subject X']);
-        ActivityFactory::new()->withCauser($this->user)->withSubject($subject)->create();
+        ActivityFactory::new()
+            ->withCauser($this->user)
+            ->withSubject($subject)
+            ->create(['created_at' => now()]);
 
         $response = $this->getJson(route('activity_logs.list', ['search' => 'Subject X']));
 
@@ -128,11 +160,12 @@ describe('List Logs API', function () {
         expect($response->json('data.0.subject'))->toBe('Subject X');
     });
 
-    it('applies ordering by causer desc', function () {
+    it('applies ordering by causer desc', function (): void {
         $userA = User::factory()->create(['name' => 'Ana']);
         $userB = User::factory()->create(['name' => 'Zeca']);
-        ActivityFactory::new()->withCauser($userA)->create();
-        ActivityFactory::new()->withCauser($userB)->create();
+
+        ActivityFactory::new()->withCauser($userA)->create(['created_at' => now()]);
+        ActivityFactory::new()->withCauser($userB)->create(['created_at' => now()]);
 
         $response = $this->getJson(route('activity_logs.list', [
             'column' => 'causer',
@@ -143,8 +176,11 @@ describe('List Logs API', function () {
         expect($causers)->toBe(['Zeca', 'Ana']);
     });
 
-    it('returns unpaginated logs when paginated = false', function () {
-        ActivityFactory::new()->count(2)->withCauser($this->user)->create();
+    it('returns unpaginated logs when paginated = false', function (): void {
+        ActivityFactory::new()
+            ->count(2)
+            ->withCauser($this->user)
+            ->create(['created_at' => now()]);
 
         $response = $this->getJson(route('activity_logs.list', ['paginated' => false]));
 
