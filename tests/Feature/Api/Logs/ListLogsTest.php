@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Api\Logs;
 
@@ -27,7 +27,7 @@ describe('List Logs API', function () {
                 'log_name' => 'system',
                 'event' => 'create',
                 'description' => 'Created record',
-                'created_at' => now()->subDays(5), // dentro do range de 30 dias
+                'created_at' => now()->subDays(5),
             ]);
 
         $response = $this->getJson(route('activity_logs.list'));
@@ -91,6 +91,30 @@ describe('List Logs API', function () {
         $response->assertOk();
         $response->assertJsonCount(1, 'data');
         expect($response->json('data.0.event'))->toBe('delete');
+    });
+
+    it('does not return logs older than 30 days', function (): void {
+        ActivityFactory::new()
+            ->withCauser($this->user)
+            ->create([
+                'description' => 'Old log',
+                'created_at' => now()->subDays(45),
+            ]);
+
+        $recent = ActivityFactory::new()
+            ->withCauser($this->user)
+            ->create([
+                'description' => 'Recent log',
+                'created_at' => now()->subDays(5),
+            ]);
+
+        $response = $this->getJson(route('activity_logs.list'));
+
+        $response->assertOk();
+        $response->assertJsonMissing(['description' => 'Old log']);
+        $response->assertJsonFragment(['description' => 'Recent log']);
+        $response->assertJsonCount(1, 'data');
+        expect($response->json('data.0.id'))->toBe($recent->id);
     });
 
     it('applies ordering by description asc', function (): void {
