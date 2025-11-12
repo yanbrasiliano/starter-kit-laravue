@@ -15,6 +15,7 @@
         "dedoc/scramble": "^0.12.10",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^12.0",
+        "laravel/horizon": "^5.40",
         "laravel/pulse": "^1.4",
         "laravel/sanctum": "^4.0",
         "laravel/telescope": "^5.6",

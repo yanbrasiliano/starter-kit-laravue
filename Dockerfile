@@ -12,7 +12,6 @@ RUN apk add --no-cache \
     postgresql16-dev postgresql16-client \
     clang16 llvm16 lz4-dev openssl-dev \
     libzip-dev \
-    supervisor \
     git \
     curl-dev \
     libxml2-dev \
@@ -38,6 +37,9 @@ RUN apk add --no-cache \
     && if [ "$APP_ENV" != "production" ] && [ "$APP_ENV" != "staging" ]; then pecl install xdebug && docker-php-ext-enable xdebug; fi \
     && apk del .build-deps
 
+RUN apk add --no-cache python3 py3-pip \
+    && pip install --no-cache-dir --break-system-packages 'setuptools<81' supervisor
+
 COPY ./docker/PHP/php-dev.ini /usr/local/etc/php/conf.d/custom.ini
 COPY ./docker/SUPERVISOR/supervisord.conf /etc/supervisord.conf
 
@@ -56,11 +58,8 @@ RUN if [ "$APP_ENV" = "production" ] || [ "$APP_ENV" = "staging" ]; then \
     npm ci; \
     fi
 
-COPY --chown=www-data:www-data . .
-
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
-
 RUN git config --global --add safe.directory /var/www/html
 
 ENTRYPOINT ["entrypoint.sh"]

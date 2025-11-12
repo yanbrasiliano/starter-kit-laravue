@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Providers;
 
@@ -37,9 +37,7 @@ final class AppServiceProvider extends ServiceProvider {
         $this->configureScramble();
         $this->configureVite();
 
-        Gate::define('viewPulse', function (User $user) {
-            return $user->isAdmin();
-        });
+        Gate::define('viewPulse', fn(User $user) => $user->isAdmin());
 
         if ($this->app->runningUnitTests()) {
             Sleep::fake();

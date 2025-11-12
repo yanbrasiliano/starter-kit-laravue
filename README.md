@@ -152,7 +152,7 @@ docker compose exec starterkit-app php artisan cache:forget spatie.permission.ca
 - **PestPHP** — Expressive test framework
 - **Larastan + PHP Insights** — Static analysis & code quality
 - **Scramble** — Automatic API documentation
-- **Pulse + Telescope + Debugbar** — Monitoring and debugging
+- **Pulse + Telescope + Debugbar + Horizon** — Monitoring and debugging
 
 ---
 
@@ -166,7 +166,7 @@ docker compose exec starterkit-app php artisan cache:forget spatie.permission.ca
 - **Containerization:** Docker Compose
 - **Testing:** PestPHP
 - **Static Analysis:** Larastan
-- **Monitoring:** Pulse, Telescope, Debugbar
+- **Monitoring:** Pulse, Telescope, Debugbar, Horizon
 
 ---
 
