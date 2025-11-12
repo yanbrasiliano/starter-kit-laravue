@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
-use Laravel\Horizon\Horizon;
-use Laravel\Horizon\HorizonApplicationServiceProvider;
+use Laravel\Horizon\{Horizon, HorizonApplicationServiceProvider};
 
 // @codeCoverageIgnoreStart
 final class HorizonServiceProvider extends HorizonApplicationServiceProvider {
@@ -17,7 +18,7 @@ final class HorizonServiceProvider extends HorizonApplicationServiceProvider {
     }
 
     protected function gate(): void {
-        Gate::define('viewHorizon', fn($user) => $user && $user->isAdmin());
+        Gate::define('viewHorizon', fn ($user) => $user && $user->isAdmin());
     }
 }
 
