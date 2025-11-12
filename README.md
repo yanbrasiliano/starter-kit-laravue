@@ -14,12 +14,13 @@ It provides a pre-configured environment for authentication, user and permission
 5. [Fix Access Permissions (Spatie Permission Cache)](#️-fix-access-permissions-spatie-permission-cache)
 6. [Key Features](#️-key-features)
 7. [Technology Stack](#️-technology-stack)
-8. [Project Architecture](#️-project-architecture)
-9. [Docker Services](#️-docker-services)
-10. [Testing](#️-testing)
-11. [Best Practices](#️-best-practices)
-12. [Commit Conventions](#️-commit-conventions)
-13. [Code Standards](#️-code-standards)
+8. [Queues and Horizon Monitoring](#️-queues-and-horizon-monitoring)
+9. [Project Architecture](#️-project-architecture)
+10. [Docker Services](#️-docker-services)
+11. [Testing](#️-testing)
+12. [Best Practices](#️-best-practices)
+13. [Commit Conventions](#️-commit-conventions)
+14. [Code Standards](#️-code-standards)
 
 ---
 
@@ -84,7 +85,7 @@ chmod +x permissions.sh
 docker exec -it starterkit-app npm run dev
 ```
 
-Access: **http://localhost:8001**
+Access: **[http://localhost:8001](http://localhost:8001)**
 
 ---
 
@@ -170,20 +171,72 @@ docker compose exec starterkit-app php artisan cache:forget spatie.permission.ca
 
 ---
 
+## ⚙️ Queues and Horizon Monitoring
+
+The Starter Kit integrates **Redis queues** and **Laravel Horizon** for distributed asynchronous job execution and real-time monitoring.
+
+### 🧠 How It Works
+
+- **Jobs** are dispatched using Redis queues via `queue:work`.
+- **Supervisor** automatically manages the worker lifecycle (restart, retry, timeout).
+- **Horizon** provides a dashboard for job tracking, performance metrics, and failure insights.
+
+### Example Job Dispatch
+
+```php
+dispatch(new ImportProcessJob())->onQueue('imports');
+dispatch(new SendEmailJob())->onQueue('emails');
+```
+
+Each queue runs independently, enabling **parallel processing** and **load distribution**.
+
+### Supervisor Configuration Example
+
+```ini
+[program:laravel-queue]
+command=/usr/local/bin/php /var/www/html/artisan queue:work redis --queue=default --daemon --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+user=www-data
+```
+
+- `--tries`: number of attempts before failure logging.
+- `--max-time`: ensures workers restart periodically to prevent memory leaks.
+- `--daemon`: keeps workers running persistently.
+
+### Access Horizon Dashboard
+
+```
+http://localhost:8001/horizon
+```
+
+> Access is restricted to **admin users only** in all environments (local, staging, production).
+
+Authorization defined in:
+
+```php
+Gate::define('viewHorizon', fn($user) => $user && $user->isAdmin());
+```
+
+### Horizon Features
+
+- Real-time job and queue stats
+- Retry failed jobs
+- Queue balancing and prioritization
+- Job execution metrics and runtime distribution
+
+### Recommended Practices
+
+- Name queues descriptively (`imports`, `emails`, `notifications`)
+- Split heavy operations into chunks (`chunk(100)`)
+- Avoid complex listeners — isolate logic in jobs
+- Use `Bus::batch()` for large batch operations
+
+---
+
 ## 🚀 Project Architecture
 
 Applies **Action Pattern** for isolated business logic and **Event-Driven Design (EDD)** for asynchronous processes.
-
-### 📡 Queues and Jobs
-
-Uses **Redis** and **Supervisor** for job queues.
-Heavy operations (imports, notifications, integrations) should run via:
-
-```php
-dispatch(new ExampleJob())->onQueue('default');
-```
-
-Supervisor handles automatic restart, retry, and timeout.
 
 ---
 
@@ -301,8 +354,6 @@ docker exec -it starterkit-app composer test:coverage
 ```bash
 make help
 ```
-
-Key shortcuts:
 
 | Category      | Command                                          | Description                    |
 | ------------- | ------------------------------------------------ | ------------------------------ |
