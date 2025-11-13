@@ -120,7 +120,7 @@ function handleErrorResponse(status, message, data, config) {
 
     case 500:
       notify(
-        'Erro interno do servidor. Por favor, contate a administração do sistema para mais informações.',
+        'Não foi possível concluir a operação no momento. Tente novamente mais tarde ou contate o suporte se o problema persistir.',
         'negative',
       );
       break;
