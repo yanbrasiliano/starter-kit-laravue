@@ -10,16 +10,12 @@ use Illuminate\Support\Fluent;
 
 final class ForgotPasswordRequest extends FormRequest {
     use FailedValidation;
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+
     public function authorize(): bool {
         return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
      * @return array<string, string>
      */
     public function rules(): array {
@@ -29,8 +25,6 @@ final class ForgotPasswordRequest extends FormRequest {
     }
 
     /**
-     * Get custom messages for validator errors.
-     *
      * @return array<string, string>
      */
     public function messages(): array {
@@ -40,13 +34,28 @@ final class ForgotPasswordRequest extends FormRequest {
             'email.exists' => 'Nenhum cadastro encontrado com o e-mail informado.',
         ];
     }
-    /** @return Fluent<string, mixed> */
+
+    /**
+     * @return Fluent<string, mixed>
+     */
     public function fluentParams(?string $key = null, mixed $default = null): Fluent {
-        /** @var array<string, mixed> $data */
-        $data = $key === null
-            ? $this->validated()
-            : [(string) $key => $this->validated($key, $default)];
+        /** @var array<string,mixed> $data */
+        $data = $key
+            ? [$key => $this->input($key)]
+            : $this->only(['email']);
 
         return new Fluent($data);
+    }
+
+    protected function prepareForValidation(): void {
+        if ($this->filled('email')) {
+            $emailInput = $this->input('email');
+
+            if (is_string($emailInput)) {
+                $this->merge([
+                    'email' => mb_strtolower(mb_trim($emailInput)),
+                ]);
+            }
+        }
     }
 }
