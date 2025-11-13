@@ -110,7 +110,7 @@ describe('ForgotPasswordTest', function () {
         $mailable = new SendForgetPasswordMail($token, $user);
         $rendered = $mailable->render();
 
-        expect($mailable->envelope()->subject)->toBe('Redefinição de senha SISPPPG');
+        expect($mailable->envelope()->subject)->toBe('Password Recovery Request SP System 1.0');
         expect($rendered)->toContain('John Doe');
         expect($rendered)->toContain($user->email);
     })->group('password');
