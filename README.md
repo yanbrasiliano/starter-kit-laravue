@@ -1,6 +1,6 @@
 # 🚀 LaraVue Starter Kit
 
-The **LaraVue Starter Kit** is a full-stack boilerplate combining **Laravel 12** and **Vue 3 + Quasar Framework**, built for scalable, testable, and maintainable web applications.
+The **LaraVue Starter Kit** is a full-stack boilerplate combining **Laravel 13** and **Vue 3 + Quasar Framework**, built for scalable, testable, and maintainable web applications.
 It provides a pre-configured environment for authentication, user and permission management, dashboards, REST APIs, automated testing, and development observability.
 
 ---
@@ -18,7 +18,7 @@ It provides a pre-configured environment for authentication, user and permission
 9. [Project Architecture](#️-project-architecture)
 10. [Docker Services](#️-docker-services)
 11. [Testing](#️-testing)
-12. [Best Practices](#️-best-practices)
+13. [Best Practices](#️-best-practices)
 13. [Commit Conventions](#️-commit-conventions)
 14. [Code Standards](#️-code-standards)
 
@@ -146,7 +146,7 @@ docker compose exec starterkit-app php artisan cache:forget spatie.permission.ca
 
 ## 📌 Key Features
 
-- **Laravel 12** — Modular, RESTful backend
+- **Laravel 13** — Modular, RESTful backend
 - **Vue 3 + Quasar** — Modern reactive UI
 - **Spatie Permission** — Role & permission system
 - **Spatie Activity Log** — Transparent audit trail
@@ -159,7 +159,7 @@ docker compose exec starterkit-app php artisan cache:forget spatie.permission.ca
 
 ## ⚙️ Technology Stack
 
-- **Backend:** Laravel 12 (PHP 8.4 on Alpine)
+- **Backend:** Laravel 13 (PHP 8.4 on Alpine)
 - **Frontend:** Vue 3.5 + Quasar Framework + Vite
 - **Database:** PostgreSQL 16
 - **Cache/Queue:** Redis 7

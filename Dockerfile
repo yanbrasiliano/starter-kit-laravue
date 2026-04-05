@@ -53,7 +53,7 @@ RUN composer install --no-interaction --no-progress --prefer-dist --no-scripts \
 
 COPY package.json package-lock.json ./
 RUN if [ "$APP_ENV" = "production" ] || [ "$APP_ENV" = "staging" ]; then \
-    npm ci --omit=dev; \
+    npm ci && npm prune --omit=dev; \
     else \
     npm ci; \
     fi

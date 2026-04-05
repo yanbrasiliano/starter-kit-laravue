@@ -13,14 +13,17 @@ use Illuminate\Support\{Collection, Fluent, Str};
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 
-final class UpdateRoleRequest extends FormRequest {
+final class UpdateRoleRequest extends FormRequest
+{
     use FailedValidation;
 
-    public function authorize(): bool {
+    public function authorize(): bool
+    {
         return Auth::check();
     }
 
-    public function prepareForValidation(): void {
+    public function prepareForValidation(): void
+    {
         /** @var iterable<int, int|string>|null $rawPermissions */
         $rawPermissions = $this->permissions;
 
@@ -37,7 +40,8 @@ final class UpdateRoleRequest extends FormRequest {
     /**
      * @return array<string, array<int, string|ValidationRule|Closure>>
      */
-    public function rules(): array {
+    public function rules(): array
+    {
         /** @var Role|null $role */
         $role = $this->route('role');
 
@@ -55,7 +59,8 @@ final class UpdateRoleRequest extends FormRequest {
     /**
      * @return array<string, string>
      */
-    public function attributes(): array {
+    public function attributes(): array
+    {
         return [
             'name' => 'Perfil',
             'description' => 'Descrição',
@@ -66,7 +71,8 @@ final class UpdateRoleRequest extends FormRequest {
     /**
      * @return array<string, string>
      */
-    public function messages(): array {
+    public function messages(): array
+    {
         return [
             'name.required' => 'O :attribute é obrigatório.',
             'name.string' => 'O :attribute deve conter uma palavra.',
@@ -78,9 +84,11 @@ final class UpdateRoleRequest extends FormRequest {
 
     /**
      * @param  array<string>|string|int|null  $key
+     * @param  mixed  $default
      * @return Fluent<string, mixed>
      */
-    public function fluent($key = null): Fluent {
+    public function fluent($key = null, $default = null): Fluent
+    {
         /** @var Role|null $role */
         $role = $this->route('role');
 
