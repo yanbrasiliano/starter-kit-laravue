@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Actions\Log;
 
@@ -12,13 +12,16 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Fluent;
 use Spatie\Activitylog\Models\Activity;
 
-final readonly class ListLogAction {
+final readonly class ListLogAction
+{
     /**
      * @param  Fluent<string, mixed>  $params
      * @return LengthAwarePaginator<int, Activity>|Collection<int, Activity>
      */
-    public function execute(Fluent $params): LengthAwarePaginator|Collection {
+    public function execute(Fluent $params): LengthAwarePaginator|Collection
+    {
         $query = Activity::query()
+            /** @phpstan-ignore argument.type */
             ->selectRaw($this->subjectFallbackSelect())
             ->leftJoin('users as causer_users', 'activity_log.causer_id', '=', 'causer_users.id')
             ->leftJoin('users as subject_users', 'activity_log.subject_id', '=', 'subject_users.id')
@@ -34,7 +37,7 @@ final readonly class ListLogAction {
 
                 $query->when(
                     $eventSearch !== null,
-                    fn($query) => $query->where('activity_log.event', $eventSearch)
+                    fn ($query) => $query->where('activity_log.event', $eventSearch)
                 );
 
                 $query->when(
@@ -84,7 +87,8 @@ final readonly class ListLogAction {
             : $query->get();
     }
 
-    private function subjectFallbackSelect(): string {
+    private function subjectFallbackSelect(): string
+    {
         return "
             activity_log.*,
             COALESCE(

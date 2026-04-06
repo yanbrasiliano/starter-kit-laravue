@@ -128,13 +128,6 @@
     "self_accessor": true,
     "self_static_accessor": true,
     "new_with_parentheses": false,
-    "no_multiple_statements_per_line": true,
-    "curly_braces_position": {
-      "control_structures_opening_brace": "same_line",
-      "functions_opening_brace": "same_line",
-      "anonymous_functions_opening_brace": "same_line",
-      "classes_opening_brace": "same_line",
-      "anonymous_classes_opening_brace": "same_line"
-    }
+    "no_multiple_statements_per_line": true
   }
 }
