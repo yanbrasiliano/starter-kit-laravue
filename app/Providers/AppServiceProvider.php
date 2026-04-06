@@ -1,43 +1,36 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Providers;
 
 use App\Models\User;
-use Barryvdh\Debugbar\Facades\Debugbar;
 use Dedoc\Scramble\Scramble;
-use Dedoc\Scramble\Support\Generator\{
-    OpenApi,
-    SecurityScheme
-};
+use Dedoc\Scramble\Support\Generator\{OpenApi, SecurityScheme};
 use Gate;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\{DB, Vite};
 use Illuminate\Support\{ServiceProvider, Sleep};
 use Laravel\Telescope\Telescope;
 
-final class AppServiceProvider extends ServiceProvider {
-    /**
-     * Register any application services.
-     */
-    public function register(): void {
-        if ($this->app->environment() !== 'local') {
-            Debugbar::disable();
+final class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        if ($this->app->environment() !== 'local' && class_exists(\Barryvdh\Debugbar\Facades\Debugbar::class)) {
+            \Barryvdh\Debugbar\Facades\Debugbar::disable();
         }
     }
 
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void {
+    public function boot(): void
+    {
         $this->configureModelBehavior();
         $this->configureDatabase();
         $this->configureRequest();
         $this->configureScramble();
         $this->configureVite();
 
-        Gate::define('viewPulse', fn(User $user) => $user->isAdmin());
+        Gate::define('viewPulse', fn (User $user) => $user->isAdmin());
 
         if ($this->app->runningUnitTests()) {
             Sleep::fake();
@@ -55,36 +48,27 @@ final class AppServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Configure the keys for database configur
-     *
      * @codeCoverageIgnore
      */
-    public function configureDatabase(): void {
-        DB::prohibitDestructiveCommands(
-            app()->isProduction(),
-        );
+    public function configureDatabase(): void
+    {
+        DB::prohibitDestructiveCommands(app()->isProduction());
     }
 
-    /**
-     * Configure the behavior of Eloquent models.
-     */
-    protected function configureModelBehavior(): void {
+    protected function configureModelBehavior(): void
+    {
         Model::preventLazyLoading(!$this->app->isProduction());
         Model::shouldBeStrict();
         Model::automaticallyEagerLoadRelationships();
     }
 
-    /**
-     * Configure HTTPS for non-local environments.
-     */
-    protected function configureRequest(): void {
+    protected function configureRequest(): void
+    {
         $this->app['request']->server->set('HTTPS', $this->app->environment() !== 'local');
     }
 
-    /**
-     * Configure the Scramble package.
-     */
-    protected function configureScramble(): void {
+    protected function configureScramble(): void
+    {
         Scramble::afterOpenApiGenerated(function (OpenApi $openApi) {
             $openApi->secure(
                 SecurityScheme::http('bearer', 'JWT')
@@ -92,10 +76,8 @@ final class AppServiceProvider extends ServiceProvider {
         });
     }
 
-    /**
-     * Configure the Vite prefetch strategy.
-     */
-    protected function configureVite(): void {
+    protected function configureVite(): void
+    {
         Vite::useAggressivePrefetching();
     }
 }
